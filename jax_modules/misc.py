@@ -80,7 +80,8 @@ class AutoEncoder(Module):
 
     def loss(self, param, input):
         output = self.apply(param, input)
-        return jnp.square(input - output).sum()
+        diff = input - output
+        return (diff * jnp.conj(diff)).sum()
 
     def param_loss(self, param):
         encoder_loss = self.encoder.param_loss(param["encoder"])

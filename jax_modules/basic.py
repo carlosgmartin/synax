@@ -78,7 +78,7 @@ class Function(Module):
         return self.function(input)
 
 
-class Conv(Module):
+class Convolution(Module):
     def __init__(
         self,
         input_dim,

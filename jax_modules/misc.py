@@ -3,6 +3,7 @@ from jax import numpy as jnp
 
 from .basic import Bias, Function, Linear
 from .compound import Chain
+from .recurrent import MGU
 
 
 def Affine(
@@ -83,3 +84,33 @@ class Autoencoder:
         encoder_loss = self.encoder.param_loss(param["encoder"])
         decoder_loss = self.decoder.param_loss(param["decoder"])
         return encoder_loss + decoder_loss
+
+
+def get_von_neumann_neighbors(array, space_dim=None, include_center=False):
+    """Get von Neumann neighborhoods of an array."""
+    if space_dim is None:
+        space_dim = array.ndim - 1
+    neighbors = [
+        jnp.roll(array, shift, axis)
+        for shift in [-1, +1]
+        for axis in range(-1 - space_dim, -1)
+    ]
+    if include_center:
+        neighbors += [array]
+    neighbors = jnp.concatenate(neighbors, -1)
+    return neighbors
+
+
+class NeuralCellularAutomaton:
+    """https://arxiv.org/abs/1511.08228"""
+
+    def __init__(self, state_dim, space_dim=1, cell_cls=MGU):
+        self.cell = cell_cls(state_dim, state_dim * 2 * space_dim)
+
+    def sample_params(self, key):
+        return self.cell.sample_params(key)
+
+    def apply(self, params, state):
+        neighbors = get_von_neumann_neighbors(state)
+        new_state = self.cell.apply(params, state, neighbors)
+        return new_state

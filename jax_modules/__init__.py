@@ -18,7 +18,7 @@ from .module import Module as Module
 from .parameterizations import AntisymmetricMatrix as AntisymmetricMatrix
 from .parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatrix
 from .parameterizations import SymmetricMatrix as SymmetricMatrix
-from .recurrent import GRU as GRU
 from .recurrent import MGU as MGU
+from .recurrent import GatedRecurrentUnit as GatedRecurrentUnit
 from .utils import layer_norm as layer_norm
 from .utils import rms_norm as rms_norm

@@ -3,7 +3,7 @@ from jax import nn, random
 from .module import Module
 
 
-class GRU(Module):
+class GatedRecurrentUnit(Module):
     """Learning phrase representations using RNN encoder-decoder for statistical machine
         translation (2014)
     https://arxiv.org/abs/1406.1078"""

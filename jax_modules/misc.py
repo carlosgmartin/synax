@@ -78,7 +78,7 @@ class AutoEncoder(Module):
     def apply(self, param, input):
         return self.decode(param, self.encode(param, input))
 
-    def loss(self, param, input):
+    def reconstruction_loss(self, param, input):
         output = self.apply(param, input)
         diff = input - output
         return (diff * jnp.conj(diff)).sum()

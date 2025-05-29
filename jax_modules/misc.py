@@ -33,7 +33,7 @@ def Affine(
     )
 
 
-def MLP(
+def MultiLayerPerceptron(
     dims,
     activation=Function(nn.relu),
     kernel_initializer=nn.initializers.he_normal(),

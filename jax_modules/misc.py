@@ -143,3 +143,14 @@ class GatedLinearUnit(Module):
         x = input @ wv + bc
         y, z = jnp.split(x, [self.output_dim])
         return y * nn.sigmoid(z)
+
+
+class ParametricReLU(Module):
+    def __init__(self, init_slope=0.0):
+        self.init_slope = init_slope
+
+    def init(self, key):
+        return self.init_slope
+
+    def apply(self, param, input):
+        return jnp.where(input > 0, input, input * param)

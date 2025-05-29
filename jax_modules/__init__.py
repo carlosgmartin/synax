@@ -12,6 +12,7 @@ from .misc import Affine as Affine
 from .misc import AutoEncoder as AutoEncoder
 from .misc import GatedLinearUnit as GatedLinearUnit
 from .misc import NeuralCellularAutomaton as NeuralCellularAutomaton
+from .misc import ParametricReLU as ParametricReLU
 from .module import Module as Module
 from .parameterizations import AntisymmetricMatrix as AntisymmetricMatrix
 from .parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatrix

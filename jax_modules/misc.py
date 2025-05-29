@@ -1,8 +1,8 @@
 from jax import nn, random
 from jax import numpy as jnp
 
-from . import regularizers
-from .basic import Bias, Function, Linear
+from . import regularizers, utils
+from .basic import Bias, Convolution, Function, Linear
 from .compound import Chain
 from .module import Module
 from .recurrent import MinimalGatedUnit
@@ -164,3 +164,26 @@ class ParametricReLU(Module):
 
     def parameter_loss(self, param):
         return self.regularizer(param)
+
+
+def LeNet():
+    """Gradient-based learning applied to document recognition
+    https://ieeexplore.ieee.org/document/726791"""
+    return Chain(
+        [
+            Convolution(1, 6, (5, 5), padding="SAME"),
+            Bias(6),
+            Function(nn.tanh),
+            Function(utils.avg_pool((2, 2), (2, 2))),
+            Convolution(6, 16, (5, 5)),
+            Bias(16),
+            Function(nn.tanh),
+            Function(utils.avg_pool((2, 2), (2, 2))),
+            Function(jnp.ravel),
+            Affine(400, 120),
+            Function(nn.tanh),
+            Affine(120, 84),
+            Function(nn.tanh),
+            Affine(84, 10),
+        ]
+    )

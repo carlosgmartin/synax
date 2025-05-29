@@ -11,6 +11,7 @@ from .compound import Residual as Residual
 from .misc import Affine as Affine
 from .misc import AutoEncoder as AutoEncoder
 from .misc import GatedLinearUnit as GatedLinearUnit
+from .misc import LeNet as LeNet
 from .misc import MultiLayerPerceptron as MultiLayerPerceptron
 from .misc import NeuralCellularAutomaton as NeuralCellularAutomaton
 from .misc import ParametricReLU as ParametricReLU

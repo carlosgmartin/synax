@@ -67,3 +67,40 @@ class Attention(Module):
         o = lax.collapse(o, -2, o.ndim)
 
         return o
+
+
+def main():
+    qk_dim = 2
+    v_dim = 3
+
+    q_len = 4
+    kv_len = 5
+
+    batch_shape = (6, 7)
+
+    key = random.key(0)
+
+    key, subkey = random.split(key)
+    keys = random.split(subkey, 3)
+    q = random.normal(keys[0], batch_shape + (q_len, qk_dim))
+    k = random.normal(keys[1], batch_shape + (kv_len, qk_dim))
+    v = random.normal(keys[2], batch_shape + (kv_len, v_dim))
+    o = single_head_attention(q, k, v)
+    assert o.shape == batch_shape + (q_len, v_dim)
+
+    x_dim = 8
+    heads = 16
+
+    module = Attention(x_dim, heads=16)
+
+    key, subkey = random.split(key)
+    params = module.init(subkey)
+
+    key, subkey = random.split(key)
+    x = random.normal(subkey, (2, 3, x_dim))
+    y = module.apply(params, x)
+    assert y.shape == x.shape[:-1] + (x.shape[-1] * heads,)
+
+
+if __name__ == "__main__":
+    main()

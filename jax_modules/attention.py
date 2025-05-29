@@ -50,12 +50,12 @@ class Attention(Module):
         wv = self.wv_init(keys[2], (self.heads, self.v_dim, self.x_dim))
         return wq, wk, wv
 
-    def apply(self, params, q, k=None, v=None, mask=None):
+    def apply(self, param, q, k=None, v=None, mask=None):
         if k is None:
             k = q
         if v is None:
             v = k
-        wq, wk, wv = params
+        wq, wk, wv = param
 
         q = jnp.einsum("...ld,hde->...hle", q, wq)
         k = jnp.einsum("...ld,hde->...hle", k, wk)
@@ -94,11 +94,11 @@ def main():
     module = Attention(x_dim, heads=16)
 
     key, subkey = random.split(key)
-    params = module.init(subkey)
+    param = module.init(subkey)
 
     key, subkey = random.split(key)
     x = random.normal(subkey, (2, 3, x_dim))
-    y = module.apply(params, x)
+    y = module.apply(param, x)
     assert y.shape == x.shape[:-1] + (x.shape[-1] * heads,)
 
 

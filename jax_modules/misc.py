@@ -111,9 +111,9 @@ class NeuralCellularAutomaton(Module):
     def init(self, key):
         return self.cell.init(key)
 
-    def apply(self, params, state):
+    def apply(self, param, state):
         neighbors = get_von_neumann_neighbors(state)
-        new_state = self.cell.apply(params, state, neighbors)
+        new_state = self.cell.apply(param, state, neighbors)
         return new_state
 
 
@@ -138,8 +138,8 @@ class GatedLinearUnit(Module):
         bc = jnp.concatenate([b, c], 1)
         return wv, bc
 
-    def apply(self, params, input):
-        wv, bc = params
+    def apply(self, param, input):
+        wv, bc = param
         x = input @ wv + bc
         y, z = jnp.split(x, [self.output_dim])
         return y * nn.sigmoid(z)

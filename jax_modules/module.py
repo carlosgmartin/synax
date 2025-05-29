@@ -7,7 +7,7 @@ class Module(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def apply(self, params, *args, **kwargs):
+    def apply(self, param, *args, **kwargs):
         raise NotImplementedError
 
     def param_loss(self, param):

@@ -44,8 +44,8 @@ class GRU(Module):
 
         return bz, br, by, wz, wr, wy, uz, ur, uy
 
-    def apply(self, params, state, input):
-        bz, br, by, wz, wr, wy, uz, ur, uy = params
+    def apply(self, param, state, input):
+        bz, br, by, wz, wr, wy, uz, ur, uy = param
         z = self.update_activation(input @ wz + state @ uz + bz)
         r = self.reset_activation(input @ wr + state @ ur + br)
         y = self.candidate_activation(input @ wy + (r * state) @ uy + by)
@@ -88,8 +88,8 @@ class MGU(Module):
 
         return bz, by, wz, wy, uz, uy
 
-    def apply(self, params, state, input):
-        bz, by, wz, wy, uz, uy = params
+    def apply(self, param, state, input):
+        bz, by, wz, wy, uz, uy = param
         z = self.update_activation(input @ wz + state @ uz + bz)
         y = self.candidate_activation(input @ wy + state @ uy + by)
         return (1 - z) * state + z * y

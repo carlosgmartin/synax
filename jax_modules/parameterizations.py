@@ -30,8 +30,8 @@ class SymmetricMatrix(Module):
         n = self.dim * (self.dim + 1) // 2
         return self.initializer(key, (n,))
 
-    def apply(self, params):
-        return vector_to_symmetric_matrix(params, self.dim)
+    def apply(self, param):
+        return vector_to_symmetric_matrix(param, self.dim)
 
 
 class AntisymmetricMatrix(Module):
@@ -43,8 +43,8 @@ class AntisymmetricMatrix(Module):
         n = self.dim * (self.dim - 1) // 2
         return self.initializer(key, (n,))
 
-    def apply(self, params):
-        return vector_to_antisymmetric_matrix(params, self.dim)
+    def apply(self, param):
+        return vector_to_antisymmetric_matrix(param, self.dim)
 
 
 class SpecialOrthogonalMatrix(Module):
@@ -55,8 +55,8 @@ class SpecialOrthogonalMatrix(Module):
     def init(self, key):
         return self.antisymmetric.init(key)
 
-    def apply(self, params):
-        m = self.antisymmetric.apply(params)
+    def apply(self, param):
+        m = self.antisymmetric.apply(param)
         match self.transform:
             case "exp":
                 return jax.scipy.linalg.expm(m)

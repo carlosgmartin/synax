@@ -5,6 +5,7 @@ from .basic import Linear as Linear
 from .compound import Chain as Chain
 from .compound import Parallel as Parallel
 from .compound import Repeat as Repeat
+from .compound import Residual as Residual
 from .misc import MLP as MLP
 from .misc import Affine as Affine
 from .misc import Autoencoder as Autoencoder

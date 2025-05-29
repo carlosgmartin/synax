@@ -60,3 +60,18 @@ class Repeat(Module):
 
     def param_loss(self, param):
         return self.module.param_loss(param)
+
+
+class Residual(Module):
+    def __init__(self, module):
+        self.module = module
+
+    def init(self, key):
+        return self.module.init(key)
+
+    def apply(self, param, input):
+        output = self.module.apply(param, input)
+        return input + output
+
+    def param_loss(self, param):
+        return self.module.param_loss(param)

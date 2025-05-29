@@ -25,6 +25,24 @@ class Bias(Module):
         return self.regularizer(param)
 
 
+class ElementwiseProduct(Module):
+    def __init__(
+        self, dim, initializer=nn.initializers.ones, regularizer=regularizers.zero
+    ):
+        self.dim = dim
+        self.initializer = initializer
+        self.regularizer = regularizer
+
+    def init(self, key):
+        return self.initializer(key, (self.dim,))
+
+    def apply(self, param, input):
+        return input * param
+
+    def param_loss(self, param):
+        return self.regularizer(param)
+
+
 class Linear(Module):
     def __init__(
         self,

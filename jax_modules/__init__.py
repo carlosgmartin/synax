@@ -1,6 +1,7 @@
 from .attention import Attention as Attention
 from .basic import Bias as Bias
 from .basic import Conv as Conv
+from .basic import ElementwiseProduct as ElementwiseProduct
 from .basic import Function as Function
 from .basic import Linear as Linear
 from .compound import Chain as Chain

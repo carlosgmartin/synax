@@ -54,7 +54,7 @@ class GatedRecurrentUnit(Module):
         return (1 - z) * state + z * y
 
 
-class MGU(Module):
+class MinimalGatedUnit(Module):
     """Minimal gated unit for recurrent neural networks (2016)
     https://arxiv.org/abs/1603.09420"""
 

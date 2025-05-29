@@ -83,9 +83,9 @@ class AutoEncoder(Module):
         diff = input - output
         return (diff * jnp.conj(diff)).sum()
 
-    def param_loss(self, param):
-        encoder_loss = self.encoder.param_loss(param["encoder"])
-        decoder_loss = self.decoder.param_loss(param["decoder"])
+    def parameter_loss(self, param):
+        encoder_loss = self.encoder.parameter_loss(param["encoder"])
+        decoder_loss = self.decoder.parameter_loss(param["decoder"])
         return encoder_loss + decoder_loss
 
 
@@ -162,5 +162,5 @@ class ParametricReLU(Module):
     def apply(self, param, input):
         return jnp.where(input > 0, input, input * param)
 
-    def param_loss(self, param):
+    def parameter_loss(self, param):
         return self.regularizer(param)

@@ -23,7 +23,7 @@ class Ball(Module):
     def apply(self, param):
         return param / jnp.sqrt(1 + param * jnp.conj(param))
 
-    def param_loss(self, param):
+    def parameter_loss(self, param):
         return self.regularizer(param)
 
 
@@ -61,7 +61,7 @@ class SymmetricMatrix(Module):
     def apply(self, param):
         return vector_to_symmetric_matrix(param, self.dim)
 
-    def param_loss(self, param):
+    def parameter_loss(self, param):
         return self.regularizer(param)
 
 
@@ -83,7 +83,7 @@ class AntisymmetricMatrix(Module):
     def apply(self, param):
         return vector_to_antisymmetric_matrix(param, self.dim)
 
-    def param_loss(self, param):
+    def parameter_loss(self, param):
         return self.regularizer(param)
 
 

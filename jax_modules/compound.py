@@ -16,9 +16,9 @@ class Chain(Module):
             input = module.apply(param, input)
         return input
 
-    def param_loss(self, param):
+    def parameter_loss(self, param):
         return sum(
-            module.param_loss(param)
+            module.parameter_loss(param)
             for module, param in zip(self.modules, param, strict=True)
         )
 
@@ -37,9 +37,9 @@ class Parallel(Module):
             for module, param, input in zip(self.modules, param, input, strict=True)
         ]
 
-    def param_loss(self, param):
+    def parameter_loss(self, param):
         return sum(
-            module.param_loss(param)
+            module.parameter_loss(param)
             for module, param in zip(self.modules, param, strict=True)
         )
 
@@ -58,8 +58,8 @@ class Repeat(Module):
 
         return lax.scan(f, input, length=steps, unroll=unroll)
 
-    def param_loss(self, param):
-        return self.module.param_loss(param)
+    def parameter_loss(self, param):
+        return self.module.parameter_loss(param)
 
 
 class Residual(Module):
@@ -73,5 +73,5 @@ class Residual(Module):
         output = self.module.apply(param, input)
         return input + output
 
-    def param_loss(self, param):
-        return self.module.param_loss(param)
+    def parameter_loss(self, param):
+        return self.module.parameter_loss(param)

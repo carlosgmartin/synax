@@ -10,5 +10,5 @@ class Module(abc.ABC):
     def apply(self, param, *args, **kwargs):
         raise NotImplementedError
 
-    def param_loss(self, param):
+    def parameter_loss(self, param):
         return 0.0

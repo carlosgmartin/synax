@@ -21,7 +21,7 @@ class Bias(Module):
     def apply(self, param, input):
         return input + param
 
-    def param_loss(self, param):
+    def parameter_loss(self, param):
         return self.regularizer(param)
 
 
@@ -39,7 +39,7 @@ class ElementwiseProduct(Module):
     def apply(self, param, input):
         return input * param
 
-    def param_loss(self, param):
+    def parameter_loss(self, param):
         return self.regularizer(param)
 
 
@@ -62,7 +62,7 @@ class Linear(Module):
     def apply(self, param, input):
         return input @ param
 
-    def param_loss(self, param):
+    def parameter_loss(self, param):
         return self.regularizer(param)
 
 

@@ -24,6 +24,7 @@ from .parameterizations import AntisymmetricMatrix as AntisymmetricMatrix
 from .parameterizations import Ball as Ball
 from .parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatrix
 from .parameterizations import SymmetricMatrix as SymmetricMatrix
+from .recurrent import BistableRecurrentCell as BistableRecurrentCell
 from .recurrent import GatedRecurrentUnit as GatedRecurrentUnit
 from .recurrent import MinimalGatedUnit as MinimalGatedUnit
 from .recurrent import RecurrentNetwork as RecurrentNetwork

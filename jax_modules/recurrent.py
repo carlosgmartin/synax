@@ -1,4 +1,5 @@
 from jax import lax, nn, random
+from jax import numpy as jnp
 
 from .module import Module
 
@@ -171,3 +172,34 @@ class MinimalGatedUnit(Module):
 
     def init_state(self, key):
         return self.state_initializer(key, (self.state_dim,))
+
+
+class BistableRecurrentCell(Module):
+    """A bio-inspired bistable recurrent cell allows for long-lasting memory
+    https://arxiv.org/abs/2006.05252"""
+
+    def __init__(
+        self, state_dim, input_dim, kernel_initializer=nn.initializers.he_normal()
+    ):
+        self.state_dim = state_dim
+        self.input_dim = input_dim
+        self.kernel_initializer = kernel_initializer
+
+    def init(self, key):
+        keys = random.split(key, 3)
+
+        ua = jnp.eye(self.state_dim)
+        uc = jnp.eye(self.state_dim)
+
+        wa = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
+        wc = self.kernel_initializer(keys[1], (self.input_dim, self.state_dim))
+        wy = self.kernel_initializer(keys[2], (self.input_dim, self.state_dim))
+
+        return ua, uc, wa, wc, wy
+
+    def apply(self, param, state, input):
+        ua, uc, wa, wc, wy = param
+        a = 1 + nn.tanh(input @ wa + state @ ua)
+        c = nn.sigmoid(input @ wc + state @ uc)
+        y = nn.tanh(input @ wy + state * a)
+        return c * state + (1 - c) * y

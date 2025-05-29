@@ -8,8 +8,8 @@ def layer_norm(x, axis=-1, epsilon=1e-6):
     """Layer normalization (2016)
     https://arxiv.org/abs/1607.06450"""
     x -= x.mean(axis, keepdims=True)
-    x /= jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
-    return x
+    rms = jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
+    return x / rms
 
 
 def rms_norm(x, axis=-1, epsilon=1e-6):

@@ -25,7 +25,7 @@ class Bias(Module):
         return self.regularizer(param)
 
 
-class ElementwiseProduct(Module):
+class Scale(Module):
     def __init__(
         self, dim, initializer=nn.initializers.ones, regularizer=regularizers.zero
     ):

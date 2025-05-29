@@ -1,9 +1,9 @@
 from .attention import Attention as Attention
 from .basic import Bias as Bias
 from .basic import Conv as Conv
-from .basic import ElementwiseProduct as ElementwiseProduct
 from .basic import Function as Function
 from .basic import Linear as Linear
+from .basic import Scale as Scale
 from .compound import Chain as Chain
 from .compound import Parallel as Parallel
 from .compound import Repeat as Repeat

@@ -24,6 +24,9 @@ class RecurrentNetwork(Module):
 
 
 class SimpleRecurrentUnit(Module):
+    """Finding structure in time (1990)
+    https://onlinelibrary.wiley.com/doi/10.1207/s15516709cog1402_1"""
+
     def __init__(
         self,
         state_dim,

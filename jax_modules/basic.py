@@ -5,7 +5,10 @@ from .module import Module
 
 class Bias(Module):
     def __init__(
-        self, dim, initializer=nn.initializers.zeros, regularizer=lambda param: 0.0
+        self,
+        dim,
+        initializer=nn.initializers.zeros,
+        regularizer=lambda param: 0.0,
     ):
         self.dim = dim
         self.initializer = initializer

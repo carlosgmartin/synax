@@ -1,6 +1,26 @@
-from jax import nn, random
+from jax import lax, nn, random
 
 from .module import Module
+
+
+class RecurrentNetwork(Module):
+    def __init__(self, unit):
+        self.unit = unit
+
+    def init(self, key, x):
+        keys = random.split(key)
+        w = self.unit.init(keys[0])
+        h = self.unit.init_state(keys[1])
+        return w, h
+
+    def apply(self, param, xs):
+        w, h = param
+
+        def f(h, x):
+            h_new = self.unit.apply(w, h, x)
+            return h_new, h
+
+        return lax.scan(f, h, xs)
 
 
 class SimpleRecurrentUnit(Module):

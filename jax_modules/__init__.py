@@ -7,6 +7,7 @@ from .basic import Linear as Linear
 from .basic import Scale as Scale
 from .compound import Chain as Chain
 from .compound import Parallel as Parallel
+from .compound import RavelUnravel as RavelUnravel
 from .compound import Repeat as Repeat
 from .compound import Residual as Residual
 from .compound import Switch as Switch

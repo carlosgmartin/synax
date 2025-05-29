@@ -16,6 +16,7 @@ from .misc import NeuralCellularAutomaton as NeuralCellularAutomaton
 from .misc import ParametricReLU as ParametricReLU
 from .module import Module as Module
 from .parameterizations import AntisymmetricMatrix as AntisymmetricMatrix
+from .parameterizations import Ball as Ball
 from .parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatrix
 from .parameterizations import SymmetricMatrix as SymmetricMatrix
 from .recurrent import GatedRecurrentUnit as GatedRecurrentUnit

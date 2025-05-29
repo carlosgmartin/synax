@@ -114,3 +114,31 @@ class NeuralCellularAutomaton:
         neighbors = get_von_neumann_neighbors(state)
         new_state = self.cell.apply(params, state, neighbors)
         return new_state
+
+
+class GatedLinearUnit:
+    """https://arxiv.org/abs/1612.08083"""
+
+    def __init__(self, input_dim, output_dim):
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.w_init = nn.initializers.he_normal()
+        self.v_init = nn.initializers.he_normal()
+        self.b_init = nn.initializers.zeros
+        self.c_init = nn.initializers.zeros
+
+    def sample_params(self, key):
+        keys = random.split(key, 4)
+        w = self.w_init(keys[0], (self.input_dim, self.output_dim))
+        v = self.v_init(keys[1], (self.input_dim, self.output_dim))
+        b = self.b_init(keys[2], (self.output_dim,))
+        c = self.c_init(keys[3], (self.output_dim,))
+        wv = jnp.concatenate([w, v], 1)
+        bc = jnp.concatenate([b, c], 1)
+        return wv, bc
+
+    def apply(self, params, input):
+        wv, bc = params
+        x = input @ wv + bc
+        y, z = jnp.split(x, [self.output_dim])
+        return y * nn.sigmoid(z)

@@ -3,6 +3,7 @@ from jax import numpy as jnp
 
 from .basic import Bias, Function, Linear
 from .compound import Chain
+from .module import Module
 from .recurrent import MGU
 
 
@@ -55,7 +56,7 @@ def MLP(
     return Chain(lst[:-1])
 
 
-class Autoencoder:
+class Autoencoder(Module):
     def __init__(self, encoder, decoder):
         self.encoder = encoder
         self.decoder = decoder
@@ -101,14 +102,14 @@ def get_von_neumann_neighbors(array, space_dim=None, include_center=False):
     return neighbors
 
 
-class NeuralCellularAutomaton:
+class NeuralCellularAutomaton(Module):
     """https://arxiv.org/abs/1511.08228"""
 
     def __init__(self, state_dim, space_dim=1, cell_cls=MGU):
         self.cell = cell_cls(state_dim, state_dim * 2 * space_dim)
 
-    def sample_params(self, key):
-        return self.cell.sample_params(key)
+    def init(self, key):
+        return self.cell.init(key)
 
     def apply(self, params, state):
         neighbors = get_von_neumann_neighbors(state)
@@ -116,7 +117,7 @@ class NeuralCellularAutomaton:
         return new_state
 
 
-class GatedLinearUnit:
+class GatedLinearUnit(Module):
     """https://arxiv.org/abs/1612.08083"""
 
     def __init__(self, input_dim, output_dim):
@@ -127,7 +128,7 @@ class GatedLinearUnit:
         self.b_init = nn.initializers.zeros
         self.c_init = nn.initializers.zeros
 
-    def sample_params(self, key):
+    def init(self, key):
         keys = random.split(key, 4)
         w = self.w_init(keys[0], (self.input_dim, self.output_dim))
         v = self.v_init(keys[1], (self.input_dim, self.output_dim))

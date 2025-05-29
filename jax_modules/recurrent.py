@@ -27,7 +27,7 @@ class GRU(Module):
         self.update_activation = update_activation
         self.candidate_activation = candidate_activation
 
-    def sample_params(self, key):
+    def init(self, key):
         keys = random.split(key, 9)
 
         wz = self.kernel_init(keys[0], [self.input_dim, self.state_dim])
@@ -52,7 +52,7 @@ class GRU(Module):
         return (1 - z) * state + z * y
 
 
-class MGU:
+class MGU(Module):
     """Minimal gated unit: https://arxiv.org/abs/1603.09420"""
 
     def __init__(
@@ -74,7 +74,7 @@ class MGU:
         self.update_activation = update_activation
         self.candidate_activation = candidate_activation
 
-    def sample_params(self, key):
+    def init(self, key):
         keys = random.split(key, 6)
 
         wz = self.kernel_init(keys[0], [self.input_dim, self.state_dim])

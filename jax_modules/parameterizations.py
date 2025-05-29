@@ -2,6 +2,8 @@ import jax
 from jax import nn
 from jax import numpy as jnp
 
+from .module import Module
+
 
 def vector_to_symmetric_matrix(vector, dim):
     i = jnp.triu_indices(dim)
@@ -19,7 +21,7 @@ def vector_to_antisymmetric_matrix(vector, dim):
     return A
 
 
-class SymmetricMatrix:
+class SymmetricMatrix(Module):
     def __init__(self, dim, initializer=nn.initializers.zeros):
         self.dim = dim
         self.initializer = initializer
@@ -32,7 +34,7 @@ class SymmetricMatrix:
         return vector_to_symmetric_matrix(params, self.dim)
 
 
-class AntisymmetricMatrix:
+class AntisymmetricMatrix(Module):
     def __init__(self, dim, initializer=nn.initializers.zeros):
         self.dim = dim
         self.initializer = initializer
@@ -45,7 +47,7 @@ class AntisymmetricMatrix:
         return vector_to_antisymmetric_matrix(params, self.dim)
 
 
-class SpecialOrthogonalMatrix:
+class SpecialOrthogonalMatrix(Module):
     def __init__(self, dim, transform="exp"):
         self.antisymmetric = AntisymmetricMatrix(dim)
         self.transform = transform

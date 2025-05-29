@@ -23,7 +23,8 @@ def single_head_attention(q, k, v, mask=None):
 
 
 class Attention(Module):
-    # https://arxiv.org/abs/2305.09828
+    """Attention is all you need (2017)
+    https://arxiv.org/abs/1706.03762"""
 
     def __init__(self, q_dim, k_dim=None, v_dim=None, x_dim=None, heads=1):
         if k_dim is None:

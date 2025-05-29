@@ -4,7 +4,9 @@ from .module import Module
 
 
 class GRU(Module):
-    """Gated recurrent unit: arxiv.org/abs/1406.1078"""
+    """Learning phrase representations using RNN encoder-decoder for statistical machine
+        translation (2014)
+    https://arxiv.org/abs/1406.1078"""
 
     def __init__(
         self,
@@ -53,7 +55,8 @@ class GRU(Module):
 
 
 class MGU(Module):
-    """Minimal gated unit: https://arxiv.org/abs/1603.09420"""
+    """Minimal gated unit for recurrent neural networks (2016)
+    https://arxiv.org/abs/1603.09420"""
 
     def __init__(
         self,

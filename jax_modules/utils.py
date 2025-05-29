@@ -2,7 +2,7 @@ from jax import numpy as jnp
 
 
 def layer_norm(x, axis=-1, epsilon=1e-6):
-    """Layer normalization
+    """Layer normalization (2016)
     https://arxiv.org/abs/1607.06450"""
     x -= x.mean(axis, keepdims=True)
     x /= jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
@@ -10,7 +10,7 @@ def layer_norm(x, axis=-1, epsilon=1e-6):
 
 
 def rms_norm(x, axis=-1, epsilon=1e-6):
-    """Root mean square layer normalization
+    """Root mean square layer normalization (2019)
     https://arxiv.org/abs/1910.07467"""
     rms = jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
     return x / rms

@@ -104,7 +104,8 @@ def get_von_neumann_neighbors(array, space_dim=None, include_center=False):
 
 
 class NeuralCellularAutomaton(Module):
-    """https://arxiv.org/abs/1511.08228"""
+    """Neural GPUs learn algorithms (2015)
+    https://arxiv.org/abs/1511.08228"""
 
     def __init__(self, state_dim, space_dim=1, cell_cls=MGU):
         self.cell = cell_cls(state_dim, state_dim * 2 * space_dim)
@@ -119,7 +120,8 @@ class NeuralCellularAutomaton(Module):
 
 
 class GatedLinearUnit(Module):
-    """https://arxiv.org/abs/1612.08083"""
+    """Language modeling with gated convolutional networks (2016)
+    https://arxiv.org/abs/1612.08083"""
 
     def __init__(self, input_dim, output_dim):
         self.input_dim = input_dim

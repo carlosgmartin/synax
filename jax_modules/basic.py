@@ -120,3 +120,16 @@ class Convolution(Module):
         x = x[0]
         x = jnp.moveaxis(x, -num_spatial_axes - 1, -1)
         return x
+
+
+class Embed(Module):
+    def __init__(self, num, dim, initializer=nn.initializers.normal()):
+        self.num = num
+        self.dim = dim
+        self.initializer = initializer
+
+    def init(self, key):
+        return self.initializer(key, (self.num, self.dim))
+
+    def apply(self, param, input):
+        return param[input]

@@ -1,6 +1,6 @@
 from math import prod
 
-from jax import lax
+from jax import lax, random
 from jax import numpy as jnp
 
 
@@ -55,3 +55,14 @@ def avg_pool(*args, **kwargs):
     else:
         size = prod(kwargs["shape"])
     return lambda x: sum_pool(*args, **kwargs)(x) / size
+
+
+def dropout(prob):
+    """Improving neural networks by preventing co-adaptation of feature detectors
+    https://arxiv.org/abs/1207.0580"""
+
+    def f(x, key):
+        mask = random.bernoulli(key, prob, x.shape)
+        return jnp.where(mask, x / prob, 0)
+
+    return f

@@ -64,6 +64,9 @@ class Repeat(Module):
 
 
 class Residual(Module):
+    """Deep residual learning for image recognition
+    https://arxiv.org/abs/1512.03385"""
+
     def __init__(self, module):
         self.module = module
 

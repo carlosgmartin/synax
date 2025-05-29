@@ -9,5 +9,8 @@ from .misc import MLP as MLP
 from .misc import Affine as Affine
 from .misc import Autoencoder as Autoencoder
 from .module import Module as Module
+from .parameterizations import AntisymmetricMatrix as AntisymmetricMatrix
+from .parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatrix
+from .parameterizations import SymmetricMatrix as SymmetricMatrix
 from .recurrent import GRU as GRU
 from .recurrent import MGU as MGU

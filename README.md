@@ -15,8 +15,10 @@ from jax import numpy as jnp, random
 import jax_modules as jm
 
 module = jm.MLP([2, 32, 3])
+
 key = random.key(0)
 param = module.init(key)
+
 x = jnp.ones(2)
 y = module.apply(param, x)
 print(y)

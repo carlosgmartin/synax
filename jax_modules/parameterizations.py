@@ -22,9 +22,15 @@ def vector_to_antisymmetric_matrix(vector, dim):
 
 
 class SymmetricMatrix(Module):
-    def __init__(self, dim, initializer=nn.initializers.zeros):
+    def __init__(
+        self,
+        dim,
+        initializer=nn.initializers.zeros,
+        regularizer=lambda param: 0.0,
+    ):
         self.dim = dim
         self.initializer = initializer
+        self.regularizer = regularizer
 
     def init(self, key):
         n = self.dim * (self.dim + 1) // 2
@@ -33,11 +39,20 @@ class SymmetricMatrix(Module):
     def apply(self, param):
         return vector_to_symmetric_matrix(param, self.dim)
 
+    def param_loss(self, param):
+        return self.regularizer(param)
+
 
 class AntisymmetricMatrix(Module):
-    def __init__(self, dim, initializer=nn.initializers.zeros):
+    def __init__(
+        self,
+        dim,
+        initializer=nn.initializers.zeros,
+        regularizer=lambda param: 0.0,
+    ):
         self.dim = dim
         self.initializer = initializer
+        self.regularizer = regularizer
 
     def init(self, key):
         n = self.dim * (self.dim - 1) // 2
@@ -45,6 +60,9 @@ class AntisymmetricMatrix(Module):
 
     def apply(self, param):
         return vector_to_antisymmetric_matrix(param, self.dim)
+
+    def param_loss(self, param):
+        return self.regularizer(param)
 
 
 class SpecialOrthogonalMatrix(Module):

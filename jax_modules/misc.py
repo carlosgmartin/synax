@@ -187,3 +187,38 @@ def LeNet():
             Affine(84, 10),
         ]
     )
+
+
+def AlexNet():
+    """ImageNet classification with deep convolutional neural networks
+    https://dl.acm.org/doi/10.1145/3065386"""
+    return Chain(
+        [
+            Convolution(3, 96, (11, 11), (4, 4)),
+            Bias(96),
+            Function(nn.relu),
+            Function(utils.max_pool((3, 3), (2, 2))),
+            Convolution(96, 256, (5, 5), padding="SAME"),
+            Bias(256),
+            Function(nn.relu),
+            Function(utils.max_pool((3, 3), (2, 2))),
+            Convolution(256, 384, (3, 3), padding="SAME"),
+            Bias(384),
+            Function(nn.relu),
+            Convolution(384, 384, (3, 3), padding="SAME"),
+            Bias(384),
+            Function(nn.relu),
+            Convolution(384, 256, (3, 3), padding="SAME"),
+            Bias(256),
+            Function(nn.relu),
+            Function(utils.max_pool((3, 3), (2, 2))),
+            Function(jnp.ravel),
+            Affine(6400, 4096),
+            Function(nn.relu),
+            # dropout 0.5
+            Affine(4096, 4096),
+            Function(nn.relu),
+            # dropout 0.5
+            Affine(4096, 1000),
+        ]
+    )

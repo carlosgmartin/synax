@@ -9,6 +9,7 @@ from .compound import Parallel as Parallel
 from .compound import Repeat as Repeat
 from .compound import Residual as Residual
 from .misc import Affine as Affine
+from .misc import AlexNet as AlexNet
 from .misc import AutoEncoder as AutoEncoder
 from .misc import GatedLinearUnit as GatedLinearUnit
 from .misc import LeNet as LeNet

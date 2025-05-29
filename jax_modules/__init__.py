@@ -1,3 +1,4 @@
+from .attention import Attention as Attention
 from .basic import Bias as Bias
 from .basic import Conv as Conv
 from .basic import Function as Function
@@ -9,11 +10,11 @@ from .compound import Residual as Residual
 from .misc import MLP as MLP
 from .misc import Affine as Affine
 from .misc import Autoencoder as Autoencoder
+from .misc import GatedLinearUnit as GatedLinearUnit
+from .misc import NeuralCellularAutomaton as NeuralCellularAutomaton
 from .module import Module as Module
 from .parameterizations import AntisymmetricMatrix as AntisymmetricMatrix
 from .parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatrix
 from .parameterizations import SymmetricMatrix as SymmetricMatrix
 from .recurrent import GRU as GRU
 from .recurrent import MGU as MGU
-from .misc import NeuralCellularAutomaton as NeuralCellularAutomaton
-from .misc import GatedLinearUnit as GatedLinearUnit

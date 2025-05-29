@@ -146,11 +146,17 @@ class GatedLinearUnit(Module):
 
 
 class ParametricReLU(Module):
-    def __init__(self, initializer=nn.initializers.zeros):
+    def __init__(
+        self, initializer=nn.initializers.zeros, regularizer=lambda param: 0.0
+    ):
         self.initializer = initializer
+        self.regularizer = regularizer
 
     def init(self, key):
         return self.initializer(key, ())
 
     def apply(self, param, input):
         return jnp.where(input > 0, input, input * param)
+
+    def param_loss(self, param):
+        return self.regularizer(param)

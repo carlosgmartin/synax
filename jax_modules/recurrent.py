@@ -34,7 +34,7 @@ class SimpleRecurrentUnit(Module):
         kernel_initializer=nn.initializers.glorot_uniform(),
         bias_initializer=nn.initializers.zeros,
         recurrent_initializer=nn.initializers.orthogonal(),
-        activation=nn.relu,
+        activation=nn.tanh,
         state_initializer=nn.initializers.zeros,
     ):
         self.input_dim = input_dim
@@ -55,7 +55,7 @@ class SimpleRecurrentUnit(Module):
     def apply(self, param, state, input):
         w, u, b = param
         y = param @ w + state @ u + b
-        return nn.tanh(y)
+        return self.activation(y)
 
     def init_state(self, key):
         return self.state_initializer(key, (self.state_dim,))

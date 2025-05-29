@@ -1,5 +1,6 @@
 [project]
-version = "0.0.1"
+name = "jax_modules"
+dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = [

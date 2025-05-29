@@ -32,6 +32,7 @@ class SimpleRecurrentUnit(Module):
         bias_init=nn.initializers.zeros,
         recurrent_init=nn.initializers.orthogonal(),
         activation=nn.relu,
+        state_init=nn.initializers.zeros,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
@@ -39,6 +40,7 @@ class SimpleRecurrentUnit(Module):
         self.bias_init = bias_init
         self.recurrent_init = recurrent_init
         self.activation = activation
+        self.state_init = state_init
 
     def init(self, key):
         keys = random.split(key, 3)
@@ -51,6 +53,9 @@ class SimpleRecurrentUnit(Module):
         w, u, b = param
         y = param @ w + state @ u + b
         return nn.tanh(y)
+
+    def init_state(self, key):
+        return self.state_init(key, (self.state_dim,))
 
 
 class GatedRecurrentUnit(Module):
@@ -68,6 +73,7 @@ class GatedRecurrentUnit(Module):
         reset_activation=nn.sigmoid,
         update_activation=nn.sigmoid,
         candidate_activation=nn.tanh,
+        state_init=nn.initializers.zeros,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
@@ -78,6 +84,8 @@ class GatedRecurrentUnit(Module):
         self.reset_activation = reset_activation
         self.update_activation = update_activation
         self.candidate_activation = candidate_activation
+
+        self.state_init = state_init
 
     def init(self, key):
         keys = random.split(key, 9)
@@ -103,6 +111,9 @@ class GatedRecurrentUnit(Module):
         y = self.candidate_activation(input @ wy + (r * state) @ uy + by)
         return (1 - z) * state + z * y
 
+    def init_state(self, key):
+        return self.state_init(key, (self.state_dim,))
+
 
 class MinimalGatedUnit(Module):
     """Minimal gated unit for recurrent neural networks (2016)
@@ -117,6 +128,8 @@ class MinimalGatedUnit(Module):
         recurrent_init=nn.initializers.orthogonal(),
         update_activation=nn.sigmoid,
         candidate_activation=nn.tanh,
+        state_init=nn.initializers.zeros,
+        reset_gate=True,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
@@ -126,6 +139,9 @@ class MinimalGatedUnit(Module):
 
         self.update_activation = update_activation
         self.candidate_activation = candidate_activation
+
+        self.state_init = state_init
+        self.reset_gate = reset_gate
 
     def init(self, key):
         keys = random.split(key, 6)
@@ -144,5 +160,11 @@ class MinimalGatedUnit(Module):
     def apply(self, param, state, input):
         bz, by, wz, wy, uz, uy = param
         z = self.update_activation(input @ wz + state @ uz + bz)
-        y = self.candidate_activation(input @ wy + state @ uy + by)
+        if self.reset_gate:
+            y = self.candidate_activation(input @ wy + (state * z) @ uy + by)
+        else:
+            y = self.candidate_activation(input @ wy + state @ uy + by)
         return (1 - z) * state + z * y
+
+    def init_state(self, key):
+        return self.state_init(key, (self.state_dim,))

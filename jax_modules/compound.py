@@ -1,3 +1,4 @@
+import jax
 from jax import lax, random
 
 from .module import Module
@@ -75,3 +76,17 @@ class Residual(Module):
 
     def parameter_loss(self, param):
         return self.module.parameter_loss(param)
+
+
+class Switch(Module):
+    def __init__(self, module, branches):
+        self.module = module
+        self.branches = branches
+
+    def init(self, key):
+        keys = random.split(key, self.branches)
+        return jax.vmap(self.module.init)(keys)
+
+    def apply(self, param, branch, input):
+        param = jax.tree.map(lambda x: x[branch], param)
+        return self.module.apply(param, input)

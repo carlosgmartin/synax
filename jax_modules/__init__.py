@@ -9,6 +9,7 @@ from .compound import Chain as Chain
 from .compound import Parallel as Parallel
 from .compound import Repeat as Repeat
 from .compound import Residual as Residual
+from .compound import Switch as Switch
 from .misc import Affine as Affine
 from .misc import AlexNet as AlexNet
 from .misc import AutoEncoder as AutoEncoder

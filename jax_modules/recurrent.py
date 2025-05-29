@@ -31,25 +31,25 @@ class SimpleRecurrentUnit(Module):
         self,
         state_dim,
         input_dim,
-        kernel_init=nn.initializers.glorot_uniform(),
-        bias_init=nn.initializers.zeros,
-        recurrent_init=nn.initializers.orthogonal(),
+        kernel_initializer=nn.initializers.glorot_uniform(),
+        bias_initializer=nn.initializers.zeros,
+        recurrent_initializer=nn.initializers.orthogonal(),
         activation=nn.relu,
-        state_init=nn.initializers.zeros,
+        state_initializer=nn.initializers.zeros,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
-        self.kernel_init = kernel_init
-        self.bias_init = bias_init
-        self.recurrent_init = recurrent_init
+        self.kernel_initializer = kernel_initializer
+        self.bias_initializer = bias_initializer
+        self.recurrent_initializer = recurrent_initializer
         self.activation = activation
-        self.state_init = state_init
+        self.state_initializer = state_initializer
 
     def init(self, key):
         keys = random.split(key, 3)
-        w = self.kernel_init(keys[0], (self.input_dim, self.state_dim))
-        u = self.recurrent_init(keys[1], (self.state_dim, self.state_dim))
-        b = self.bias_init(keys[2], (self.state_dim,))
+        w = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
+        u = self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim))
+        b = self.bias_initializer(keys[2], (self.state_dim,))
         return w, u, b
 
     def apply(self, param, state, input):
@@ -58,7 +58,7 @@ class SimpleRecurrentUnit(Module):
         return nn.tanh(y)
 
     def init_state(self, key):
-        return self.state_init(key, (self.state_dim,))
+        return self.state_initializer(key, (self.state_dim,))
 
 
 class GatedRecurrentUnit(Module):
@@ -70,40 +70,40 @@ class GatedRecurrentUnit(Module):
         self,
         state_dim,
         input_dim,
-        kernel_init=nn.initializers.glorot_uniform(),
-        bias_init=nn.initializers.zeros,
-        recurrent_init=nn.initializers.orthogonal(),
+        kernel_initializer=nn.initializers.glorot_uniform(),
+        bias_initializer=nn.initializers.zeros,
+        recurrent_initializer=nn.initializers.orthogonal(),
         reset_activation=nn.sigmoid,
         update_activation=nn.sigmoid,
         candidate_activation=nn.tanh,
-        state_init=nn.initializers.zeros,
+        state_initializer=nn.initializers.zeros,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
-        self.kernel_init = kernel_init
-        self.bias_init = bias_init
-        self.recurrent_init = recurrent_init
+        self.kernel_initializer = kernel_initializer
+        self.bias_initializer = bias_initializer
+        self.recurrent_initializer = recurrent_initializer
 
         self.reset_activation = reset_activation
         self.update_activation = update_activation
         self.candidate_activation = candidate_activation
 
-        self.state_init = state_init
+        self.state_initializer = state_initializer
 
     def init(self, key):
         keys = random.split(key, 9)
 
-        wz = self.kernel_init(keys[0], (self.input_dim, self.state_dim))
-        wr = self.kernel_init(keys[1], (self.input_dim, self.state_dim))
-        wy = self.kernel_init(keys[2], (self.input_dim, self.state_dim))
+        wz = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
+        wr = self.kernel_initializer(keys[1], (self.input_dim, self.state_dim))
+        wy = self.kernel_initializer(keys[2], (self.input_dim, self.state_dim))
 
-        uz = self.recurrent_init(keys[3], (self.state_dim, self.state_dim))
-        ur = self.recurrent_init(keys[4], (self.state_dim, self.state_dim))
-        uy = self.recurrent_init(keys[5], (self.state_dim, self.state_dim))
+        uz = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
+        ur = self.recurrent_initializer(keys[4], (self.state_dim, self.state_dim))
+        uy = self.recurrent_initializer(keys[5], (self.state_dim, self.state_dim))
 
-        bz = self.bias_init(keys[6], (self.state_dim,))
-        br = self.bias_init(keys[7], (self.state_dim,))
-        by = self.bias_init(keys[8], (self.state_dim,))
+        bz = self.bias_initializer(keys[6], (self.state_dim,))
+        br = self.bias_initializer(keys[7], (self.state_dim,))
+        by = self.bias_initializer(keys[8], (self.state_dim,))
 
         return bz, br, by, wz, wr, wy, uz, ur, uy
 
@@ -115,7 +115,7 @@ class GatedRecurrentUnit(Module):
         return (1 - z) * state + z * y
 
     def init_state(self, key):
-        return self.state_init(key, (self.state_dim,))
+        return self.state_initializer(key, (self.state_dim,))
 
 
 class MinimalGatedUnit(Module):
@@ -126,37 +126,37 @@ class MinimalGatedUnit(Module):
         self,
         state_dim,
         input_dim,
-        kernel_init=nn.initializers.glorot_uniform(),
-        bias_init=nn.initializers.zeros,
-        recurrent_init=nn.initializers.orthogonal(),
+        kernel_initializer=nn.initializers.glorot_uniform(),
+        bias_initializer=nn.initializers.zeros,
+        recurrent_initializer=nn.initializers.orthogonal(),
         update_activation=nn.sigmoid,
         candidate_activation=nn.tanh,
-        state_init=nn.initializers.zeros,
+        state_initializer=nn.initializers.zeros,
         reset_gate=True,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
-        self.kernel_init = kernel_init
-        self.bias_init = bias_init
-        self.recurrent_init = recurrent_init
+        self.kernel_initializer = kernel_initializer
+        self.bias_initializer = bias_initializer
+        self.recurrent_initializer = recurrent_initializer
 
         self.update_activation = update_activation
         self.candidate_activation = candidate_activation
 
-        self.state_init = state_init
+        self.state_initializer = state_initializer
         self.reset_gate = reset_gate
 
     def init(self, key):
         keys = random.split(key, 6)
 
-        wz = self.kernel_init(keys[0], (self.input_dim, self.state_dim))
-        wy = self.kernel_init(keys[1], (self.input_dim, self.state_dim))
+        wz = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
+        wy = self.kernel_initializer(keys[1], (self.input_dim, self.state_dim))
 
-        uz = self.recurrent_init(keys[2], (self.state_dim, self.state_dim))
-        uy = self.recurrent_init(keys[3], (self.state_dim, self.state_dim))
+        uz = self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim))
+        uy = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
 
-        bz = self.bias_init(keys[4], (self.state_dim,))
-        by = self.bias_init(keys[5], (self.state_dim,))
+        bz = self.bias_initializer(keys[4], (self.state_dim,))
+        by = self.bias_initializer(keys[5], (self.state_dim,))
 
         return bz, by, wz, wy, uz, uy
 
@@ -170,4 +170,4 @@ class MinimalGatedUnit(Module):
         return (1 - z) * state + z * y
 
     def init_state(self, key):
-        return self.state_init(key, (self.state_dim,))
+        return self.state_initializer(key, (self.state_dim,))

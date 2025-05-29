@@ -13,8 +13,7 @@ def l2(x, squared=False):
     x = (x * jnp.conj(x)).sum()
     if squared:
         return x
-    else:
-        return x
+    return jnp.sqrt(x)
 
 
 def linf(x):

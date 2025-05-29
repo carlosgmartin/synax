@@ -9,7 +9,7 @@ from .compound import Repeat as Repeat
 from .compound import Residual as Residual
 from .misc import MLP as MLP
 from .misc import Affine as Affine
-from .misc import Autoencoder as Autoencoder
+from .misc import AutoEncoder as AutoEncoder
 from .misc import GatedLinearUnit as GatedLinearUnit
 from .misc import NeuralCellularAutomaton as NeuralCellularAutomaton
 from .module import Module as Module

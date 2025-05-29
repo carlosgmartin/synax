@@ -56,7 +56,7 @@ def MLP(
     return Chain(lst[:-1])
 
 
-class Autoencoder(Module):
+class AutoEncoder(Module):
     def __init__(self, encoder, decoder):
         self.encoder = encoder
         self.decoder = decoder

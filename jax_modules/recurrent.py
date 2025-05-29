@@ -3,6 +3,36 @@ from jax import nn, random
 from .module import Module
 
 
+class SimpleRecurrentUnit(Module):
+    def __init__(
+        self,
+        state_dim,
+        input_dim,
+        kernel_init=nn.initializers.glorot_uniform(),
+        bias_init=nn.initializers.zeros,
+        recurrent_init=nn.initializers.orthogonal(),
+        activation=nn.relu,
+    ):
+        self.input_dim = input_dim
+        self.state_dim = state_dim
+        self.kernel_init = kernel_init
+        self.bias_init = bias_init
+        self.recurrent_init = recurrent_init
+        self.activation = activation
+
+    def init(self, key):
+        keys = random.split(key, 3)
+        w = self.kernel_init(keys[0], (self.input_dim, self.state_dim))
+        u = self.recurrent_init(keys[1], (self.state_dim, self.state_dim))
+        b = self.bias_init(keys[2], (self.state_dim,))
+        return w, u, b
+
+    def apply(self, param, state, input):
+        w, u, b = param
+        y = param @ w + state @ u + b
+        return nn.tanh(y)
+
+
 class GatedRecurrentUnit(Module):
     """Learning phrase representations using RNN encoder-decoder for statistical machine
         translation (2014)

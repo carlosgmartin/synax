@@ -21,5 +21,6 @@ from .parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatri
 from .parameterizations import SymmetricMatrix as SymmetricMatrix
 from .recurrent import GatedRecurrentUnit as GatedRecurrentUnit
 from .recurrent import MinimalGatedUnit as MinimalGatedUnit
+from .recurrent import SimpleRecurrentUnit as SimpleRecurrentUnit
 from .utils import layer_norm as layer_norm
 from .utils import rms_norm as rms_norm

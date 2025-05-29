@@ -21,7 +21,7 @@ class Ball(Module):
         return self.initializer(key, (self.dim,))
 
     def apply(self, param):
-        return param / jnp.sqrt(1 + jnp.square(param))
+        return param / jnp.sqrt(1 + param * jnp.conj(param))
 
     def param_loss(self, param):
         return self.regularizer(param)

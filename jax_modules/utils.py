@@ -1,3 +1,6 @@
+from math import prod
+
+from jax import lax
 from jax import numpy as jnp
 
 
@@ -14,3 +17,41 @@ def rms_norm(x, axis=-1, epsilon=1e-6):
     https://arxiv.org/abs/1910.07467"""
     rms = jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
     return x / rms
+
+
+def pool(operator, initial_value, shape, strides=None, padding=None):
+    if padding is None:
+        padding = "VALID"
+
+    if strides is None:
+        strides = [1] * len(shape)
+    else:
+        strides = list(strides)
+
+    def f(x):
+        return lax.reduce_window(
+            x,
+            initial_value,
+            operator,
+            list(shape) + [1],
+            strides + [1],
+            padding,
+        )
+
+    return f
+
+
+def max_pool(*args, **kwargs):
+    return pool(lax.max, -jnp.inf, *args, **kwargs)
+
+
+def sum_pool(*args, **kwargs):
+    return pool(lax.add, 0, *args, **kwargs)
+
+
+def avg_pool(*args, **kwargs):
+    if args:
+        size = prod(args[0])
+    else:
+        size = prod(kwargs["shape"])
+    return lambda x: sum_pool(*args, **kwargs)(x) / size

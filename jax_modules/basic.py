@@ -1,5 +1,6 @@
 from jax import nn
 
+from . import regularizers
 from .module import Module
 
 
@@ -8,7 +9,7 @@ class Bias(Module):
         self,
         dim,
         initializer=nn.initializers.zeros,
-        regularizer=lambda param: 0.0,
+        regularizer=regularizers.zero,
     ):
         self.dim = dim
         self.initializer = initializer
@@ -30,7 +31,7 @@ class Linear(Module):
         input_dim,
         output_dim,
         initializer=nn.initializers.he_normal(),
-        regularizer=lambda param: 0.0,
+        regularizer=regularizers.zero,
     ):
         self.input_dim = input_dim
         self.output_dim = output_dim

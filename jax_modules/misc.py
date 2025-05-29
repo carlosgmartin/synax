@@ -1,6 +1,7 @@
 from jax import nn, random
 from jax import numpy as jnp
 
+from . import regularizers
 from .basic import Bias, Function, Linear
 from .compound import Chain
 from .module import Module
@@ -12,8 +13,8 @@ def Affine(
     output_dim,
     kernel_initializer=nn.initializers.he_normal(),
     bias_initializer=nn.initializers.zeros,
-    kernel_regularizer=lambda param: 0.0,
-    bias_regularizer=lambda param: 0.0,
+    kernel_regularizer=regularizers.zero,
+    bias_regularizer=regularizers.zero,
 ):
     return Chain(
         [
@@ -37,8 +38,8 @@ def MLP(
     activation=Function(nn.relu),
     kernel_initializer=nn.initializers.he_normal(),
     bias_initializer=nn.initializers.zeros,
-    kernel_regularizer=lambda param: 0.0,
-    bias_regularizer=lambda param: 0.0,
+    kernel_regularizer=regularizers.zero,
+    bias_regularizer=regularizers.zero,
 ):
     lst = []
     for input_dim, output_dim in zip(dims[:-1], dims[1:]):
@@ -147,7 +148,7 @@ class GatedLinearUnit(Module):
 
 class ParametricReLU(Module):
     def __init__(
-        self, initializer=nn.initializers.zeros, regularizer=lambda param: 0.0
+        self, initializer=nn.initializers.zeros, regularizer=regularizers.zero
     ):
         self.initializer = initializer
         self.regularizer = regularizer

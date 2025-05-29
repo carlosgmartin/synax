@@ -2,6 +2,7 @@ import jax
 from jax import nn
 from jax import numpy as jnp
 
+from . import regularizers
 from .module import Module
 
 
@@ -10,7 +11,7 @@ class Ball(Module):
         self,
         dim,
         initializer=nn.initializers.zeros,
-        regularizer=lambda param: 0.0,
+        regularizer=regularizers.zero,
     ):
         self.dim = dim
         self.initializer = initializer
@@ -47,7 +48,7 @@ class SymmetricMatrix(Module):
         self,
         dim,
         initializer=nn.initializers.zeros,
-        regularizer=lambda param: 0.0,
+        regularizer=regularizers.zero,
     ):
         self.dim = dim
         self.initializer = initializer
@@ -69,7 +70,7 @@ class AntisymmetricMatrix(Module):
         self,
         dim,
         initializer=nn.initializers.zeros,
-        regularizer=lambda param: 0.0,
+        regularizer=regularizers.zero,
     ):
         self.dim = dim
         self.initializer = initializer

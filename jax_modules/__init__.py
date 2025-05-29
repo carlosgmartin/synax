@@ -15,3 +15,5 @@ from .parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatri
 from .parameterizations import SymmetricMatrix as SymmetricMatrix
 from .recurrent import GRU as GRU
 from .recurrent import MGU as MGU
+from .misc import NeuralCellularAutomaton as NeuralCellularAutomaton
+from .misc import GatedLinearUnit as GatedLinearUnit

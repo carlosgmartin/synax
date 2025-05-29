@@ -54,3 +54,42 @@ class GRU(Module):
 
 class MGU:
     """Minimal gated unit: https://arxiv.org/abs/1603.09420"""
+
+    def __init__(
+        self,
+        state_dim,
+        input_dim,
+        kernel_init=nn.initializers.glorot_uniform(),
+        bias_init=nn.initializers.zeros,
+        recurrent_init=nn.initializers.orthogonal(),
+        update_activation=nn.sigmoid,
+        candidate_activation=nn.tanh,
+    ):
+        self.input_dim = input_dim
+        self.state_dim = state_dim
+        self.kernel_init = kernel_init
+        self.bias_init = bias_init
+        self.recurrent_init = recurrent_init
+
+        self.update_activation = update_activation
+        self.candidate_activation = candidate_activation
+
+    def sample_params(self, key):
+        keys = random.split(key, 6)
+
+        wz = self.kernel_init(keys[0], [self.input_dim, self.state_dim])
+        wy = self.kernel_init(keys[1], [self.input_dim, self.state_dim])
+
+        uz = self.recurrent_init(keys[2], [self.state_dim, self.state_dim])
+        uy = self.recurrent_init(keys[3], [self.state_dim, self.state_dim])
+
+        bz = self.bias_init(keys[4], [self.state_dim])
+        by = self.bias_init(keys[5], [self.state_dim])
+
+        return bz, by, wz, wy, uz, uy
+
+    def apply(self, params, state, input):
+        bz, by, wz, wy, uz, uy = params
+        z = self.update_activation(input @ wz + state @ uz + bz)
+        y = self.candidate_activation(input @ wy + state @ uy + by)
+        return (1 - z) * state + z * y

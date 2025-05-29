@@ -20,3 +20,5 @@ from .parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatri
 from .parameterizations import SymmetricMatrix as SymmetricMatrix
 from .recurrent import GRU as GRU
 from .recurrent import MGU as MGU
+from .utils import layer_norm as layer_norm
+from .utils import rms_norm as rms_norm

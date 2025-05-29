@@ -110,14 +110,14 @@ class MinimalGatedUnit(Module):
     def init(self, key):
         keys = random.split(key, 6)
 
-        wz = self.kernel_init(keys[0], [self.input_dim, self.state_dim])
-        wy = self.kernel_init(keys[1], [self.input_dim, self.state_dim])
+        wz = self.kernel_init(keys[0], (self.input_dim, self.state_dim))
+        wy = self.kernel_init(keys[1], (self.input_dim, self.state_dim))
 
-        uz = self.recurrent_init(keys[2], [self.state_dim, self.state_dim])
-        uy = self.recurrent_init(keys[3], [self.state_dim, self.state_dim])
+        uz = self.recurrent_init(keys[2], (self.state_dim, self.state_dim))
+        uy = self.recurrent_init(keys[3], (self.state_dim, self.state_dim))
 
-        bz = self.bias_init(keys[4], [self.state_dim])
-        by = self.bias_init(keys[5], [self.state_dim])
+        bz = self.bias_init(keys[4], (self.state_dim,))
+        by = self.bias_init(keys[5], (self.state_dim,))
 
         return bz, by, wz, wy, uz, uy
 

@@ -1,4 +1,5 @@
-from jax import nn
+from jax import lax, nn
+from jax import numpy as jnp
 
 from . import regularizers
 from .module import Module
@@ -78,4 +79,44 @@ class Function(Module):
 
 
 class Conv(Module):
-    pass
+    def __init__(
+        self,
+        input_dim,
+        output_dim,
+        shape,
+        strides=None,
+        padding="VALID",
+        dilation=None,
+        initializer=None,
+        groups=1,
+    ):
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.shape = shape
+        self.strides = strides
+        self.padding = padding
+        self.dilation = dilation
+        self.initializer = initializer
+        self.groups = groups
+
+    def init(self, key):
+        initializer = self.initializer or nn.initializers.he_normal(
+            range(-len(self.shape), 0)
+        )
+        return initializer(key, (self.output_dim, self.input_dim, *self.shape))
+
+    def apply(self, w, x):
+        num_spatial_axes = len(self.shape)
+        x = jnp.moveaxis(x, -1, -num_spatial_axes - 1)
+        x = x[None]
+        x = lax.conv_general_dilated(
+            x,
+            w,
+            window_strides=self.strides or [1] * num_spatial_axes,
+            padding=self.padding,
+            rhs_dilation=self.dilation,
+            feature_group_count=self.groups,
+        )
+        x = x[0]
+        x = jnp.moveaxis(x, -num_spatial_axes - 1, -1)
+        return x

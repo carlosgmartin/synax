@@ -43,17 +43,20 @@ def MultiLayerPerceptron(
 ):
     lst = []
     for input_dim, output_dim in zip(dims[:-1], dims[1:]):
-        lst.append(
-            Affine(
+        lst += [
+            Linear(
                 input_dim,
                 output_dim,
-                kernel_initializer=kernel_initializer,
-                bias_initializer=bias_initializer,
-                kernel_regularizer=kernel_regularizer,
-                bias_regularizer=bias_regularizer,
-            )
-        )
-        lst.append(activation)
+                initializer=kernel_initializer,
+                regularizer=kernel_regularizer,
+            ),
+            Bias(
+                output_dim,
+                initializer=bias_initializer,
+                regularizer=bias_regularizer,
+            ),
+            activation,
+        ]
     return Chain(lst[:-1])
 
 

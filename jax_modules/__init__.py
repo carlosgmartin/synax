@@ -6,6 +6,7 @@ from .basic import Function as Function
 from .basic import Linear as Linear
 from .basic import Scale as Scale
 from .compound import Chain as Chain
+from .compound import ConvexPotentialFlow as ConvexPotentialFlow
 from .compound import Parallel as Parallel
 from .compound import RavelUnravel as RavelUnravel
 from .compound import Repeat as Repeat

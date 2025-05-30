@@ -203,3 +203,56 @@ class BistableRecurrentCell(Module):
         c = nn.sigmoid(input @ wc + state @ uc)
         y = nn.tanh(input @ wy + state * a)
         return c * state + (1 - c) * y
+
+
+class LongShortTermMemory(Module):
+    """LSTM can solve hard long time lag problems
+    https://dl.acm.org/doi/10.5555/2998981.2999048"""
+
+    def __init__(
+        self,
+        state_dim,
+        input_dim,
+        kernel_initializer=nn.initializers.he_normal(),
+        recurrent_initializer=nn.initializers.orthogonal(),
+        bias_initializer=nn.initializers.zeros,
+    ):
+        self.state_dim = state_dim
+        self.input_dim = input_dim
+        self.kernel_initializer = kernel_initializer
+        self.recurrent_initializer = recurrent_initializer
+        self.bias_initializer = bias_initializer
+
+    def init(self, key):
+        keys = random.split(key, 12)
+
+        Uf = self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim))
+        Ui = self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim))
+        Ug = self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim))
+        Uo = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
+
+        Wf = self.kernel_initializer(keys[4], (self.input_dim, self.state_dim))
+        Wi = self.kernel_initializer(keys[5], (self.input_dim, self.state_dim))
+        Wg = self.kernel_initializer(keys[6], (self.input_dim, self.state_dim))
+        Wo = self.kernel_initializer(keys[7], (self.input_dim, self.state_dim))
+
+        bf = self.bias_initializer(keys[8], (self.state_dim,)) + 1
+        bi = self.bias_initializer(keys[9], (self.state_dim,))
+        bg = self.bias_initializer(keys[10], (self.state_dim,))
+        bo = self.bias_initializer(keys[11], (self.state_dim,))
+
+        return bf, bi, bg, bo, Wf, Wi, Wg, Wo, Uf, Ui, Ug, Uo
+
+    def apply(self, w, x, h_c):
+        bf, bi, bg, bo, Wf, Wi, Wg, Wo, Uf, Ui, Ug, Uo = w
+        h, c = h_c
+
+        f = nn.sigmoid(bf + x @ Wf + h @ Uf)
+        i = nn.sigmoid(bi + x @ Wi + h @ Ui)
+        g = nn.tanh(bg + x @ Wg + h @ Ug)
+        o = nn.sigmoid(bo + x @ Wo + h @ Uo)
+
+        new_c = f * c + i * g
+        new_h = o * nn.tanh(new_c)
+
+        return new_h, new_c

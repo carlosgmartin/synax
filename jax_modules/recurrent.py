@@ -216,12 +216,14 @@ class LongShortTermMemory(Module):
         kernel_initializer=nn.initializers.he_normal(),
         recurrent_initializer=nn.initializers.orthogonal(),
         bias_initializer=nn.initializers.zeros,
+        forget_bias=1.0,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
         self.kernel_initializer = kernel_initializer
         self.recurrent_initializer = recurrent_initializer
         self.bias_initializer = bias_initializer
+        self.forget_bias = forget_bias
 
     def init(self, key):
         keys = random.split(key, 12)
@@ -236,7 +238,7 @@ class LongShortTermMemory(Module):
         Wg = self.kernel_initializer(keys[6], (self.input_dim, self.state_dim))
         Wo = self.kernel_initializer(keys[7], (self.input_dim, self.state_dim))
 
-        bf = self.bias_initializer(keys[8], (self.state_dim,)) + 1
+        bf = self.bias_initializer(keys[8], (self.state_dim,)) + self.forget_bias
         bi = self.bias_initializer(keys[9], (self.state_dim,))
         bg = self.bias_initializer(keys[10], (self.state_dim,))
         bo = self.bias_initializer(keys[11], (self.state_dim,))

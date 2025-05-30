@@ -6,6 +6,24 @@ from . import regularizers
 from .module import Module
 
 
+class Constant(Module):
+    def __init__(
+        self, dim, initializer=nn.initializers.zeros, regularizer=regularizers.zero
+    ):
+        self.dim = dim
+        self.initializer = initializer
+        self.regularizer = regularizer
+
+    def init(self, key):
+        return self.initializer(key, (self.dim,))
+
+    def apply(self, param):
+        return param
+
+    def parameter_loss(self, param):
+        return self.regularizer(param)
+
+
 class Ball(Module):
     def __init__(
         self,
@@ -22,6 +40,27 @@ class Ball(Module):
 
     def apply(self, param):
         return param / jnp.sqrt(1 + param * jnp.conj(param))
+
+    def parameter_loss(self, param):
+        return self.regularizer(param)
+
+
+class Simplex(Module):
+    def __init__(
+        self,
+        dim,
+        initializer=nn.initializers.zeros,
+        regularizer=regularizers.zero,
+    ):
+        self.dim = dim
+        self.initializer = initializer
+        self.regularizer = regularizer
+
+    def init(self, key):
+        return self.initializer(key, (self.dim,))
+
+    def apply(self, param):
+        return nn.softmax(param)
 
     def parameter_loss(self, param):
         return self.regularizer(param)

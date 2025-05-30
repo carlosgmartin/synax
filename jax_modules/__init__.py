@@ -27,9 +27,12 @@ from .parameterizations import Simplex as Simplex
 from .parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatrix
 from .parameterizations import SymmetricMatrix as SymmetricMatrix
 from .recurrent import BistableRecurrentCell as BistableRecurrentCell
+from .recurrent import FastGRNN as FastGRNN
 from .recurrent import GatedRecurrentUnit as GatedRecurrentUnit
+from .recurrent import LongShortTermMemory as LongShortTermMemory
 from .recurrent import MinimalGatedUnit as MinimalGatedUnit
 from .recurrent import RecurrentNetwork as RecurrentNetwork
 from .recurrent import SimpleRecurrentUnit as SimpleRecurrentUnit
+from .recurrent import UpdateGateRNN as UpdateGateRNN
 from .utils import layer_norm as layer_norm
 from .utils import rms_norm as rms_norm

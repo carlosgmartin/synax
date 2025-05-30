@@ -175,7 +175,7 @@ class MinimalGatedUnit(Module):
 
 
 class BistableRecurrentCell(Module):
-    """A bio-inspired bistable recurrent cell allows for long-lasting memory
+    """A bio-inspired bistable recurrent cell allows for long-lasting memory (2020)
     https://arxiv.org/abs/2006.05252"""
 
     def __init__(
@@ -206,7 +206,7 @@ class BistableRecurrentCell(Module):
 
 
 class LongShortTermMemory(Module):
-    """LSTM can solve hard long time lag problems
+    """LSTM can solve hard long time lag problems (1996)
     https://dl.acm.org/doi/10.5555/2998981.2999048"""
 
     def __init__(
@@ -258,3 +258,85 @@ class LongShortTermMemory(Module):
         new_h = o * nn.tanh(new_c)
 
         return new_h, new_c
+
+
+class FastGRNN(Module):
+    """Fastgrnn: a fast, accurate, stable and tiny kilobyte sized gated recurrent neural
+        network (2019)
+    https://arxiv.org/abs/1901.02358"""
+
+    def __init__(
+        self,
+        state_dim,
+        input_dim,
+        kernel_initializer=nn.initializers.he_normal(),
+        bias_initializer=nn.initializers.zeros,
+    ):
+        self.state_dim = state_dim
+        self.input_dim = input_dim
+        self.kernel_initializer = kernel_initializer
+        self.bias_initializer = bias_initializer
+
+    def init(self, key):
+        U = jnp.eye(self.state_dim)
+
+        keys = random.split(key, 3)
+
+        W = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
+
+        bz = self.bias_initializer(keys[1], (self.state_dim,))
+        by = self.bias_initializer(keys[2], (self.state_dim,))
+
+        nu = jnp.array(0.0)
+        zeta = jnp.array(0.0)
+
+        return U, W, bz, by, zeta, nu
+
+    def apply(self, w, x, h):
+        U, W, bz, by, zeta, nu = w
+        z = nn.sigmoid(bz + h @ U + x @ W)
+        y = nn.tanh(by + h @ U + x @ W)
+        zeta = nn.sigmoid(zeta)
+        nu = nn.sigmoid(nu)
+        return (zeta * (1 - z) + nu) * y + z * h
+
+
+class UpdateGateRNN(Module):
+    """Capacity and trainability in recurrent neural networks (2017)
+    https://openreview.net/forum?id=BydARw9ex"""
+
+    def __init__(
+        self,
+        state_dim,
+        input_dim,
+        activation=nn.tanh,
+        kernel_initializer=nn.initializers.he_normal(),
+        recurrent_initializer=nn.initializers.orthogonal(),
+        bias_initializer=nn.initializers.zeros,
+    ):
+        self.state_dim = state_dim
+        self.input_dim = input_dim
+        self.activation = activation
+        self.kernel_initializer = kernel_initializer
+        self.recurrent_initializer = recurrent_initializer
+        self.bias_initializer = bias_initializer
+
+    def init(self, key):
+        keys = random.split(key, 6)
+
+        Uc = self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim))
+        Ug = self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim))
+
+        Wc = self.kernel_initializer(keys[2], (self.input_dim, self.state_dim))
+        Wg = self.kernel_initializer(keys[3], (self.input_dim, self.state_dim))
+
+        bc = self.bias_initializer(keys[4], (self.state_dim,))
+        bg = self.bias_initializer(keys[5], (self.state_dim,))
+
+        return bc, bg, Wc, Wg, Uc, Ug
+
+    def apply(self, w, x, h):
+        bc, bg, Wc, Wg, Uc, Ug = w
+        c = self.activation(bc + x @ Wc + h @ Uc)
+        g = nn.sigmoid(bg + x @ Wg + h @ Ug)
+        return g * h + (1 - g) * c

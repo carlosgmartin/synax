@@ -29,5 +29,5 @@ print(y)
 Run the following after every change:
 
 ```shell
-ruff check && ruff format && pyright
+ruff check && ruff format && pyright && pytest
 ```

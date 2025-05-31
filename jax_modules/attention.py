@@ -1,4 +1,4 @@
-from jax import nn, random
+from jax import lax, nn, random
 from jax import numpy as jnp
 
 from .module import Module
@@ -31,7 +31,7 @@ class Attention(Module):
         query_input_dim,
         key_input_dim=None,
         value_input_dim=None,
-        output_dim=None,
+        hidden_dim=None,
         heads=1,
         initializer=nn.initializers.he_normal(),
     ):
@@ -39,12 +39,12 @@ class Attention(Module):
             key_input_dim = query_input_dim
         if value_input_dim is None:
             value_input_dim = key_input_dim
-        if output_dim is None:
-            output_dim = query_input_dim
+        if hidden_dim is None:
+            hidden_dim = query_input_dim
         self.query_input_dim = query_input_dim
         self.key_input_dim = key_input_dim
         self.value_input_dim = value_input_dim
-        self.output_dim = output_dim
+        self.hidden_dim = hidden_dim
         self.heads = heads
         self.initializer = initializer
 
@@ -52,13 +52,13 @@ class Attention(Module):
         keys = random.split(key, 3)
         return {
             "query": self.initializer(
-                keys[0], (self.heads, self.query_input_dim, self.output_dim)
+                keys[0], (self.heads, self.query_input_dim, self.hidden_dim)
             ),
             "key": self.initializer(
-                keys[1], (self.heads, self.key_input_dim, self.output_dim)
+                keys[1], (self.heads, self.key_input_dim, self.hidden_dim)
             ),
             "value": self.initializer(
-                keys[2], (self.heads, self.value_input_dim, self.output_dim)
+                keys[2], (self.heads, self.value_input_dim, self.hidden_dim)
             ),
         }
 
@@ -70,8 +70,8 @@ class Attention(Module):
         query = jnp.tensordot(query_input, param["query"], (-1, -2))
         key = jnp.tensordot(key_input, param["key"], (-1, -2))
         value = jnp.tensordot(value_input, param["value"], (-1, -2))
-        output = nn.dot_product_attention(query, key, value, mask=mask)
-        return output
+        hidden = nn.dot_product_attention(query, key, value, mask=mask)
+        return lax.collapse(hidden, -2)
 
 
 def main():
@@ -81,7 +81,7 @@ def main():
     query_input_dim = 4
     key_input_dim = 5
     value_input_dim = 6
-    output_dim = 32
+    hidden_dim = 32
 
     heads = 8
 
@@ -89,7 +89,7 @@ def main():
         query_input_dim=query_input_dim,
         key_input_dim=key_input_dim,
         value_input_dim=value_input_dim,
-        output_dim=output_dim,
+        hidden_dim=hidden_dim,
         heads=heads,
     )
 
@@ -107,7 +107,7 @@ def main():
         key_input=key_input,
         value_input=value_input,
     )
-    assert output.shape == (target_len, heads, output_dim)
+    assert output.shape == (target_len, heads * hidden_dim)
 
 
 if __name__ == "__main__":

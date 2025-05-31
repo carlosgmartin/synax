@@ -77,7 +77,7 @@ class Attention(Module):
         key += param["key_bias"]
         value += param["value_bias"]
 
-        if self.normalize_qk or True:
+        if self.normalize_qk:
             query = utils.layer_norm(query)
             key = utils.layer_norm(value)
 

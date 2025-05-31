@@ -29,6 +29,7 @@ class Attention(Module):
             value_input_dim = key_input_dim
         if hidden_dim is None:
             hidden_dim = query_input_dim
+
         self.query_input_dim = query_input_dim
         self.key_input_dim = key_input_dim
         self.value_input_dim = value_input_dim

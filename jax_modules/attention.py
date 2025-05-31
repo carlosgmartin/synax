@@ -5,24 +5,6 @@ from . import utils
 from .module import Module
 
 
-def single_head_attention(q, k, v, mask=None):
-    """
-    Arguments:
-    q: array of shape (..., n, d)
-    k: array of shape (..., m, d)
-    v: array of shape (..., m, e)
-    mask: array broadcastable to shape (..., n, m)
-
-    Result:
-    o: array of shape (..., n, e)
-    """
-    l = jnp.einsum("...nd,...md->...nm", q, k)
-    l *= 1 / l.shape[-1] ** 0.5
-    p = nn.softmax(l, -1, where=mask)
-    o = jnp.einsum("...nm,...me->...ne", p, v)
-    return o
-
-
 class Attention(Module):
     """Attention is all you need (2017)
     https://arxiv.org/abs/1706.03762

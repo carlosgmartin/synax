@@ -33,7 +33,8 @@ class Attention(Module):
         value_input_dim=None,
         hidden_dim=None,
         heads=1,
-        initializer=nn.initializers.he_normal(),
+        kernel_initializer=nn.initializers.he_normal(),
+        bias_initializer=nn.initializers.zeros,
     ):
         if key_input_dim is None:
             key_input_dim = query_input_dim
@@ -46,20 +47,24 @@ class Attention(Module):
         self.value_input_dim = value_input_dim
         self.hidden_dim = hidden_dim
         self.heads = heads
-        self.initializer = initializer
+        self.kernel_initializer = kernel_initializer
+        self.bias_initializer = bias_initializer
 
     def init(self, key):
-        keys = random.split(key, 3)
+        keys = random.split(key, 6)
         return {
-            "query": self.initializer(
+            "query_kernel": self.kernel_initializer(
                 keys[0], (self.heads, self.query_input_dim, self.hidden_dim)
             ),
-            "key": self.initializer(
+            "key_kernel": self.kernel_initializer(
                 keys[1], (self.heads, self.key_input_dim, self.hidden_dim)
             ),
-            "value": self.initializer(
+            "value_kernel": self.kernel_initializer(
                 keys[2], (self.heads, self.value_input_dim, self.hidden_dim)
             ),
+            "query_bias": self.bias_initializer(keys[3], (self.heads, self.hidden_dim)),
+            "key_bias": self.bias_initializer(keys[4], (self.heads, self.hidden_dim)),
+            "value_bias": self.bias_initializer(keys[5], (self.heads, self.hidden_dim)),
         }
 
     def apply(self, param, query_input, key_input=None, value_input=None, mask=None):
@@ -67,9 +72,17 @@ class Attention(Module):
             key_input = query_input
         if value_input is None:
             value_input = key_input
-        query = jnp.tensordot(query_input, param["query"], (-1, -2))
-        key = jnp.tensordot(key_input, param["key"], (-1, -2))
-        value = jnp.tensordot(value_input, param["value"], (-1, -2))
+        query = (
+            jnp.tensordot(query_input, param["query_kernel"], (-1, -2))
+            + param["query_bias"]
+        )
+        key = (
+            jnp.tensordot(key_input, param["key_kernel"], (-1, -2)) + param["key_bias"]
+        )
+        value = (
+            jnp.tensordot(value_input, param["value_kernel"], (-1, -2))
+            + param["value_bias"]
+        )
         hidden = nn.dot_product_attention(query, key, value, mask=mask)
         return lax.collapse(hidden, -2)
 

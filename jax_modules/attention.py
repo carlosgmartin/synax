@@ -74,7 +74,13 @@ class Attention(Module):
         }
 
     def apply(
-        self, param, query_input, key_input=None, value_input=None, mask=None, bias=None
+        self,
+        param,
+        query_input,
+        key_input=None,
+        value_input=None,
+        mask=None,
+        bias=None,
     ):
         if key_input is None:
             key_input = query_input

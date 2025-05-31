@@ -86,9 +86,11 @@ class Attention(Module):
             key_input = query_input
         if value_input is None:
             value_input = key_input
+
         query = jnp.tensordot(query_input, param["query_kernel"], (-1, -2))
         key = jnp.tensordot(key_input, param["key_kernel"], (-1, -2))
         value = jnp.tensordot(value_input, param["value_kernel"], (-1, -2))
+
         query += param["query_bias"]
         key += param["key_bias"]
         value += param["value_bias"]

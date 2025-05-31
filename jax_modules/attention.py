@@ -73,10 +73,10 @@ class Attention(Module):
         if value_input is None:
             value_input = key_input
         query = jnp.tensordot(query_input, param["query_kernel"], (-1, -2))
-        query += param["query_bias"]
         key = jnp.tensordot(key_input, param["key_kernel"], (-1, -2))
-        key += param["key_bias"]
         value = jnp.tensordot(value_input, param["value_kernel"], (-1, -2))
+        query += param["query_bias"]
+        key += param["key_bias"]
         value += param["value_bias"]
         hidden = nn.dot_product_attention(query, key, value, mask=mask)
         return lax.collapse(hidden, -2)

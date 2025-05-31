@@ -73,7 +73,9 @@ class Attention(Module):
             "value_bias": self.bias_initializer(keys[5], (self.heads, self.hidden_dim)),
         }
 
-    def apply(self, param, query_input, key_input=None, value_input=None, mask=None):
+    def apply(
+        self, param, query_input, key_input=None, value_input=None, mask=None, bias=None
+    ):
         if key_input is None:
             key_input = query_input
         if value_input is None:
@@ -89,7 +91,7 @@ class Attention(Module):
             query = utils.layer_norm(query)
             key = utils.layer_norm(value)
 
-        hidden = nn.dot_product_attention(query, key, value, mask=mask)
+        hidden = nn.dot_product_attention(query, key, value, mask=mask, bias=None)
         return lax.collapse(hidden, -2)
 
 

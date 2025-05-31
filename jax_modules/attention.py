@@ -63,6 +63,7 @@ class Attention(Module):
         value_input=None,
         mask=None,
         bias=None,
+        is_causal=False,
     ):
         if key_input is None:
             key_input = query_input
@@ -81,5 +82,7 @@ class Attention(Module):
             query = utils.layer_norm(query)
             key = utils.layer_norm(value)
 
-        hidden = nn.dot_product_attention(query, key, value, mask=mask, bias=None)
+        hidden = nn.dot_product_attention(
+            query, key, value, mask=mask, bias=None, is_causal=is_causal
+        )
         return lax.collapse(hidden, -2)

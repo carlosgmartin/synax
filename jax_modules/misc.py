@@ -127,20 +127,24 @@ class GatedLinearUnit(Module):
     """Language modeling with gated convolutional networks (2016)
     https://arxiv.org/abs/1612.08083"""
 
-    def __init__(self, input_dim, output_dim):
+    def __init__(
+        self,
+        input_dim,
+        output_dim,
+        kernel_initializer=nn.initializers.he_normal(),
+        bias_initializer=nn.initializers.zeros,
+    ):
         self.input_dim = input_dim
         self.output_dim = output_dim
-        self.w_init = nn.initializers.he_normal()
-        self.v_init = nn.initializers.he_normal()
-        self.b_init = nn.initializers.zeros
-        self.c_init = nn.initializers.zeros
+        self.kernel_initializer = kernel_initializer
+        self.bias_initializer = bias_initializer
 
     def init(self, key):
         keys = random.split(key, 4)
-        w = self.w_init(keys[0], (self.input_dim, self.output_dim))
-        v = self.v_init(keys[1], (self.input_dim, self.output_dim))
-        b = self.b_init(keys[2], (self.output_dim,))
-        c = self.c_init(keys[3], (self.output_dim,))
+        w = self.kernel_initializer(keys[0], (self.input_dim, self.output_dim))
+        v = self.kernel_initializer(keys[1], (self.input_dim, self.output_dim))
+        b = self.bias_initializer(keys[2], (self.output_dim,))
+        c = self.bias_initializer(keys[3], (self.output_dim,))
         wv = jnp.concatenate([w, v], 1)
         bc = jnp.concatenate([b, c], 1)
         return wv, bc

@@ -1,6 +1,7 @@
 from jax import lax, nn, random
 from jax import numpy as jnp
 
+from . import utils
 from .module import Module
 
 
@@ -24,7 +25,10 @@ def single_head_attention(q, k, v, mask=None):
 
 class Attention(Module):
     """Attention is all you need (2017)
-    https://arxiv.org/abs/1706.03762"""
+    https://arxiv.org/abs/1706.03762
+
+    Scaling vision transformers to 22 billion parameters (2023)
+    https://arxiv.org/abs/2302.05442"""
 
     def __init__(
         self,
@@ -35,6 +39,7 @@ class Attention(Module):
         heads=1,
         kernel_initializer=nn.initializers.he_normal(),
         bias_initializer=nn.initializers.zeros,
+        normalize_qk=False,
     ):
         if key_input_dim is None:
             key_input_dim = query_input_dim
@@ -49,6 +54,7 @@ class Attention(Module):
         self.heads = heads
         self.kernel_initializer = kernel_initializer
         self.bias_initializer = bias_initializer
+        self.normalize_qk = normalize_qk
 
     def init(self, key):
         keys = random.split(key, 6)
@@ -78,6 +84,11 @@ class Attention(Module):
         query += param["query_bias"]
         key += param["key_bias"]
         value += param["value_bias"]
+
+        if self.normalize_qk or True:
+            query = utils.layer_norm(query)
+            key = utils.layer_norm(value)
+
         hidden = nn.dot_product_attention(query, key, value, mask=mask)
         return lax.collapse(hidden, -2)
 

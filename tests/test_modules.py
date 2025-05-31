@@ -96,13 +96,13 @@ def test_mlp():
 
 
 def test_attention(
-    source_len=17,
-    target_len=19,
     query_input_dim=3,
     key_input_dim=5,
     value_input_dim=7,
     hidden_dim=11,
     heads=13,
+    source_len=17,
+    target_len=19,
 ):
     module = jm.Attention(
         query_input_dim=query_input_dim,

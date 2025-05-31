@@ -72,17 +72,12 @@ class Attention(Module):
             key_input = query_input
         if value_input is None:
             value_input = key_input
-        query = (
-            jnp.tensordot(query_input, param["query_kernel"], (-1, -2))
-            + param["query_bias"]
-        )
-        key = (
-            jnp.tensordot(key_input, param["key_kernel"], (-1, -2)) + param["key_bias"]
-        )
-        value = (
-            jnp.tensordot(value_input, param["value_kernel"], (-1, -2))
-            + param["value_bias"]
-        )
+        query = jnp.tensordot(query_input, param["query_kernel"], (-1, -2))
+        query += param["query_bias"]
+        key = jnp.tensordot(key_input, param["key_kernel"], (-1, -2))
+        key += param["key_bias"]
+        value = jnp.tensordot(value_input, param["value_kernel"], (-1, -2))
+        value += param["value_bias"]
         hidden = nn.dot_product_attention(query, key, value, mask=mask)
         return lax.collapse(hidden, -2)
 

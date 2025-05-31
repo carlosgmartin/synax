@@ -1,4 +1,4 @@
-from jax import lax, nn, random
+from jax import nn, random
 from jax import numpy as jnp
 
 from .module import Module
@@ -28,84 +28,86 @@ class Attention(Module):
 
     def __init__(
         self,
-        q_dim,
-        k_dim=None,
-        v_dim=None,
-        x_dim=None,
+        query_input_dim,
+        key_input_dim=None,
+        value_input_dim=None,
+        output_dim=None,
         heads=1,
         initializer=nn.initializers.he_normal(),
     ):
-        if k_dim is None:
-            k_dim = q_dim
-        if v_dim is None:
-            v_dim = k_dim
-        if x_dim is None:
-            x_dim = q_dim
-        self.q_dim = q_dim
-        self.k_dim = k_dim
-        self.v_dim = v_dim
-        self.x_dim = x_dim
-
+        if key_input_dim is None:
+            key_input_dim = query_input_dim
+        if value_input_dim is None:
+            value_input_dim = key_input_dim
+        if output_dim is None:
+            output_dim = query_input_dim
+        self.query_input_dim = query_input_dim
+        self.key_input_dim = key_input_dim
+        self.value_input_dim = value_input_dim
+        self.output_dim = output_dim
         self.heads = heads
         self.initializer = initializer
 
     def init(self, key):
         keys = random.split(key, 3)
-        wq = self.initializer(keys[0], (self.heads, self.q_dim, self.x_dim))
-        wk = self.initializer(keys[1], (self.heads, self.k_dim, self.x_dim))
-        wv = self.initializer(keys[2], (self.heads, self.v_dim, self.x_dim))
-        return wq, wk, wv
+        return {
+            "query": self.initializer(
+                keys[0], (self.heads, self.query_input_dim, self.output_dim)
+            ),
+            "key": self.initializer(
+                keys[1], (self.heads, self.key_input_dim, self.output_dim)
+            ),
+            "value": self.initializer(
+                keys[2], (self.heads, self.value_input_dim, self.output_dim)
+            ),
+        }
 
-    def apply(self, param, q, k=None, v=None, mask=None):
-        if k is None:
-            k = q
-        if v is None:
-            v = k
-        wq, wk, wv = param
-
-        q = jnp.einsum("...ld,hde->...hle", q, wq)
-        k = jnp.einsum("...ld,hde->...hle", k, wk)
-        v = jnp.einsum("...ld,hde->...hle", v, wv)
-
-        o = single_head_attention(q, k, v, mask)
-
-        o = jnp.moveaxis(o, -3, -1)
-        o = lax.collapse(o, -2, o.ndim)
-
-        return o
+    def apply(self, param, query_input, key_input=None, value_input=None, mask=None):
+        if key_input is None:
+            key_input = query_input
+        if value_input is None:
+            value_input = key_input
+        query = jnp.tensordot(query_input, param["query"], (-1, -2))
+        key = jnp.tensordot(key_input, param["key"], (-1, -2))
+        value = jnp.tensordot(value_input, param["value"], (-1, -2))
+        output = nn.dot_product_attention(query, key, value, mask=mask)
+        return output
 
 
 def main():
-    qk_dim = 2
-    v_dim = 3
+    source_len = 10
+    target_len = 20
 
-    q_len = 4
-    kv_len = 5
+    query_input_dim = 4
+    key_input_dim = 5
+    value_input_dim = 6
+    output_dim = 32
 
-    batch_shape = (6, 7)
+    heads = 8
+
+    module = Attention(
+        query_input_dim=query_input_dim,
+        key_input_dim=key_input_dim,
+        value_input_dim=value_input_dim,
+        output_dim=output_dim,
+        heads=heads,
+    )
 
     key = random.key(0)
 
     key, subkey = random.split(key)
-    keys = random.split(subkey, 3)
-    q = random.normal(keys[0], batch_shape + (q_len, qk_dim))
-    k = random.normal(keys[1], batch_shape + (kv_len, qk_dim))
-    v = random.normal(keys[2], batch_shape + (kv_len, v_dim))
-    o = single_head_attention(q, k, v)
-    assert o.shape == batch_shape + (q_len, v_dim)
-
-    x_dim = 8
-    heads = 16
-
-    module = Attention(x_dim, heads=16)
-
-    key, subkey = random.split(key)
     param = module.init(subkey)
 
-    key, subkey = random.split(key)
-    x = random.normal(subkey, (2, 3, x_dim))
-    y = module.apply(param, x)
-    assert y.shape == x.shape[:-1] + (x.shape[-1] * heads,)
+    query_input = jnp.empty((target_len, query_input_dim))
+    key_input = jnp.empty((source_len, key_input_dim))
+    value_input = jnp.empty((source_len, value_input_dim))
+    output = module.apply(
+        param,
+        query_input=query_input,
+        key_input=key_input,
+        value_input=value_input,
+    )
+    assert output.shape == (target_len, heads, output_dim)
 
 
 if __name__ == "__main__":

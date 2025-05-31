@@ -26,7 +26,15 @@ class Attention(Module):
     """Attention is all you need (2017)
     https://arxiv.org/abs/1706.03762"""
 
-    def __init__(self, q_dim, k_dim=None, v_dim=None, x_dim=None, heads=1):
+    def __init__(
+        self,
+        q_dim,
+        k_dim=None,
+        v_dim=None,
+        x_dim=None,
+        heads=1,
+        initializer=nn.initializers.he_normal(),
+    ):
         if k_dim is None:
             k_dim = q_dim
         if v_dim is None:
@@ -38,17 +46,14 @@ class Attention(Module):
         self.v_dim = v_dim
         self.x_dim = x_dim
 
-        self.wq_init = nn.initializers.he_normal()
-        self.wk_init = nn.initializers.he_normal()
-        self.wv_init = nn.initializers.he_normal()
-
         self.heads = heads
+        self.initializer = initializer
 
     def init(self, key):
         keys = random.split(key, 3)
-        wq = self.wq_init(keys[0], (self.heads, self.q_dim, self.x_dim))
-        wk = self.wk_init(keys[1], (self.heads, self.k_dim, self.x_dim))
-        wv = self.wv_init(keys[2], (self.heads, self.v_dim, self.x_dim))
+        wq = self.initializer(keys[0], (self.heads, self.q_dim, self.x_dim))
+        wk = self.initializer(keys[1], (self.heads, self.k_dim, self.x_dim))
+        wv = self.initializer(keys[2], (self.heads, self.v_dim, self.x_dim))
         return wq, wk, wv
 
     def apply(self, param, q, k=None, v=None, mask=None):

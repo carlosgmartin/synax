@@ -98,10 +98,9 @@ def get_von_neumann_neighbors(array, space_dim=None, include_center=False):
     """Get von Neumann neighborhoods of an array."""
     if space_dim is None:
         space_dim = array.ndim - 1
+    spatial_axes = range(-1 - space_dim, -1)
     neighbors = [
-        jnp.roll(array, shift, axis)
-        for shift in [-1, +1]
-        for axis in range(-1 - space_dim, -1)
+        jnp.roll(array, shift, axis) for shift in [-1, +1] for axis in spatial_axes
     ]
     if include_center:
         neighbors += [array]
@@ -118,14 +117,34 @@ class NeuralCellularAutomaton(Module):
         state_dim,
         space_dim=1,
         cell_cls=partial(MinimalGatedUnit, reset_gate=False),
+        global_mean=False,
+        global_max=False,
     ):
-        self.cell = cell_cls(state_dim, state_dim * 2 * space_dim)
+        self.cell = cell_cls(
+            state_dim, state_dim * (2 * space_dim + global_mean + global_max)
+        )
+        self.global_mean = global_mean
+        self.global_max = global_max
 
     def init(self, key):
         return self.cell.init(key)
 
     def apply(self, param, state):
         neighbors = get_von_neumann_neighbors(state)
+
+        space_dim = state.ndim - 1
+        spatial_axes = range(-1 - space_dim, -1)
+
+        if self.global_mean:
+            state_mean = state.mean(spatial_axes, keepdims=True)
+            state_mean = jnp.broadcast_to(state_mean, state.shape)
+            neighbors = jnp.concatenate([neighbors, state_mean], -1)
+
+        if self.global_max:
+            state_max = state.max(spatial_axes, keepdims=True)
+            state_max = jnp.broadcast_to(state_max, state.shape)
+            neighbors = jnp.concatenate([neighbors, state_max], -1)
+
         new_state = self.cell.apply(param, state, neighbors)
         return new_state
 

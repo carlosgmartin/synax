@@ -1,3 +1,5 @@
+from functools import partial
+
 from jax import nn, random
 from jax import numpy as jnp
 
@@ -111,7 +113,12 @@ class NeuralCellularAutomaton(Module):
     """Neural GPUs learn algorithms (2015)
     https://arxiv.org/abs/1511.08228"""
 
-    def __init__(self, state_dim, space_dim=1, cell_cls=MinimalGatedUnit):
+    def __init__(
+        self,
+        state_dim,
+        space_dim=1,
+        cell_cls=partial(MinimalGatedUnit, reset_gate=False),
+    ):
         self.cell = cell_cls(state_dim, state_dim * 2 * space_dim)
 
     def init(self, key):

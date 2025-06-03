@@ -1,6 +1,7 @@
 from jax import lax, nn, random
 from jax import numpy as jnp
 
+from .basic import Bias, Convolution
 from .module import Module
 
 
@@ -340,3 +341,78 @@ class UpdateGateRNN(Module):
         c = self.activation(bc + x @ Wc + h @ Uc)
         g = nn.sigmoid(bg + x @ Wg + h @ Ug)
         return g * h + (1 - g) * c
+
+
+class ConvolutionalGatedUnit:
+    def __init__(
+        self,
+        state_dim,
+        input_dim,
+        window_shape,
+        new_activation=nn.tanh,
+        update_activation=nn.sigmoid,
+        kernel_initializer=nn.initializers.he_normal(),
+        bias_initializer=nn.initializers.zeros,
+        recurrent_initializer=nn.initializers.orthogonal(),
+    ):
+        self.state_dim = state_dim
+        self.input_dim = input_dim
+
+        self.new_linear_state = Convolution(
+            self.state_dim,
+            self.state_dim,
+            window_shape=window_shape,
+            initializer=recurrent_initializer,
+            padding="SAME",
+        )
+        self.new_linear_input = Convolution(
+            self.input_dim,
+            self.state_dim,
+            window_shape=window_shape,
+            initializer=kernel_initializer,
+            padding="SAME",
+        )
+        self.new_bias = Bias(self.state_dim, initializer=bias_initializer)
+
+        self.update_linear_state = Convolution(
+            self.state_dim,
+            self.state_dim,
+            window_shape=window_shape,
+            initializer=recurrent_initializer,
+            padding="SAME",
+        )
+        self.update_linear_input = Convolution(
+            self.input_dim,
+            self.state_dim,
+            window_shape=window_shape,
+            initializer=kernel_initializer,
+            padding="SAME",
+        )
+        self.update_bias = Bias(self.state_dim, initializer=bias_initializer)
+
+        self.new_activation = new_activation
+        self.update_activation = update_activation
+
+    def init(self, key):
+        keys = random.split(key, 6)
+        return {
+            "new_linear_state": self.new_linear_state.init(keys[0]),
+            "new_linear_input": self.new_linear_input.init(keys[1]),
+            "new_bias": self.new_bias.init(keys[2]),
+            "update_linear_state": self.update_linear_state.init(keys[3]),
+            "update_linear_input": self.update_linear_input.init(keys[4]),
+            "update_bias": self.update_bias.init(keys[5]),
+        }
+
+    def apply(self, param, state, input):
+        new = self.new_linear_state.apply(param["new_linear_state"], state)
+        new += self.new_linear_state.apply(param["new_linear_input"], input)
+        new += self.new_bias.apply(param["new_bias"], new)
+        new = self.new_activation(new)
+
+        update = self.update_linear_state.apply(param["update_linear_state"], state)
+        update += self.update_linear_input.apply(param["update_linear_input"], input)
+        update += self.update_bias.apply(param["update_bias"], update)
+        update = self.update_activation(update)
+
+        return state + update * (new - state)

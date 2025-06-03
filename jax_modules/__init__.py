@@ -28,6 +28,7 @@ from .parameterizations import Simplex as Simplex
 from .parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatrix
 from .parameterizations import SymmetricMatrix as SymmetricMatrix
 from .recurrent import BistableRecurrentCell as BistableRecurrentCell
+from .recurrent import ConvolutionalGatedUnit as ConvolutionalGatedUnit
 from .recurrent import FastGRNN as FastGRNN
 from .recurrent import GatedRecurrentUnit as GatedRecurrentUnit
 from .recurrent import LongShortTermMemory as LongShortTermMemory

@@ -83,7 +83,7 @@ class Convolution(Module):
         self,
         input_dim,
         output_dim,
-        shape,
+        window_shape,
         strides=None,
         padding="VALID",
         dilation=None,
@@ -92,7 +92,7 @@ class Convolution(Module):
     ):
         self.input_dim = input_dim
         self.output_dim = output_dim
-        self.shape = shape
+        self.window_shape = window_shape
         self.strides = strides
         self.padding = padding
         self.dilation = dilation
@@ -101,12 +101,12 @@ class Convolution(Module):
 
     def init(self, key):
         initializer = self.initializer or nn.initializers.he_normal(
-            range(-len(self.shape), 0)
+            range(-len(self.window_shape), 0)
         )
-        return initializer(key, (self.output_dim, self.input_dim, *self.shape))
+        return initializer(key, (self.output_dim, self.input_dim, *self.window_shape))
 
     def apply(self, w, x):
-        num_spatial_axes = len(self.shape)
+        num_spatial_axes = len(self.window_shape)
         x = jnp.moveaxis(x, -1, -num_spatial_axes - 1)
         x = x[None]
         x = lax.conv_general_dilated(

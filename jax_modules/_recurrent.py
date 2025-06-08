@@ -1,8 +1,8 @@
 from jax import lax, nn, random
 from jax import numpy as jnp
 
-from .basic import Bias, Convolution
-from .module import Module
+from ._basic import Bias, Convolution
+from ._module import Module
 
 
 class RecurrentNetwork(Module):

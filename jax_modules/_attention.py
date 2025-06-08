@@ -1,8 +1,8 @@
 from jax import lax, nn, random
 from jax import numpy as jnp
 
-from . import utils
-from .module import Module
+from ._module import Module
+from ._utils import layer_norm
 
 
 class Attention(Module):
@@ -80,8 +80,8 @@ class Attention(Module):
         value += param["value_bias"]
 
         if self.normalize_qk:
-            query = utils.layer_norm(query)
-            key = utils.layer_norm(value)
+            query = layer_norm(query)
+            key = layer_norm(value)
 
         hidden = nn.dot_product_attention(
             query, key, value, mask=mask, bias=None, is_causal=is_causal

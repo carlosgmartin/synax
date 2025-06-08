@@ -1,8 +1,8 @@
 from jax import lax, nn
 from jax import numpy as jnp
 
-from . import regularizers
-from .module import Module
+from ._module import Module
+from ._regularizers import zero
 
 
 class Bias(Module):
@@ -10,7 +10,7 @@ class Bias(Module):
         self,
         dim,
         initializer=nn.initializers.zeros,
-        regularizer=regularizers.zero,
+        regularizer=zero,
     ):
         self.dim = dim
         self.initializer = initializer
@@ -27,9 +27,7 @@ class Bias(Module):
 
 
 class Scale(Module):
-    def __init__(
-        self, dim, initializer=nn.initializers.ones, regularizer=regularizers.zero
-    ):
+    def __init__(self, dim, initializer=nn.initializers.ones, regularizer=zero):
         self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
@@ -50,7 +48,7 @@ class Linear(Module):
         input_dim,
         output_dim,
         initializer=nn.initializers.he_normal(),
-        regularizer=regularizers.zero,
+        regularizer=zero,
     ):
         self.input_dim = input_dim
         self.output_dim = output_dim

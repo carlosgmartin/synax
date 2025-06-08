@@ -2,7 +2,7 @@ import jax
 from jax import flatten_util, lax, nn, random
 from jax import numpy as jnp
 
-from .module import Module
+from ._module import Module
 
 
 class Chain(Module):

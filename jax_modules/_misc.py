@@ -3,11 +3,12 @@ from functools import partial
 from jax import nn, random
 from jax import numpy as jnp
 
-from . import regularizers, utils
-from .basic import Bias, Convolution, Function, Linear
-from .compound import Chain
-from .module import Module
-from .recurrent import MinimalGatedUnit
+from ._basic import Bias, Convolution, Function, Linear
+from ._compound import Chain
+from ._module import Module
+from ._recurrent import MinimalGatedUnit
+from ._regularizers import zero
+from ._utils import avg_pool, max_pool
 
 
 def Affine(
@@ -15,8 +16,8 @@ def Affine(
     output_dim,
     kernel_initializer=nn.initializers.he_normal(),
     bias_initializer=nn.initializers.zeros,
-    kernel_regularizer=regularizers.zero,
-    bias_regularizer=regularizers.zero,
+    kernel_regularizer=zero,
+    bias_regularizer=zero,
 ):
     return Chain(
         [
@@ -40,8 +41,8 @@ def MultiLayerPerceptron(
     activation=Function(nn.relu),
     kernel_initializer=nn.initializers.he_normal(),
     bias_initializer=nn.initializers.zeros,
-    kernel_regularizer=regularizers.zero,
-    bias_regularizer=regularizers.zero,
+    kernel_regularizer=zero,
+    bias_regularizer=zero,
 ):
     lst = []
     for input_dim, output_dim in zip(dims[:-1], dims[1:]):
@@ -184,7 +185,9 @@ class GatedLinearUnit(Module):
 
 class ParametricReLU(Module):
     def __init__(
-        self, initializer=nn.initializers.zeros, regularizer=regularizers.zero
+        self,
+        initializer=nn.initializers.zeros,
+        regularizer=zero,
     ):
         self.initializer = initializer
         self.regularizer = regularizer
@@ -207,11 +210,11 @@ def LeNet():
             Convolution(1, 6, (5, 5), padding="SAME"),
             Bias(6),
             Function(nn.tanh),
-            Function(utils.avg_pool((2, 2), (2, 2))),
+            Function(avg_pool((2, 2), (2, 2))),
             Convolution(6, 16, (5, 5)),
             Bias(16),
             Function(nn.tanh),
-            Function(utils.avg_pool((2, 2), (2, 2))),
+            Function(avg_pool((2, 2), (2, 2))),
             Function(jnp.ravel),
             Affine(400, 120),
             Function(nn.tanh),
@@ -230,11 +233,11 @@ def AlexNet():
             Convolution(3, 96, (11, 11), (4, 4)),
             Bias(96),
             Function(nn.relu),
-            Function(utils.max_pool((3, 3), (2, 2))),
+            Function(max_pool((3, 3), (2, 2))),
             Convolution(96, 256, (5, 5), padding="SAME"),
             Bias(256),
             Function(nn.relu),
-            Function(utils.max_pool((3, 3), (2, 2))),
+            Function(max_pool((3, 3), (2, 2))),
             Convolution(256, 384, (3, 3), padding="SAME"),
             Bias(384),
             Function(nn.relu),
@@ -244,7 +247,7 @@ def AlexNet():
             Convolution(384, 256, (3, 3), padding="SAME"),
             Bias(256),
             Function(nn.relu),
-            Function(utils.max_pool((3, 3), (2, 2))),
+            Function(max_pool((3, 3), (2, 2))),
             Function(jnp.ravel),
             Affine(6400, 4096),
             Function(nn.relu),

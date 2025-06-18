@@ -42,7 +42,7 @@ class Scale(Module):
         return self.regularizer(param)
 
 
-class Linear(Module):
+class Dense(Module):
     def __init__(
         self,
         input_dim,

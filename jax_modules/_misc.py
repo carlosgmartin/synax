@@ -3,7 +3,7 @@ from functools import partial
 from jax import nn, random
 from jax import numpy as jnp
 
-from ._basic import Bias, Conv, Function, Linear
+from ._basic import Bias, Conv, Dense, Function
 from ._compound import Chain
 from ._module import Module
 from ._recurrent import MinimalGatedUnit
@@ -21,7 +21,7 @@ def Affine(
 ):
     return Chain(
         [
-            Linear(
+            Dense(
                 input_dim,
                 output_dim,
                 initializer=kernel_initializer,
@@ -47,7 +47,7 @@ def MultiLayerPerceptron(
     lst = []
     for input_dim, output_dim in zip(dims[:-1], dims[1:]):
         lst += [
-            Linear(
+            Dense(
                 input_dim,
                 output_dim,
                 initializer=kernel_initializer,

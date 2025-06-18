@@ -15,7 +15,7 @@ def test_bias(d=10):
 
 
 def test_convolution(input_dim=3, output_dim=4, spatial_dims=(20, 18)):
-    module = jm.Convolution(input_dim, output_dim, (3, 3))
+    module = jm.Conv(input_dim, output_dim, (3, 3))
     param = module.init(key)
     x = jnp.empty(spatial_dims + (input_dim,))
     y = module.apply(param, x)

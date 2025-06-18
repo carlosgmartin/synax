@@ -1,6 +1,6 @@
 from ._attention import Attention as Attention
 from ._basic import Bias as Bias
-from ._basic import Convolution as Convolution
+from ._basic import Conv as Conv
 from ._basic import Embed as Embed
 from ._basic import Function as Function
 from ._basic import Linear as Linear

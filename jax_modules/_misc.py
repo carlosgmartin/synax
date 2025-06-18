@@ -3,7 +3,7 @@ from functools import partial
 from jax import nn, random
 from jax import numpy as jnp
 
-from ._basic import Bias, Convolution, Function, Linear
+from ._basic import Bias, Conv, Function, Linear
 from ._compound import Chain
 from ._module import Module
 from ._recurrent import MinimalGatedUnit
@@ -207,11 +207,11 @@ def LeNet():
     https://ieeexplore.ieee.org/document/726791"""
     return Chain(
         [
-            Convolution(1, 6, (5, 5), padding="SAME"),
+            Conv(1, 6, (5, 5), padding="SAME"),
             Bias(6),
             Function(nn.tanh),
             Function(avg_pool((2, 2), (2, 2))),
-            Convolution(6, 16, (5, 5)),
+            Conv(6, 16, (5, 5)),
             Bias(16),
             Function(nn.tanh),
             Function(avg_pool((2, 2), (2, 2))),
@@ -230,21 +230,21 @@ def AlexNet():
     https://dl.acm.org/doi/10.1145/3065386"""
     return Chain(
         [
-            Convolution(3, 96, (11, 11), (4, 4)),
+            Conv(3, 96, (11, 11), (4, 4)),
             Bias(96),
             Function(nn.relu),
             Function(max_pool((3, 3), (2, 2))),
-            Convolution(96, 256, (5, 5), padding="SAME"),
+            Conv(96, 256, (5, 5), padding="SAME"),
             Bias(256),
             Function(nn.relu),
             Function(max_pool((3, 3), (2, 2))),
-            Convolution(256, 384, (3, 3), padding="SAME"),
+            Conv(256, 384, (3, 3), padding="SAME"),
             Bias(384),
             Function(nn.relu),
-            Convolution(384, 384, (3, 3), padding="SAME"),
+            Conv(384, 384, (3, 3), padding="SAME"),
             Bias(384),
             Function(nn.relu),
-            Convolution(384, 256, (3, 3), padding="SAME"),
+            Conv(384, 256, (3, 3), padding="SAME"),
             Bias(256),
             Function(nn.relu),
             Function(max_pool((3, 3), (2, 2))),

@@ -1,7 +1,7 @@
 from jax import lax, nn, random
 from jax import numpy as jnp
 
-from ._basic import Bias, Convolution
+from ._basic import Bias, Conv
 from ._module import Module
 
 
@@ -358,14 +358,14 @@ class ConvolutionalGatedUnit:
         self.state_dim = state_dim
         self.input_dim = input_dim
 
-        self.new_linear_state = Convolution(
+        self.new_linear_state = Conv(
             self.state_dim,
             self.state_dim,
             window_shape=window_shape,
             initializer=recurrent_initializer,
             padding="SAME",
         )
-        self.new_linear_input = Convolution(
+        self.new_linear_input = Conv(
             self.input_dim,
             self.state_dim,
             window_shape=window_shape,
@@ -374,14 +374,14 @@ class ConvolutionalGatedUnit:
         )
         self.new_bias = Bias(self.state_dim, initializer=bias_initializer)
 
-        self.update_linear_state = Convolution(
+        self.update_linear_state = Conv(
             self.state_dim,
             self.state_dim,
             window_shape=window_shape,
             initializer=recurrent_initializer,
             padding="SAME",
         )
-        self.update_linear_input = Convolution(
+        self.update_linear_input = Conv(
             self.input_dim,
             self.state_dim,
             window_shape=window_shape,

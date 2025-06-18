@@ -12,7 +12,6 @@ from ._compound import RavelUnravel as RavelUnravel
 from ._compound import Repeat as Repeat
 from ._compound import Residual as Residual
 from ._compound import Switch as Switch
-from ._misc import Affine as Affine
 from ._misc import AlexNet as AlexNet
 from ._misc import AutoEncoder as AutoEncoder
 from ._misc import GatedLinearUnit as GatedLinearUnit

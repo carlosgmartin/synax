@@ -11,31 +11,6 @@ from ._regularizers import zero
 from ._utils import avg_pool, max_pool
 
 
-def Affine(
-    input_dim,
-    output_dim,
-    kernel_initializer=nn.initializers.he_normal(),
-    bias_initializer=nn.initializers.zeros,
-    kernel_regularizer=zero,
-    bias_regularizer=zero,
-):
-    return Chain(
-        [
-            Dense(
-                input_dim,
-                output_dim,
-                initializer=kernel_initializer,
-                regularizer=kernel_regularizer,
-            ),
-            Bias(
-                output_dim,
-                initializer=bias_initializer,
-                regularizer=bias_regularizer,
-            ),
-        ]
-    )
-
-
 def MultiLayerPerceptron(
     dims,
     activation=Function(nn.relu),
@@ -216,11 +191,14 @@ def LeNet():
             Function(nn.tanh),
             Function(avg_pool((2, 2), (2, 2))),
             Function(jnp.ravel),
-            Affine(400, 120),
+            Dense(400, 120),
+            Bias(120),
             Function(nn.tanh),
-            Affine(120, 84),
+            Dense(120, 84),
+            Bias(84),
             Function(nn.tanh),
-            Affine(84, 10),
+            Dense(84, 10),
+            Bias(10),
         ]
     )
 
@@ -249,12 +227,15 @@ def AlexNet():
             Function(nn.relu),
             Function(max_pool((3, 3), (2, 2))),
             Function(jnp.ravel),
-            Affine(6400, 4096),
+            Dense(6400, 4096),
+            Bias(4096),
             Function(nn.relu),
             # dropout 0.5
-            Affine(4096, 4096),
+            Dense(4096, 4096),
+            Bias(4096),
             Function(nn.relu),
             # dropout 0.5
-            Affine(4096, 1000),
+            Dense(4096, 1000),
+            Bias(1000),
         ]
     )

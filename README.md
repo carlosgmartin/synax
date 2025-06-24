@@ -1,6 +1,6 @@
 # JAX modules
 
-Neural network modules for [JAX](https://github.com/jax-ml/jax).
+A magic-free neural network library for [JAX](https://github.com/jax-ml/jax).
 
 ## Installation
 

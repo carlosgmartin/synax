@@ -108,8 +108,8 @@ class Conv(Module):
         x = jnp.moveaxis(x, -1, -num_spatial_axes - 1)
         x = x[None]
         x = lax.conv_general_dilated(
-            x,
-            w,
+            lhs=x,
+            rhs=w,
             window_strides=self.strides or [1] * num_spatial_axes,
             padding=self.padding,
             rhs_dilation=self.dilation,

@@ -49,7 +49,7 @@ def sum_pool(*args, **kwargs):
     return pool(lax.add, 0, *args, **kwargs)
 
 
-def avg_pool(*args, **kwargs):
+def mean_pool(*args, **kwargs):
     if args:
         size = prod(args[0])
     else:

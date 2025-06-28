@@ -8,7 +8,7 @@ from ._compound import Chain
 from ._module import Module
 from ._recurrent import MinimalGatedUnit
 from ._regularizers import zero
-from ._utils import avg_pool, max_pool
+from ._utils import max_pool, mean_pool
 
 
 def MultiLayerPerceptron(
@@ -185,11 +185,11 @@ def LeNet():
             Conv(1, 6, (5, 5), padding="SAME"),
             Bias(6),
             Function(nn.tanh),
-            Function(avg_pool((2, 2), (2, 2))),
+            Function(mean_pool((2, 2), (2, 2))),
             Conv(6, 16, (5, 5)),
             Bias(16),
             Function(nn.tanh),
-            Function(avg_pool((2, 2), (2, 2))),
+            Function(mean_pool((2, 2), (2, 2))),
             Function(jnp.ravel),
             Dense(400, 120),
             Bias(120),

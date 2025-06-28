@@ -35,8 +35,8 @@ from ._recurrent import MinimalGatedUnit as MinimalGatedUnit
 from ._recurrent import RecurrentNetwork as RecurrentNetwork
 from ._recurrent import SimpleRecurrentUnit as SimpleRecurrentUnit
 from ._recurrent import UpdateGateRNN as UpdateGateRNN
-from ._utils import avg_pool as avg_pool
 from ._utils import layer_norm as layer_norm
 from ._utils import max_pool as max_pool
+from ._utils import mean_pool as mean_pool
 from ._utils import rms_norm as rms_norm
 from ._utils import sum_pool as sum_pool

@@ -19,19 +19,19 @@ def rms_norm(x, axis=-1, epsilon=1e-6):
     return x / rms
 
 
-def pool(operator, identity, *, shape, strides=None, padding="VALID"):
+def pool(operator, identity, shape, *, strides=None, padding="VALID"):
     if strides is None:
-        strides = [1] * len(shape)
-    else:
-        strides = list(strides)
+        strides = (1,) * len(shape)
+
+    assert len(shape) == len(strides), f"{shape=} and {strides=} have different lengths"
 
     def f(x):
         return lax.reduce_window(
             operand=x,
             init_value=identity,
             computation=operator,
-            window_dimensions=list(shape) + [1],
-            window_strides=strides + [1],
+            window_dimensions=shape + (1,),
+            window_strides=strides + (1,),
             padding=padding,
         )
 

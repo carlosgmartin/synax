@@ -41,7 +41,7 @@ def pool(operator, identity, shape, *, strides=None, padding="VALID"):
 def max_pool(shape, *, strides=None, padding="VALID"):
     return pool(
         operator=lax.max,
-        identity=-jnp.inf,
+        identity=-float("inf"),
         shape=shape,
         strides=strides,
         padding=padding,

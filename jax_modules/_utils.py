@@ -19,7 +19,7 @@ def rms_norm(x, axis=-1, epsilon=1e-6):
     return x / rms
 
 
-def pool(operator, initial_value, shape, strides=None, padding=None):
+def pool(operator, identity, *, shape, strides=None, padding=None):
     if padding is None:
         padding = "VALID"
 
@@ -30,26 +30,38 @@ def pool(operator, initial_value, shape, strides=None, padding=None):
 
     def f(x):
         return lax.reduce_window(
-            x,
-            initial_value,
-            operator,
-            list(shape) + [1],
-            strides + [1],
-            padding,
+            operand=x,
+            init_value=identity,
+            computation=operator,
+            window_dimensions=list(shape) + [1],
+            window_strides=strides + [1],
+            padding=padding,
         )
 
     return f
 
 
-def max_pool(shape, strides=None, padding=None):
-    return pool(lax.max, -jnp.inf, shape, strides=strides, padding=padding)
+def max_pool(shape, *, strides=None, padding=None):
+    return pool(
+        operator=lax.max,
+        identity=-jnp.inf,
+        shape=shape,
+        strides=strides,
+        padding=padding,
+    )
 
 
-def sum_pool(shape, strides=None, padding=None):
-    return pool(lax.add, 0, shape, strides=strides, padding=padding)
+def sum_pool(shape, *, strides=None, padding=None):
+    return pool(
+        operator=lax.add,
+        identity=0,
+        shape=shape,
+        strides=strides,
+        padding=padding,
+    )
 
 
-def mean_pool(shape, strides=None, padding=None):
+def mean_pool(shape, *, strides=None, padding=None):
     size = prod(shape)
 
     def f(x):

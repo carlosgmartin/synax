@@ -41,20 +41,21 @@ def pool(operator, initial_value, shape, strides=None, padding=None):
     return f
 
 
-def max_pool(*args, **kwargs):
-    return pool(lax.max, -jnp.inf, *args, **kwargs)
+def max_pool(shape, strides=None, padding=None):
+    return pool(lax.max, -jnp.inf, shape, strides=strides, padding=padding)
 
 
-def sum_pool(*args, **kwargs):
-    return pool(lax.add, 0, *args, **kwargs)
+def sum_pool(shape, strides=None, padding=None):
+    return pool(lax.add, 0, shape, strides=strides, padding=padding)
 
 
-def mean_pool(*args, **kwargs):
-    if args:
-        size = prod(args[0])
-    else:
-        size = prod(kwargs["shape"])
-    return lambda x: sum_pool(*args, **kwargs)(x) / size
+def mean_pool(shape, strides=None, padding=None):
+    size = prod(shape)
+
+    def f(x):
+        return sum_pool(shape, strides=strides, padding=padding)(x) / size
+
+    return f
 
 
 def dropout(prob):

@@ -3,17 +3,16 @@ from functools import partial
 from jax import nn, random
 from jax import numpy as jnp
 
-from ._basic import Bias, Conv, Dense, Function
+from ._basic import Bias, Conv, Dense, Func
 from ._compound import Chain
-from ._module import Module
-from ._recurrent import MinimalGatedUnit
+from ._recurrent import MGU
 from ._regularizers import zero
 from ._utils import max_pool, mean_pool
 
 
-def MultiLayerPerceptron(
+def MLP(
     dims,
-    activation=Function(nn.relu),
+    activation=Func(nn.relu),
     kernel_initializer=nn.initializers.he_normal(),
     bias_initializer=nn.initializers.zeros,
     kernel_regularizer=zero,
@@ -38,7 +37,7 @@ def MultiLayerPerceptron(
     return Chain(lst[:-1])
 
 
-class AutoEncoder(Module):
+class AutoEncoder:
     def __init__(self, encoder, decoder):
         self.encoder = encoder
         self.decoder = decoder
@@ -84,7 +83,7 @@ def get_von_neumann_neighbors(array, space_dim=None, include_center=False):
     return neighbors
 
 
-class NeuralCellularAutomaton(Module):
+class NeuralCellularAutomaton:
     """Neural GPUs learn algorithms (2015)
     https://arxiv.org/abs/1511.08228"""
 
@@ -92,7 +91,7 @@ class NeuralCellularAutomaton(Module):
         self,
         state_dim,
         space_dim=1,
-        cell_cls=partial(MinimalGatedUnit, reset_gate=False),
+        cell_cls=partial(MGU, reset_gate=False),
         global_mean=False,
         global_max=False,
     ):
@@ -125,8 +124,9 @@ class NeuralCellularAutomaton(Module):
         return new_state
 
 
-class GatedLinearUnit(Module):
-    """Language modeling with gated convolutional networks (2016)
+class GLU:
+    """Gated linear unit
+    Language modeling with gated convolutional networks (2016)
     https://arxiv.org/abs/1612.08083"""
 
     def __init__(
@@ -158,7 +158,9 @@ class GatedLinearUnit(Module):
         return y * nn.sigmoid(z)
 
 
-class ParametricReLU(Module):
+class PReLU:
+    """Parametric ReLU"""
+
     def __init__(
         self,
         initializer=nn.initializers.zeros,
@@ -184,19 +186,19 @@ def LeNet():
         [
             Conv(1, 6, (5, 5), padding="SAME"),
             Bias(6),
-            Function(nn.tanh),
-            Function(mean_pool((2, 2), (2, 2))),
+            Func(nn.tanh),
+            Func(mean_pool((2, 2), (2, 2))),
             Conv(6, 16, (5, 5)),
             Bias(16),
-            Function(nn.tanh),
-            Function(mean_pool((2, 2), (2, 2))),
-            Function(jnp.ravel),
+            Func(nn.tanh),
+            Func(mean_pool((2, 2), (2, 2))),
+            Func(jnp.ravel),
             Dense(400, 120),
             Bias(120),
-            Function(nn.tanh),
+            Func(nn.tanh),
             Dense(120, 84),
             Bias(84),
-            Function(nn.tanh),
+            Func(nn.tanh),
             Dense(84, 10),
             Bias(10),
         ]
@@ -210,30 +212,30 @@ def AlexNet():
         [
             Conv(3, 96, (11, 11), (4, 4)),
             Bias(96),
-            Function(nn.relu),
-            Function(max_pool((3, 3), (2, 2))),
+            Func(nn.relu),
+            Func(max_pool((3, 3), (2, 2))),
             Conv(96, 256, (5, 5), padding="SAME"),
             Bias(256),
-            Function(nn.relu),
-            Function(max_pool((3, 3), (2, 2))),
+            Func(nn.relu),
+            Func(max_pool((3, 3), (2, 2))),
             Conv(256, 384, (3, 3), padding="SAME"),
             Bias(384),
-            Function(nn.relu),
+            Func(nn.relu),
             Conv(384, 384, (3, 3), padding="SAME"),
             Bias(384),
-            Function(nn.relu),
+            Func(nn.relu),
             Conv(384, 256, (3, 3), padding="SAME"),
             Bias(256),
-            Function(nn.relu),
-            Function(max_pool((3, 3), (2, 2))),
-            Function(jnp.ravel),
+            Func(nn.relu),
+            Func(max_pool((3, 3), (2, 2))),
+            Func(jnp.ravel),
             Dense(6400, 4096),
             Bias(4096),
-            Function(nn.relu),
+            Func(nn.relu),
             # dropout 0.5
             Dense(4096, 4096),
             Bias(4096),
-            Function(nn.relu),
+            Func(nn.relu),
             # dropout 0.5
             Dense(4096, 1000),
             Bias(1000),

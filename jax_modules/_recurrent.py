@@ -2,10 +2,9 @@ from jax import lax, nn, random
 from jax import numpy as jnp
 
 from ._basic import Bias, Conv
-from ._module import Module
 
 
-class RecurrentNetwork(Module):
+class RecurrentNetwork:
     def __init__(self, unit):
         self.unit = unit
 
@@ -25,7 +24,7 @@ class RecurrentNetwork(Module):
         return lax.scan(f, h, xs)
 
 
-class SimpleRecurrentUnit(Module):
+class SimpleRecurrentUnit:
     """Finding structure in time (1990)
     https://onlinelibrary.wiley.com/doi/10.1207/s15516709cog1402_1"""
 
@@ -63,8 +62,9 @@ class SimpleRecurrentUnit(Module):
         return self.state_initializer(key, (self.state_dim,))
 
 
-class GatedRecurrentUnit(Module):
-    """Learning phrase representations using RNN encoder-decoder for statistical machine
+class GRU:
+    """Gated recurrent unit
+    Learning phrase representations using RNN encoder-decoder for statistical machine
         translation (2014)
     https://arxiv.org/abs/1406.1078"""
 
@@ -120,8 +120,9 @@ class GatedRecurrentUnit(Module):
         return self.state_initializer(key, (self.state_dim,))
 
 
-class MinimalGatedUnit(Module):
-    """Minimal gated unit for recurrent neural networks (2016)
+class MGU:
+    """Minimal gated unit
+    Minimal gated unit for recurrent neural networks (2016)
     https://arxiv.org/abs/1603.09420"""
 
     def __init__(
@@ -175,7 +176,7 @@ class MinimalGatedUnit(Module):
         return self.state_initializer(key, (self.state_dim,))
 
 
-class BistableRecurrentCell(Module):
+class BistableRecurrentCell:
     """A bio-inspired bistable recurrent cell allows for long-lasting memory (2020)
     https://arxiv.org/abs/2006.05252"""
 
@@ -206,8 +207,9 @@ class BistableRecurrentCell(Module):
         return c * state + (1 - c) * y
 
 
-class LongShortTermMemory(Module):
-    """LSTM can solve hard long time lag problems (1996)
+class LSTM:
+    """Long short term memory
+    LSTM can solve hard long time lag problems (1996)
     https://dl.acm.org/doi/10.5555/2998981.2999048"""
 
     def __init__(
@@ -261,8 +263,8 @@ class LongShortTermMemory(Module):
         return new_h, new_c
 
 
-class FastGRNN(Module):
-    """Fastgrnn: a fast, accurate, stable and tiny kilobyte sized gated recurrent neural
+class FastGRNN:
+    """FastGRNN: a fast, accurate, stable and tiny kilobyte sized gated recurrent neural
         network (2019)
     https://arxiv.org/abs/1901.02358"""
 
@@ -302,7 +304,7 @@ class FastGRNN(Module):
         return (zeta * (1 - z) + nu) * y + z * h
 
 
-class UpdateGateRNN(Module):
+class UpdateGateRNN:
     """Capacity and trainability in recurrent neural networks (2017)
     https://openreview.net/forum?id=BydARw9ex"""
 

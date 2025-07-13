@@ -14,7 +14,7 @@ python3 -m pip install git+https://github.com/carlosgmartin/jax_modules
 from jax import numpy as jnp, random
 import jax_modules as jm
 
-module = jm.MultiLayerPerceptron([2, 32, 3])
+module = jm.MLP([2, 32, 3])
 
 key = random.key(0)
 param = module.init(key)

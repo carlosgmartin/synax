@@ -2,11 +2,10 @@ import jax
 from jax import nn
 from jax import numpy as jnp
 
-from ._module import Module
 from ._regularizers import zero
 
 
-class Constant(Module):
+class Constant:
     def __init__(
         self,
         dim,
@@ -27,7 +26,7 @@ class Constant(Module):
         return self.regularizer(param)
 
 
-class Ball(Module):
+class Ball:
     def __init__(
         self,
         dim,
@@ -48,7 +47,7 @@ class Ball(Module):
         return self.regularizer(param)
 
 
-class Simplex(Module):
+class Simplex:
     def __init__(
         self,
         dim,
@@ -85,7 +84,7 @@ def vector_to_antisymmetric_matrix(vector, dim):
     return A
 
 
-class SymmetricMatrix(Module):
+class SymmetricMatrix:
     def __init__(
         self,
         dim,
@@ -107,7 +106,7 @@ class SymmetricMatrix(Module):
         return self.regularizer(param)
 
 
-class AntisymmetricMatrix(Module):
+class AntisymmetricMatrix:
     def __init__(
         self,
         dim,
@@ -129,7 +128,7 @@ class AntisymmetricMatrix(Module):
         return self.regularizer(param)
 
 
-class SpecialOrthogonalMatrix(Module):
+class SpecialOrthogonalMatrix:
     def __init__(self, dim, transform="exp"):
         self.antisymmetric = AntisymmetricMatrix(dim)
         self.transform = transform

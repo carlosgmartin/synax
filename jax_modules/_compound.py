@@ -2,10 +2,8 @@ import jax
 from jax import flatten_util, lax, nn, random
 from jax import numpy as jnp
 
-from ._module import Module
 
-
-class Chain(Module):
+class Chain:
     def __init__(self, modules):
         self.modules = modules
 
@@ -25,7 +23,7 @@ class Chain(Module):
         )
 
 
-class Parallel(Module):
+class Parallel:
     def __init__(self, modules):
         self.modules = modules
 
@@ -46,7 +44,7 @@ class Parallel(Module):
         )
 
 
-class Repeat(Module):
+class Repeat:
     def __init__(self, module):
         self.module = module
 
@@ -64,7 +62,7 @@ class Repeat(Module):
         return self.module.parameter_loss(param)
 
 
-class Residual(Module):
+class Residual:
     """Deep residual learning for image recognition
     https://arxiv.org/abs/1512.03385"""
 
@@ -82,7 +80,7 @@ class Residual(Module):
         return self.module.parameter_loss(param)
 
 
-class Switch(Module):
+class Switch:
     def __init__(self, module, branches):
         self.module = module
         self.branches = branches
@@ -96,7 +94,7 @@ class Switch(Module):
         return self.module.apply(param, input)
 
 
-class RavelUnravel(Module):
+class RavelUnravel:
     def __init__(self, module):
         self.module = module
 
@@ -110,7 +108,7 @@ class RavelUnravel(Module):
         return y
 
 
-class ConvexPotentialFlow(Module):
+class ConvexPotentialFlow:
     """Convex potential flows: universal probability distributions with optimal
         transport and convex optimization (2020)
     https://arxiv.org/abs/2012.05942"""

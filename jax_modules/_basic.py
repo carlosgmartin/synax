@@ -1,11 +1,10 @@
 from jax import lax, nn
 from jax import numpy as jnp
 
-from ._module import Module
 from ._regularizers import zero
 
 
-class Bias(Module):
+class Bias:
     def __init__(
         self,
         dim,
@@ -26,7 +25,7 @@ class Bias(Module):
         return self.regularizer(param)
 
 
-class Scale(Module):
+class Scale:
     def __init__(self, dim, initializer=nn.initializers.ones, regularizer=zero):
         self.dim = dim
         self.initializer = initializer
@@ -42,7 +41,7 @@ class Scale(Module):
         return self.regularizer(param)
 
 
-class Dense(Module):
+class Dense:
     def __init__(
         self,
         input_dim,
@@ -65,7 +64,7 @@ class Dense(Module):
         return self.regularizer(param)
 
 
-class Function(Module):
+class Func:
     def __init__(self, function):
         self.function = function
 
@@ -76,7 +75,7 @@ class Function(Module):
         return self.function(input)
 
 
-class Conv(Module):
+class Conv:
     def __init__(
         self,
         input_dim,
@@ -120,7 +119,7 @@ class Conv(Module):
         return x
 
 
-class Embed(Module):
+class Embed:
     def __init__(self, num, dim, initializer=nn.initializers.normal()):
         self.num = num
         self.dim = dim

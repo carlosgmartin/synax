@@ -1,11 +1,10 @@
 from jax import lax, nn, random
 from jax import numpy as jnp
 
-from ._module import Module
 from ._utils import layer_norm
 
 
-class Attention(Module):
+class Attention:
     """Attention is all you need (2017)
     https://arxiv.org/abs/1706.03762
 

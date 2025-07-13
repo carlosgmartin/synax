@@ -27,7 +27,7 @@ def test_convolution(input_dim=3, output_dim=4, spatial_dims=(20, 18)):
 
 
 def test_function(shape=(2, 3, 5), f=lambda x: x * x):
-    module = jm.Function(f)
+    module = jm.Func(f)
     param = module.init(key)
     x = jnp.empty(shape)
     y = module.apply(param, x)
@@ -88,7 +88,7 @@ def test_alexnet():
 
 
 def test_mlp():
-    module = jm.MultiLayerPerceptron([3, 4, 5, 6])
+    module = jm.MLP([3, 4, 5, 6])
     param = module.init(key)
     x = jnp.empty(3)
     y = module.apply(param, x)

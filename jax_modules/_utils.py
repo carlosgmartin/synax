@@ -23,8 +23,6 @@ def pool(operator, identity, shape, *, strides=None, padding="VALID"):
     if strides is None:
         strides = (1,) * len(shape)
 
-    assert len(shape) == len(strides), f"{shape=} and {strides=} have different lengths"
-
     def f(x):
         return lax.reduce_window(
             operand=x,

@@ -1,6 +1,7 @@
-import synax
 from jax import numpy as jnp
 from jax import random
+
+import synax
 
 key = random.key(0)
 

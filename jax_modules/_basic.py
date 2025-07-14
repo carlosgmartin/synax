@@ -236,7 +236,7 @@ class Conv:
     :param input_dimension: Input dimension.
     :param output_dimension: Output dimension.
     :param shape: Window size for each spatial dimension.
-    :param strides: Stride for each spatial dimension.
+    :param stride: Stride for each spatial dimension.
     :param padding: Padding. Can be "VALID", "SAME", "SAME_LOWER", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
         "VALID" applies no padding.
@@ -255,7 +255,7 @@ class Conv:
         input_dimension: int,
         output_dimension: int,
         shape: Sequence[int],
-        strides: Sequence[int] | None = None,
+        stride: Sequence[int] | None = None,
         padding: Literal["VALID", "SAME", "SAME_LOWER"]
         | Sequence[tuple[int, int]] = "VALID",
         dilation: Sequence[int] | None = None,
@@ -265,7 +265,7 @@ class Conv:
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
         self.shape = shape
-        self.strides = strides
+        self.stride = stride
         self.padding = padding
         self.dilation = dilation
         self.initializer = initializer
@@ -287,7 +287,7 @@ class Conv:
         x = lax.conv_general_dilated(
             lhs=x,
             rhs=parameters,
-            window_strides=self.strides or [1] * num_spatial_axes,
+            window_strides=self.stride or [1] * num_spatial_axes,
             padding=self.padding,
             rhs_dilation=self.dilation,
             feature_group_count=self.groups,

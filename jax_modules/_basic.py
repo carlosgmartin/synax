@@ -38,7 +38,7 @@ class Bias:
         Sample initial parameters.
 
         :param key: A PRNG key.
-        :param type: jax.Array
+        :type key: jax.Array
 
         :returns: Module parameters.
         :rtype: typing.Any
@@ -106,7 +106,7 @@ class Scale:
         Sample initial parameters.
 
         :param key: A PRNG key.
-        :param type: jax.Array
+        :type key: jax.Array
 
         :returns: Module parameters.
         :rtype: typing.Any
@@ -180,7 +180,7 @@ class Linear:
         Sample initial parameters.
 
         :param key: A PRNG key.
-        :param type: jax.Array
+        :type key: jax.Array
 
         :returns: Module parameters.
         :rtype: typing.Any
@@ -237,7 +237,7 @@ class Func:
         Sample initial parameters.
 
         :param key: A PRNG key.
-        :param type: jax.Array
+        :type key: jax.Array
 
         :returns: Module parameters.
         :rtype: typing.Any
@@ -366,7 +366,7 @@ class Embed:
         Sample initial parameters.
 
         :param key: A PRNG key.
-        :param type: jax.Array
+        :type key: jax.Array
 
         :returns: Module parameters.
         :rtype: typing.Any

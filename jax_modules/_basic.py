@@ -237,8 +237,8 @@ class Conv:
 
     :param input_dimension: Input dimension.
     :param output_dimension: Output dimension.
-    :param shape: Window size for each spatial dimension.
-    :param stride: Stride for each spatial dimension.
+    :param shape: Window shape.
+    :param stride: Window stride.
     :param padding: Padding. Can be "VALID", "SAME", "SAME_LOWER", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
         "VALID" applies no padding.
@@ -247,7 +247,8 @@ class Conv:
         spatial dimension.
         When the padding is an odd number, "SAME" adds the extra padding at the
         end, while "SAME_LOWER" adds the extra padding at the beginning.
-    :param dilation: Dilation factor for each spatial dimension.
+    :param window_dilation: Window dilation.
+    :param base_dilation: Base dilation.
     :param initializer: Initializer for the convolution kernel.
     :param groups: Number of groups to split the input channels into.
     """
@@ -259,7 +260,8 @@ class Conv:
         shape: Sequence[int],
         stride: int | Sequence[int] = 1,
         padding: Padding = "VALID",
-        dilation: int | Sequence[int] = 1,
+        window_dilation: int | Sequence[int] = 1,
+        base_dilation: int | Sequence[int] = 1,
         initializer: Initializer = nn.initializers.he_normal(),
         groups: int = 1,
     ):
@@ -268,7 +270,8 @@ class Conv:
         self.shape = shape
         self.stride = stride
         self.padding = padding
-        self.dilation = dilation
+        self.window_dilation = window_dilation
+        self.base_dilation = base_dilation
         self.initializer = initializer
         self.groups = groups
 
@@ -286,9 +289,13 @@ class Conv:
         if isinstance(stride, int):
             stride = (stride,) * len(self.shape)
 
-        dilation = self.dilation
-        if isinstance(dilation, int):
-            dilation = (dilation,) * len(self.shape)
+        window_dilation = self.window_dilation
+        if isinstance(window_dilation, int):
+            window_dilation = (window_dilation,) * len(self.shape)
+
+        base_dilation = self.base_dilation
+        if isinstance(base_dilation, int):
+            base_dilation = (base_dilation,) * len(self.shape)
 
         num_spatial_axes = len(self.shape)
         x = input
@@ -299,7 +306,8 @@ class Conv:
             rhs=parameters,
             window_strides=stride,
             padding=self.padding,
-            rhs_dilation=dilation,
+            rhs_dilation=window_dilation,
+            lhs_dilation=base_dilation,
             feature_group_count=self.groups,
         )
         x = x.squeeze(0)

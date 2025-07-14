@@ -1,4 +1,6 @@
-from jax import lax, nn
+from typing import Any, Callable
+
+from jax import Array, lax, nn
 from jax import numpy as jnp
 
 from ._regularizers import zero
@@ -16,58 +18,48 @@ class Bias:
     where :math:`b` is a learned vector.
 
     :param dimension: Dimension of the input.
-    :type dimension: int
     :param initializer: Initializer.
-    :type initializer: jax.nn.initializers.Initializer
     :param regularizer: Regularizer.
-    :type regularizer: typing.Callable
     """
 
     def __init__(
         self,
-        dimension,
-        initializer=nn.initializers.zeros,
-        regularizer=zero,
+        dimension: int,
+        initializer: Callable = nn.initializers.zeros,
+        regularizer: Callable = zero,
     ):
         self.dimension = dimension
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key):
+    def init(self, key: Array) -> Array:
         """
         Sample initial parameters.
 
         :param key: A PRNG key.
-        :type key: jax.Array
 
         :returns: Module parameters.
-        :rtype: typing.Any
         """
         return self.initializer(key, (self.dimension,))
 
-    def apply(self, param, input):
+    def apply(self, param: Array, input: Array) -> Array:
         """
         Apply the module.
 
         :param param: Module parameters.
-        :type param: typing.Any
         :param input: An array of shape ``(..., dimension)``.
-        :type input: jax.Array
 
         :returns: An array of shape ``(..., dimension)``.
-        :rtype: jax.Array
         """
         return input + param
 
-    def parameter_loss(self, param):
+    def parameter_loss(self, param: Array) -> Array:
         """
         Parameter loss.
 
         :param param: Module parameters.
-        :type param: typing.Any
 
         :returns: A scalar.
-        :rtype: jax.Array
         """
         return self.regularizer(param)
 
@@ -84,58 +76,48 @@ class Scale:
     where :math:`a` is a learned vector.
 
     :param dimension: Dimension of the input.
-    :type dimension: int
     :param initializer: Initializer.
-    :type initializer: jax.nn.initializers.Initializer
     :param regularizer: Regularizer.
-    :type regularizer: typing.Callable
     """
 
     def __init__(
         self,
-        dimension,
-        initializer=nn.initializers.ones,
-        regularizer=zero,
+        dimension: int,
+        initializer: Callable = nn.initializers.ones,
+        regularizer: Callable = zero,
     ):
         self.dimension = dimension
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key):
+    def init(self, key: Array) -> Array:
         """
         Sample initial parameters.
 
         :param key: A PRNG key.
-        :type key: jax.Array
 
         :returns: Module parameters.
-        :rtype: typing.Any
         """
         return self.initializer(key, (self.dimension,))
 
-    def apply(self, param, input):
+    def apply(self, param: Array, input: Array) -> Array:
         """
         Apply the module.
 
         :param param: Module parameters.
-        :type param: typing.Any
         :param input: An array of shape ``(..., dimension)``.
-        :type input: jax.Array
 
         :returns: An array of shape ``(..., dimension)``.
-        :rtype: jax.Array
         """
         return input * param
 
-    def parameter_loss(self, param):
+    def parameter_loss(self, param: Array) -> Array:
         """
         Parameter loss.
 
         :param param: Module parameters.
-        :type param: typing.Any
 
         :returns: A scalar.
-        :rtype: jax.Array
         """
         return self.regularizer(param)
 
@@ -154,62 +136,51 @@ class Linear:
     where :math:`A` is a learned matrix.
 
     :param input_dimension: Dimension of the input.
-    :type input_dimension: int
     :param output_dimension: Dimension of the output.
-    :type output_dimension: int
     :param initializer: Initializer.
-    :type initializer: jax.nn.initializers.Initializer
     :param regularizer: Regularizer.
-    :type regularizer: typing.Callable
     """
 
     def __init__(
         self,
-        input_dimension,
-        output_dimension,
-        initializer=nn.initializers.he_normal(),
-        regularizer=zero,
+        input_dimension: int,
+        output_dimension: int,
+        initializer: Callable = nn.initializers.he_normal(),
+        regularizer: Callable = zero,
     ):
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key):
+    def init(self, key: Array) -> Array:
         """
         Sample initial parameters.
 
         :param key: A PRNG key.
-        :type key: jax.Array
 
         :returns: Module parameters.
-        :rtype: typing.Any
         """
         return self.initializer(key, (self.input_dimension, self.output_dimension))
 
-    def apply(self, param, input):
+    def apply(self, param: Array, input: Array) -> Array:
         """
         Apply the module.
 
         :param param: Module parameters.
-        :type param: typing.Any
         :param input: An array of shape ``(..., input_dimension)``.
-        :type input: jax.Array
 
         :returns: An array of shape ``(..., output_dimension)``.
-        :rtype: jax.Array
         """
         return input @ param
 
-    def parameter_loss(self, param):
+    def parameter_loss(self, param: Array) -> Array:
         """
         Parameter loss.
 
         :param param: Module parameters.
-        :type param: typing.Any
 
         :returns: A scalar.
-        :rtype: jax.Array
         """
         return self.regularizer(param)
 
@@ -226,35 +197,29 @@ class Func:
     where :math:`f` is a user-specified function.
 
     :param function: Function to apply to input.
-    :type function: typing.Callable
     """
 
-    def __init__(self, function):
+    def __init__(self, function: Callable):
         self.function = function
 
-    def init(self, key):
+    def init(self, key: Array) -> None:
         """
         Sample initial parameters.
 
         :param key: A PRNG key.
-        :type key: jax.Array
 
         :returns: Module parameters.
-        :rtype: typing.Any
         """
         return None
 
-    def apply(self, param, input):
+    def apply(self, param: None, input: Any) -> Any:
         """
         Apply the module.
 
         :param param: Module parameters.
-        :type param: typing.Any
         :param input: An input.
-        :type input: typing.Any
 
         :returns: The output.
-        :rtype: typing.Any
         """
         return self.function(input)
 
@@ -266,13 +231,9 @@ class Conv:
     Does not include bias.
 
     :param input_dimension: Dimension of the input.
-    :type input_dimension: int
     :param output_dimension: Dimension of the output.
-    :type output_dimension: int
     :param shape: Window size for each spatial dimension.
-    :type shape: tuple[int, ...]
     :param strides: Stride for each spatial dimension.
-    :type strides: tuple[int, ...] | None
     :param padding: Padding. Can be "VALID", "SAME", "SAME_LOWER", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
         "VALID" applies no padding.
@@ -281,25 +242,21 @@ class Conv:
         spatial dimension.
         When the padding is an odd number, "SAME" adds the extra padding at the
         end, while "SAME_LOWER" adds the extra padding at the beginning.
-    :type padding: str | Sequence[tuple[int, int]]
     :param dilation: Dilation factor for each spatial dimension.
-    :type dilation: tuple[int, ...] | None
     :param initializer: Initializer for the convolution kernel.
-    :type initializer: jax.nn.initializers.Initializer
     :param groups: Number of groups to split the input channels into.
-    :type groups: int
     """
 
     def __init__(
         self,
-        input_dimension,
-        output_dimension,
-        shape,
-        strides=None,
-        padding="VALID",
-        dilation=None,
-        initializer=None,
-        groups=1,
+        input_dimension: int,
+        output_dimension: int,
+        shape: tuple[int, ...],
+        strides: tuple[int, ...] | None = None,
+        padding: str | tuple[tuple[int, int]] = "VALID",
+        dilation: tuple[int, ...] | None = None,
+        initializer: Callable = nn.initializers.he_normal(),
+        groups: int = 1,
     ):
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
@@ -310,7 +267,7 @@ class Conv:
         self.initializer = initializer
         self.groups = groups
 
-    def init(self, key):
+    def init(self, key: Array) -> Array:
         initializer = self.initializer or nn.initializers.he_normal(
             range(-len(self.shape), 0)
         )
@@ -318,13 +275,13 @@ class Conv:
             key, (self.output_dimension, self.input_dimension, *self.shape)
         )
 
-    def apply(self, w, x):
+    def apply(self, param: Array, x) -> Array:
         num_spatial_axes = len(self.shape)
         x = jnp.moveaxis(x, -1, -num_spatial_axes - 1)
         x = x[None]
         x = lax.conv_general_dilated(
             lhs=x,
-            rhs=w,
+            rhs=param,
             window_strides=self.strides or [1] * num_spatial_axes,
             padding=self.padding,
             rhs_dilation=self.dilation,
@@ -340,61 +297,50 @@ class Embed:
     Embedding.
 
     :param number: Number of embeddings.
-    :type number: int
     :param dimension: Dimension of each embedding.
-    :type dimension: int
-    :initializer: Initializer for embeddings.
-    :type initializer: jax.nn.initializers.Initializer
+    :param initializer: Initializer for embeddings.
     :param regularizer: Regularizer.
-    :type regularizer: typing.Callable
     """
 
     def __init__(
         self,
-        number,
-        dimension,
-        initializer=nn.initializers.normal(),
-        regularizer=zero,
+        number: int,
+        dimension: int,
+        initializer: Callable = nn.initializers.normal(),
+        regularizer: Callable = zero,
     ):
         self.number = number
         self.dimension = dimension
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key):
+    def init(self, key: Array) -> Array:
         """
         Sample initial parameters.
 
         :param key: A PRNG key.
-        :type key: jax.Array
 
         :returns: Module parameters.
-        :rtype: typing.Any
         """
         return self.initializer(key, (self.number, self.dimension))
 
-    def apply(self, param, input):
+    def apply(self, param: Array, input: Array) -> Array:
         """
         Apply the module.
 
         :param param: Module parameters.
-        :type param: typing.Any
         :param input: An array of shape ``(...,)``.
-        :type input: jax.Array
 
         :returns: An array of shape ``(..., dimension)``.
-        :rtype: jax.Array
         """
         return param[input]
 
-    def parameter_loss(self, param):
+    def parameter_loss(self, param: Array) -> Array:
         """
         Parameter loss.
 
         :param param: Module parameters.
-        :type param: typing.Any
 
         :returns: A scalar.
-        :rtype: jax.Array
         """
         return self.regularizer(param)

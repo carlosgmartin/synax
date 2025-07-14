@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Any, Callable
+from typing import Any, Callable, Sequence
 
 from jax import Array, nn, random
 from jax import numpy as jnp
@@ -16,7 +16,7 @@ Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
 def MLP(
-    dimensions: list[int],
+    dimensions: Sequence[int],
     activation: Module = Func(nn.relu),
     linear_initializer: Initializer = nn.initializers.he_normal(),
     bias_initializer: Initializer = nn.initializers.zeros,

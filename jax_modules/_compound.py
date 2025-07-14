@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Sequence
 
 import jax
 from jax import Array, lax, random
@@ -33,7 +33,7 @@ class Chain:
     :param modules: Sequence of modules.
     """
 
-    def __init__(self, modules: list[Module]):
+    def __init__(self, modules: Sequence[Module]):
         self.modules = modules
 
     def init(self, key: Key) -> list[Any]:
@@ -73,7 +73,7 @@ class Parallel:
     :param modules: Sequence of modules.
     """
 
-    def __init__(self, modules: list[Module]):
+    def __init__(self, modules: Sequence[Module]):
         self.modules = modules
 
     def init(self, key: Key) -> list[Any]:

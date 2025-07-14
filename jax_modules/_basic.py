@@ -34,12 +34,38 @@ class Bias:
         self.regularizer = regularizer
 
     def init(self, key):
+        """
+        Sample initial parameters.
+
+        :param key: A PRNG key.
+        :param type: jax.Array
+        """
         return self.initializer(key, (self.dimension,))
 
     def apply(self, param, input):
+        """
+        Apply the module.
+
+        :param param: Module parameters.
+        :type param: typing.Any
+        :param input: An array of shape ``(..., dimension)``.
+        :type param: jax.Array
+
+        :returns: An array of shape ``(..., dimension)``.
+        :rtype: jax.Array
+        """
         return input + param
 
     def parameter_loss(self, param):
+        """
+        Parameter loss.
+
+        :param param: Module parameters.
+        :type param: typing.Any
+
+        :returns: A scalar.
+        :rtype: jax.Array
+        """
         return self.regularizer(param)
 
 
@@ -73,12 +99,38 @@ class Scale:
         self.regularizer = regularizer
 
     def init(self, key):
+        """
+        Sample initial parameters.
+
+        :param key: A PRNG key.
+        :param type: jax.Array
+        """
         return self.initializer(key, (self.dimension,))
 
     def apply(self, param, input):
+        """
+        Apply the module.
+
+        :param param: Module parameters.
+        :type param: typing.Any
+        :param input: An array of shape ``(..., dimension)``.
+        :type param: jax.Array
+
+        :returns: An array of shape ``(..., dimension)``.
+        :rtype: jax.Array
+        """
         return input * param
 
     def parameter_loss(self, param):
+        """
+        Parameter loss.
+
+        :param param: Module parameters.
+        :type param: typing.Any
+
+        :returns: A scalar.
+        :rtype: jax.Array
+        """
         return self.regularizer(param)
 
 
@@ -118,12 +170,38 @@ class Linear:
         self.regularizer = regularizer
 
     def init(self, key):
+        """
+        Sample initial parameters.
+
+        :param key: A PRNG key.
+        :param type: jax.Array
+        """
         return self.initializer(key, (self.input_dimension, self.output_dimension))
 
     def apply(self, param, input):
+        """
+        Apply the module.
+
+        :param param: Module parameters.
+        :type param: typing.Any
+        :param input: An array of shape ``(..., input_dimension)``.
+        :type param: jax.Array
+
+        :returns: An array of shape ``(..., output_dimension)``.
+        :rtype: jax.Array
+        """
         return input @ param
 
     def parameter_loss(self, param):
+        """
+        Parameter loss.
+
+        :param param: Module parameters.
+        :type param: typing.Any
+
+        :returns: A scalar.
+        :rtype: jax.Array
+        """
         return self.regularizer(param)
 
 

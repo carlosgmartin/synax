@@ -100,7 +100,7 @@ class Attention:
         """
         Apply the module.
 
-        :param param: Parameters.
+        :param param: Module parameters.
         :type param: typing.Any
         :param query_input: Input used to compute queries.
         :type query_input: jax.Array

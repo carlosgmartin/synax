@@ -10,6 +10,7 @@ dev = [
     "ruff",
     "pyright",
     "pytest",
+    "furo",
 ]
 
 [tool.pyright]

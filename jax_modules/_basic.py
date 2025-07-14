@@ -52,7 +52,7 @@ class Bias:
         :param param: Module parameters.
         :type param: typing.Any
         :param input: An array of shape ``(..., dimension)``.
-        :type param: jax.Array
+        :type input: jax.Array
 
         :returns: An array of shape ``(..., dimension)``.
         :rtype: jax.Array
@@ -120,7 +120,7 @@ class Scale:
         :param param: Module parameters.
         :type param: typing.Any
         :param input: An array of shape ``(..., dimension)``.
-        :type param: jax.Array
+        :type input: jax.Array
 
         :returns: An array of shape ``(..., dimension)``.
         :rtype: jax.Array
@@ -194,7 +194,7 @@ class Linear:
         :param param: Module parameters.
         :type param: typing.Any
         :param input: An array of shape ``(..., input_dimension)``.
-        :type param: jax.Array
+        :type input: jax.Array
 
         :returns: An array of shape ``(..., output_dimension)``.
         :rtype: jax.Array
@@ -251,7 +251,7 @@ class Func:
         :param param: Module parameters.
         :type param: typing.Any
         :param input: An input.
-        :type param: typing.Any
+        :type input: typing.Any
 
         :returns: The output.
         :rtype: typing.Any
@@ -380,7 +380,7 @@ class Embed:
         :param param: Module parameters.
         :type param: typing.Any
         :param input: An array of shape ``(...,)``.
-        :type param: jax.Array
+        :type input: jax.Array
 
         :returns: An array of shape ``(..., dimension)``.
         :rtype: jax.Array

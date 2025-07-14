@@ -5,6 +5,8 @@ from jax import numpy as jnp
 
 from ._regularizers import zero
 
+Key = Array
+
 
 class Bias:
     r"""
@@ -32,7 +34,7 @@ class Bias:
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Array) -> Array:
+    def init(self, key: Key) -> Array:
         """
         Sample initial parameters.
 
@@ -90,7 +92,7 @@ class Scale:
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Array) -> Array:
+    def init(self, key: Key) -> Array:
         """
         Sample initial parameters.
 
@@ -153,7 +155,7 @@ class Linear:
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Array) -> Array:
+    def init(self, key: Key) -> Array:
         """
         Sample initial parameters.
 
@@ -202,7 +204,7 @@ class Func:
     def __init__(self, function: Callable):
         self.function = function
 
-    def init(self, key: Array) -> None:
+    def init(self, key: Key) -> None:
         """
         Sample initial parameters.
 
@@ -268,7 +270,7 @@ class Conv:
         self.initializer = initializer
         self.groups = groups
 
-    def init(self, key: Array) -> Array:
+    def init(self, key: Key) -> Array:
         initializer = self.initializer or nn.initializers.he_normal(
             range(-len(self.shape), 0)
         )
@@ -315,7 +317,7 @@ class Embed:
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Array) -> Array:
+    def init(self, key: Key) -> Array:
         """
         Sample initial parameters.
 

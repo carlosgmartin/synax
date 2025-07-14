@@ -4,6 +4,7 @@ import jax
 from jax import Array, lax, random
 
 Module = Any
+Key = Array
 
 
 class Chain:
@@ -35,7 +36,7 @@ class Chain:
     def __init__(self, modules: list[Module]):
         self.modules = modules
 
-    def init(self, key: jax.Array) -> list[Any]:
+    def init(self, key: Key) -> list[Any]:
         keys = random.split(key, len(self.modules))
         return [module.init(key) for module, key in zip(self.modules, keys)]
 
@@ -75,7 +76,7 @@ class Parallel:
     def __init__(self, modules: list[Module]):
         self.modules = modules
 
-    def init(self, key: jax.Array) -> list[Any]:
+    def init(self, key: Key) -> list[Any]:
         keys = random.split(key, len(self.modules))
         return [module.init(key) for module, key in zip(self.modules, keys)]
 
@@ -96,7 +97,7 @@ class Repeat:
     def __init__(self, module: Module):
         self.module = module
 
-    def init(self, key: Array) -> Any:
+    def init(self, key: Key) -> Any:
         return self.module.init(key)
 
     def apply(self, param: Any, input: Any, steps: int, unroll: int = 1):
@@ -132,7 +133,7 @@ class Residual:
     def __init__(self, module: Module):
         self.module = module
 
-    def init(self, key: jax.Array) -> Any:
+    def init(self, key: Key) -> Any:
         return self.module.init(key)
 
     def apply(self, param: Any, input: jax.Array) -> jax.Array:
@@ -148,7 +149,7 @@ class Switch:
         self.module = module
         self.branches = branches
 
-    def init(self, key: jax.Array) -> Any:
+    def init(self, key: Key) -> Any:
         keys = random.split(key, self.branches)
         return jax.vmap(self.module.init)(keys)
 

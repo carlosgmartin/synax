@@ -11,6 +11,7 @@ from ._regularizers import zero
 from ._utils import max_pool, mean_pool
 
 Module = Any
+Key = Array
 
 
 def MLP(
@@ -80,7 +81,7 @@ class AutoEncoder:
         self.encoder = encoder
         self.decoder = decoder
 
-    def init(self, key: Array) -> dict[str, Any]:
+    def init(self, key: Key) -> dict[str, Any]:
         keys = random.split(key)
         return {
             "encoder": self.encoder.init(keys[0]),
@@ -146,7 +147,7 @@ class NeuralGPU:
         self.global_mean = global_mean
         self.global_max = global_max
 
-    def init(self, key: Array) -> Any:
+    def init(self, key: Key) -> Any:
         return self.cell.init(key)
 
     def apply(self, param: Any, state: Array) -> Array:
@@ -211,7 +212,7 @@ class GLU:
         self.bias_initializer = bias_initializer
         self.sigmoid_fn = sigmoid_fn
 
-    def init(self, key: Array) -> tuple[Array, Array]:
+    def init(self, key: Key) -> tuple[Array, Array]:
         keys = random.split(key, 4)
         w = self.kernel_initializer(
             keys[0], (self.input_dimension, self.output_dimension)
@@ -263,7 +264,7 @@ class PReLU:
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Array) -> Array:
+    def init(self, key: Key) -> Array:
         return self.initializer(key, ())
 
     def apply(self, param: Array, input: Array) -> Array:

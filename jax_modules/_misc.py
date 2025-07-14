@@ -18,7 +18,7 @@ def MLP(
     kernel_regularizer=zero,
     bias_regularizer=zero,
 ):
-    lst = []
+    modules = []
     for input_dim, output_dim in zip(dims[:-1], dims[1:]):
         dense = Dense(
             input_dim,
@@ -31,8 +31,8 @@ def MLP(
             initializer=bias_initializer,
             regularizer=bias_regularizer,
         )
-        lst += [dense, bias, activation]
-    return Chain(lst[:-1])
+        modules += [dense, bias, activation]
+    return Chain(modules[:-1])
 
 
 class AutoEncoder:

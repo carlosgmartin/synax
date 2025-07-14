@@ -275,7 +275,7 @@ class Conv:
             key, (self.output_dimension, self.input_dimension, *self.shape)
         )
 
-    def apply(self, param: Array, x) -> Array:
+    def apply(self, param: Array, x: Array) -> Array:
         num_spatial_axes = len(self.shape)
         x = jnp.moveaxis(x, -1, -num_spatial_axes - 1)
         x = x[None]

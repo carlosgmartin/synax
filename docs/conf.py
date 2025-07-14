@@ -22,7 +22,7 @@ extensions = [
     "sphinx.ext.linkcode",
 ]
 autosummary_generate = True
-autoapi_dirs = ["../jax_modules"]
+autoapi_dirs = ["../src/jax_modules"]
 autoapi_options = [
     # "members",
     # "undoc-members",

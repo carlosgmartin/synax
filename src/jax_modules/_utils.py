@@ -92,8 +92,8 @@ def pool(
     *,
     stride: int | Sequence[int] = 1,
     padding: Padding = "VALID",
-    base_dilation: int | Sequence[int] = 1,
     window_dilation: int | Sequence[int] = 1,
+    base_dilation: int | Sequence[int] = 1,
 ) -> Callable[[Array], Array]:
     if isinstance(stride, int):
         stride = (stride,) * len(shape)
@@ -112,8 +112,8 @@ def pool(
             window_dimensions=(*shape, 1),
             window_strides=(*stride, 1),
             padding=padding,
-            base_dilation=(*base_dilation, 1),
             window_dilation=(*window_dilation, 1),
+            base_dilation=(*base_dilation, 1),
         )
 
     return f
@@ -124,8 +124,8 @@ def max_pool(
     *,
     stride: int | Sequence[int] = 1,
     padding: Padding = "VALID",
-    base_dilation: int | Sequence[int] = 1,
     window_dilation: int | Sequence[int] = 1,
+    base_dilation: int | Sequence[int] = 1,
 ) -> Callable[[Array], Array]:
     """
     Max pooling.
@@ -134,8 +134,8 @@ def max_pool(
     :param stride: Window stride.
     :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
-    :param base_dilation: Base dilation.
     :param window_dilation: Window dilation.
+    :param base_dilation: Base dilation.
 
     :returns: Function that maps an array to an array.
     """
@@ -145,8 +145,8 @@ def max_pool(
         shape=shape,
         stride=stride,
         padding=padding,
-        base_dilation=base_dilation,
         window_dilation=window_dilation,
+        base_dilation=base_dilation,
     )
 
 
@@ -155,8 +155,8 @@ def mean_pool(
     *,
     stride: int | Sequence[int] = 1,
     padding: Padding = "VALID",
-    base_dilation: int | Sequence[int] = 1,
     window_dilation: int | Sequence[int] = 1,
+    base_dilation: int | Sequence[int] = 1,
 ) -> Callable[[Array], Array]:
     """
     Mean pooling.
@@ -165,8 +165,8 @@ def mean_pool(
     :param stride: Window stride.
     :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
-    :param base_dilation: Base dilation.
     :param window_dilation: Window dilation.
+    :param base_dilation: Base dilation.
 
     :returns: Function that maps an array to an array.
     """
@@ -178,8 +178,8 @@ def mean_pool(
         shape=shape,
         stride=stride,
         padding=padding,
-        base_dilation=base_dilation,
         window_dilation=window_dilation,
+        base_dilation=base_dilation,
     )
 
     def f(x: Array) -> Array:

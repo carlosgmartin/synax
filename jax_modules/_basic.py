@@ -7,16 +7,16 @@ from ._regularizers import zero
 class Bias:
     def __init__(
         self,
-        dim,
+        dimension,
         initializer=nn.initializers.zeros,
         regularizer=zero,
     ):
-        self.dim = dim
+        self.dimension = dimension
         self.initializer = initializer
         self.regularizer = regularizer
 
     def init(self, key):
-        return self.initializer(key, (self.dim,))
+        return self.initializer(key, (self.dimension,))
 
     def apply(self, param, input):
         return input + param
@@ -26,13 +26,18 @@ class Bias:
 
 
 class Scale:
-    def __init__(self, dim, initializer=nn.initializers.ones, regularizer=zero):
-        self.dim = dim
+    def __init__(
+        self,
+        dimension,
+        initializer=nn.initializers.ones,
+        regularizer=zero,
+    ):
+        self.dimension = dimension
         self.initializer = initializer
         self.regularizer = regularizer
 
     def init(self, key):
-        return self.initializer(key, (self.dim,))
+        return self.initializer(key, (self.dimension,))
 
     def apply(self, param, input):
         return input * param
@@ -44,18 +49,18 @@ class Scale:
 class Dense:
     def __init__(
         self,
-        input_dim,
-        output_dim,
+        input_dimension,
+        output_dimension,
         initializer=nn.initializers.he_normal(),
         regularizer=zero,
     ):
-        self.input_dim = input_dim
-        self.output_dim = output_dim
+        self.input_dimension = input_dimension
+        self.output_dimension = output_dimension
         self.initializer = initializer
         self.regularizer = regularizer
 
     def init(self, key):
-        return self.initializer(key, (self.input_dim, self.output_dim))
+        return self.initializer(key, (self.input_dimension, self.output_dimension))
 
     def apply(self, param, input):
         return input @ param
@@ -78,8 +83,8 @@ class Func:
 class Conv:
     def __init__(
         self,
-        input_dim,
-        output_dim,
+        input_dimension,
+        output_dimension,
         window_shape,
         strides=None,
         padding="VALID",
@@ -87,8 +92,8 @@ class Conv:
         initializer=None,
         groups=1,
     ):
-        self.input_dim = input_dim
-        self.output_dim = output_dim
+        self.input_dimension = input_dimension
+        self.output_dimension = output_dimension
         self.window_shape = window_shape
         self.strides = strides
         self.padding = padding
@@ -100,7 +105,9 @@ class Conv:
         initializer = self.initializer or nn.initializers.he_normal(
             range(-len(self.window_shape), 0)
         )
-        return initializer(key, (self.output_dim, self.input_dim, *self.window_shape))
+        return initializer(
+            key, (self.output_dimension, self.input_dimension, *self.window_shape)
+        )
 
     def apply(self, w, x):
         num_spatial_axes = len(self.window_shape)
@@ -120,13 +127,18 @@ class Conv:
 
 
 class Embed:
-    def __init__(self, num, dim, initializer=nn.initializers.normal()):
-        self.num = num
-        self.dim = dim
+    def __init__(
+        self,
+        number,
+        dimension,
+        initializer=nn.initializers.normal(),
+    ):
+        self.number = number
+        self.dimension = dimension
         self.initializer = initializer
 
     def init(self, key):
-        return self.initializer(key, (self.num, self.dim))
+        return self.initializer(key, (self.number, self.dimension))
 
     def apply(self, param, input):
         return param[input]

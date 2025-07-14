@@ -24,6 +24,7 @@ def MLP(
     :param dimensions: Dimension of each layer.
     :type dimensions: typing.Sequence[int]
     :param activation: Module to use as an activation function.
+        Not applied to the output.
     :type activation: Module
     :param kernel_initializer: Initializer used for the kernels.
     :type kernel_initializer: jax.nn.initializers.Initializer

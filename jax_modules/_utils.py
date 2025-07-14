@@ -34,6 +34,8 @@ def layer_norm(axis: Axis = -1, epsilon: float = 1e-6) -> Callable[[Array], Arra
         ``None`` means all axes.
     :param epsilon: Small quantity used for numerical stability.
 
+    :returns: Function that maps an array to an array.
+
     References:
 
     - *Layer normalization*. 2016. https://arxiv.org/abs/1607.06450.
@@ -67,6 +69,8 @@ def rms_norm(axis: Axis = -1, epsilon: float = 1e-6) -> Callable[[Array], Array]
     :param axis: Axis or axes along which to normalize.
         ``None`` means all axes.
     :param epsilon: Small quantity used for numerical stability.
+
+    :returns: Function that maps an array to an array.
 
     References:
 
@@ -132,6 +136,8 @@ def max_pool(
         of int pairs giving the padding before and after each spatial dimension.
     :param base_dilation: Base dilation.
     :param window_dilation: Window dilation.
+
+    :returns: Function that maps an array to an array.
     """
     return pool(
         operator=lax.max,
@@ -161,6 +167,8 @@ def mean_pool(
         of int pairs giving the padding before and after each spatial dimension.
     :param base_dilation: Base dilation.
     :param window_dilation: Window dilation.
+
+    :returns: Function that maps an array to an array.
     """
     size = prod(shape)
 
@@ -182,6 +190,10 @@ def mean_pool(
 def dropout(prob: float) -> Callable[[Array, Key], Array]:
     """
     Dropout.
+
+    :param prob: Dropout probability.
+
+    :returns: Function that maps an array to an array.
 
     References:
 

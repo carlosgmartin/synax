@@ -104,8 +104,8 @@ class Attention:
         value += param["value_bias"]
 
         if self.normalize_qk:
-            query = layer_norm(query)
-            key = layer_norm(value)
+            query = layer_norm()(query)
+            key = layer_norm()(value)
 
         hidden = nn.dot_product_attention(
             query, key, value, mask=mask, bias=None, is_causal=is_causal

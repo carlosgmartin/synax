@@ -4,7 +4,7 @@ from jax import lax, random
 from jax import numpy as jnp
 
 
-def layer_norm(x, axis=-1, epsilon=1e-6):
+def layer_norm(axis=-1, epsilon=1e-6):
     r"""Layer normalization.
 
     Computes
@@ -20,20 +20,29 @@ def layer_norm(x, axis=-1, epsilon=1e-6):
     is the mean of the elements of :math:`x` and
 
     .. math::
-        \mu = \sqrt{ \frac{1}{n} \sum_i (x_i - \mu)^2 }
+        \mu = \sqrt{ \varepsilon + \frac{1}{n} \sum_i (x_i - \mu)^2 }
 
     is the standard deviation of the elements of :math:`x`.
+
+    :param axis: Axis or axes along which to apply.
+    :type axis: int | tuple[int, ...] | None
+    :param epsilon: Small quantity used for numerical stability.
+    :type epsilon: float
 
     References:
 
     - *Layer normalization*. 2016. https://arxiv.org/abs/1607.06450.
     """
-    x -= x.mean(axis, keepdims=True)
-    rms = jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
-    return x / rms
+
+    def f(x):
+        x -= x.mean(axis, keepdims=True)
+        rms = jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
+        return x / rms
+
+    return f
 
 
-def rms_norm(x, axis=-1, epsilon=1e-6):
+def rms_norm(axis=-1, epsilon=1e-6):
     r"""
     Root mean square layer normalization.
 
@@ -45,17 +54,26 @@ def rms_norm(x, axis=-1, epsilon=1e-6):
     where
 
     .. math::
-        r = \sqrt{ \frac{1}{n} \sum_i x_i^2 }
+        r = \sqrt{ \varepsilon + \frac{1}{n} \sum_i x_i^2 }
 
     is the root mean square (RMS) of the elements of :math:`x`.
+
+    :param axis: Axis or axes along which to apply.
+    :type axis: int | tuple[int, ...] | None
+    :param epsilon: Small quantity used for numerical stability.
+    :type epsilon: float
 
     References:
 
     - *Root mean square layer normalization*. 2019.
       https://arxiv.org/abs/1910.07467.
     """
-    rms = jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
-    return x / rms
+
+    def f(x):
+        rms = jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
+        return x / rms
+
+    return f
 
 
 def pool(operator, identity, shape, *, strides=None, padding="VALID"):

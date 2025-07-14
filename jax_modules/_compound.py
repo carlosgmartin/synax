@@ -1,6 +1,5 @@
 import jax
-from jax import flatten_util, lax, nn, random
-from jax import numpy as jnp
+from jax import flatten_util, lax, random
 
 
 class Chain:
@@ -106,29 +105,3 @@ class RavelUnravel:
         y_ravel = self.module.apply(w, x_ravel)
         y = unravel(y_ravel)
         return y
-
-
-class ConvexPotentialFlow:
-    """Convex potential flows: universal probability distributions with optimal
-        transport and convex optimization (2020)
-    https://arxiv.org/abs/2012.05942"""
-
-    def __init__(self, module, alpha_initializer=nn.initializers.zeros):
-        self.module = module
-        self.alpha_initializer = alpha_initializer
-
-    def init(self, key):
-        keys = random.split(key)
-        module_param = self.module.init(keys[0])
-        alpha = self.alpha_initializer(keys[1], ())
-        return module_param, alpha
-
-    def apply(self, param, x):
-        module_param, alpha = param
-
-        def f(x):
-            y = self.module.apply(module_param, x)
-            z = (x * jnp.conj(x)).sum()
-            return y + z * nn.softplus(alpha)
-
-        return jax.grad(f)(x)

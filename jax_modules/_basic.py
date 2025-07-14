@@ -220,7 +220,7 @@ class Func:
         Apply parameters.
 
         :param parameters: Parameters.
-        :param input: An input.
+        :param input: Input.
 
         :returns: The output.
         """

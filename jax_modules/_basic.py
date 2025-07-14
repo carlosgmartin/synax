@@ -47,6 +47,18 @@ class Scale:
 
 
 class Dense:
+    """Applies a linear transformation. Does not include bias.
+
+    :param input_dimension: Input dimension.
+    :type input_dimension: int
+    :param output_dimension: Output dimension.
+    :type output_dimension: int
+    :param initializer: Initializer.
+    :type initializer: nn.initializers.Initializer
+    :param regularizer: Regularizer.
+    :type regularizer: typing.Callable
+    """
+
     def __init__(
         self,
         input_dimension,

@@ -20,7 +20,7 @@ class Bias:
 
     where :math:`b` is a learned vector.
 
-    :param dimension: Dimension of the input.
+    :param dimension: Input dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
     """
@@ -78,7 +78,7 @@ class Scale:
 
     where :math:`a` is a learned vector.
 
-    :param dimension: Dimension of the input.
+    :param dimension: Input dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
     """
@@ -138,8 +138,8 @@ class Linear:
 
     where :math:`A` is a learned matrix.
 
-    :param input_dimension: Dimension of the input.
-    :param output_dimension: Dimension of the output.
+    :param input_dimension: Input dimension.
+    :param output_dimension: Output dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
     """
@@ -233,8 +233,8 @@ class Conv:
 
     Does not include bias.
 
-    :param input_dimension: Dimension of the input.
-    :param output_dimension: Dimension of the output.
+    :param input_dimension: Input dimension.
+    :param output_dimension: Output dimension.
     :param shape: Window size for each spatial dimension.
     :param strides: Stride for each spatial dimension.
     :param padding: Padding. Can be "VALID", "SAME", "SAME_LOWER", or a sequence

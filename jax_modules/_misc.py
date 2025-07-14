@@ -187,8 +187,8 @@ class GLU:
     where :math:`\sigma` is a sigmoid function, :math:`A_1` and :math:`A_2` are
     learned matrices, and :math:`b_1` and :math:`b_2` are learned vectors.
 
-    :param input_dimension: Dimension of the input.
-    :param output_dimension: Dimension of the output.
+    :param input_dimension: Input dimension.
+    :param output_dimension: Output dimension.
     :param kernel_initializer: Initializer used for the kernels.
     :param bias_initializer: Initializer used for the biases.
     :param sigmoid_fn: Sigmoid function to use. Defaults to the logistic function.

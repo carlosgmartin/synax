@@ -1,4 +1,4 @@
-# JAX modules
+# Synax
 
 A magic-free neural network library for [JAX](https://github.com/jax-ml/jax).
 
@@ -7,17 +7,23 @@ No tracing. No transforms. Just purely-functional JAX.
 ## Installation
 
 ```shell
-python3 -m pip install git+https://github.com/carlosgmartin/jax_modules
+pip install git+https://github.com/carlosgmartin/synax
+```
+
+Editable install:
+
+```shell
+pip install -e .
 ```
 
 ## Example
 
 ```python3
 from jax import numpy as jnp, random
-import jax_modules as jm
+import synax
 
 # Create a module.
-module = jm.MLP([2, 32, 3])
+module = synax.MLP([2, 32, 3])
 # Create a random key.
 key = random.key(0)
 # Initialize parameters.

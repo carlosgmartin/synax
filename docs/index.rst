@@ -1,5 +1,5 @@
-JAX modules
-===========
+Synax
+=====
 
 A magic-free neural network library for `JAX <https://github.com/jax-ml/jax>`_.
 

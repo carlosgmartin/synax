@@ -10,7 +10,7 @@ import importlib
 import inspect
 import os
 
-project = "JAX modules"
+project = "Synax"
 copyright = "2025, Carlos Martin"
 author = "Carlos Martin"
 
@@ -22,7 +22,7 @@ extensions = [
     "sphinx.ext.linkcode",
 ]
 autosummary_generate = True
-autoapi_dirs = ["../src/jax_modules"]
+autoapi_dirs = ["../src/synax"]
 autoapi_options = [
     # "members",
     # "undoc-members",
@@ -32,7 +32,7 @@ autoapi_options = [
 ]
 autoapi_own_page_level = "method"
 
-linkcode_url = "https://github.com/carlosgmartin/jax_modules/blob/master/src/jax_modules/{path}#L{start}-L{end}"
+linkcode_url = "https://github.com/carlosgmartin/synax/blob/master/src/synax/{path}#L{start}-L{end}"
 
 
 def linkcode_resolve(domain, info):

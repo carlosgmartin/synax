@@ -1,13 +1,12 @@
+import synax
 from jax import numpy as jnp
 from jax import random
-
-import jax_modules as jm
 
 key = random.key(0)
 
 
 def test_bias(d=10):
-    module = jm.Bias(d)
+    module = synax.Bias(d)
     param = module.init(key)
     x = jnp.empty(d)
     y = module.apply(param, x)
@@ -15,7 +14,7 @@ def test_bias(d=10):
 
 
 def test_conv(input_dim=3, output_dim=4, spatial_dims=(20, 18)):
-    module = jm.Conv(input_dim, output_dim, (3, 3))
+    module = synax.Conv(input_dim, output_dim, (3, 3))
     param = module.init(key)
     x = jnp.empty(spatial_dims + (input_dim,))
     y = module.apply(param, x)
@@ -28,20 +27,20 @@ def test_conv(input_dim=3, output_dim=4, spatial_dims=(20, 18)):
 
 def test_max_pool():
     x = jnp.zeros((10, 8, 3))
-    f = jm.max_pool((2, 2))
+    f = synax.max_pool((2, 2))
     y = f(x)
     assert y.shape == (9, 7, 3)
 
 
 def test_mean_pool():
     x = jnp.zeros((10, 8, 3))
-    f = jm.mean_pool((2, 2))
+    f = synax.mean_pool((2, 2))
     y = f(x)
     assert y.shape == (9, 7, 3)
 
 
 def test_function(shape=(2, 3, 5), f=lambda x: x * x):
-    module = jm.Func(f)
+    module = synax.Func(f)
     param = module.init(key)
     x = jnp.empty(shape)
     y = module.apply(param, x)
@@ -49,7 +48,7 @@ def test_function(shape=(2, 3, 5), f=lambda x: x * x):
 
 
 def test_dense(input_dim=10, output_dim=20):
-    module = jm.Linear(input_dim, output_dim)
+    module = synax.Linear(input_dim, output_dim)
     param = module.init(key)
     x = jnp.empty(input_dim)
     y = module.apply(param, x)
@@ -57,8 +56,8 @@ def test_dense(input_dim=10, output_dim=20):
 
 
 def test_parallel(input_dim=3, output_dim_1=5, output_dim_2=7):
-    module = jm.Parallel(
-        [jm.Linear(input_dim, output_dim_1), jm.Linear(input_dim, output_dim_2)]
+    module = synax.Parallel(
+        [synax.Linear(input_dim, output_dim_1), synax.Linear(input_dim, output_dim_2)]
     )
     param = module.init(key)
     x = jnp.empty(input_dim)
@@ -68,7 +67,7 @@ def test_parallel(input_dim=3, output_dim_1=5, output_dim_2=7):
 
 
 def test_chain_identity(dim=5):
-    module = jm.Chain([])
+    module = synax.Chain([])
     param = module.init(key)
     x = jnp.arange(dim)
     y = module.apply(param, x)
@@ -76,8 +75,8 @@ def test_chain_identity(dim=5):
 
 
 def test_chain(input_dim=3, hidden_dim=5, output_dim=7):
-    module = jm.Chain(
-        [jm.Linear(input_dim, hidden_dim), jm.Linear(hidden_dim, output_dim)]
+    module = synax.Chain(
+        [synax.Linear(input_dim, hidden_dim), synax.Linear(hidden_dim, output_dim)]
     )
     param = module.init(key)
     x = jnp.empty(input_dim)
@@ -86,7 +85,7 @@ def test_chain(input_dim=3, hidden_dim=5, output_dim=7):
 
 
 def test_lenet():
-    module = jm.LeNet()
+    module = synax.LeNet()
     param = module.init(key)
     x = jnp.empty((28, 28, 1))
     y = module.apply(param, x)
@@ -94,7 +93,7 @@ def test_lenet():
 
 
 def test_alexnet():
-    module = jm.AlexNet()
+    module = synax.AlexNet()
     param = module.init(key)
     x = jnp.empty((224, 224, 3))
     y = module.apply(param, x)
@@ -102,7 +101,7 @@ def test_alexnet():
 
 
 def test_mlp():
-    module = jm.MLP([3, 4, 5, 6])
+    module = synax.MLP([3, 4, 5, 6])
     param = module.init(key)
     x = jnp.empty(3)
     y = module.apply(param, x)
@@ -118,7 +117,7 @@ def test_attention(
     source_len=17,
     target_len=19,
 ):
-    module = jm.Attention(
+    module = synax.Attention(
         query_input_dim=query_input_dim,
         key_input_dim=key_input_dim,
         value_input_dim=value_input_dim,

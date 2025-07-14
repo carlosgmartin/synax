@@ -166,8 +166,14 @@ class Conv:
     :type shape: tuple[int, ...]
     :param strides: Stride for each spatial dimension.
     :type strides: tuple[int, ...] | None
-    :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
+    :param padding: Padding. Can be "VALID", "SAME", "SAME_LOWER", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
+        "VALID" applies no padding.
+        "SAME" and "SAME_LOWER" preserve the spatial shape of the input,
+        splitting the padding equally or almost equally before and after each
+        spatial dimension.
+        When the padding is an odd number, "SAME" adds the extra padding at the
+        end, while "SAME_LOWER" adds the extra padding at the beginning.
     :type padding: str | Sequence[tuple[int, int]]
     :param dilation: Dilation factor for each spatial dimension.
     :type dilation: tuple[int, ...] | None

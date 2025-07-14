@@ -30,7 +30,7 @@ autoapi_options = [
     "show-module-summary",
     "imported-members",
 ]
-autoapi_own_page_level = "function"
+autoapi_own_page_level = "method"
 
 linkcode_url = "https://github.com/carlosgmartin/jax_modules/blob/master/jax_modules/{path}#L{start}-L{end}"
 

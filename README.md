@@ -16,14 +16,16 @@ python3 -m pip install git+https://github.com/carlosgmartin/jax_modules
 from jax import numpy as jnp, random
 import jax_modules as jm
 
+# create a module
 module = jm.MLP([2, 32, 3])
-
+# create a random key
 key = random.key(0)
+# sample initial parameters
 w = module.init(key)
-
+# define an input
 x = jnp.ones(2)
+# compute the output
 y = module.apply(w, x)
-print(y)
 ```
 
 ## Codebase quality control

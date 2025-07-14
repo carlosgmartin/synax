@@ -90,13 +90,13 @@ def pool(
     identity,
     shape: Sequence[int],
     *,
-    strides: int | Sequence[int] = 1,
+    stride: int | Sequence[int] = 1,
     padding: Padding = "VALID",
     base_dilation: int | Sequence[int] = 1,
     window_dilation: int | Sequence[int] = 1,
 ) -> Callable[[Array], Array]:
-    if isinstance(strides, int):
-        strides = (strides,) * len(shape)
+    if isinstance(stride, int):
+        stride = (stride,) * len(shape)
 
     if isinstance(base_dilation, int):
         base_dilation = (base_dilation,) * len(shape)
@@ -110,7 +110,7 @@ def pool(
             init_value=identity,
             computation=operator,
             window_dimensions=(*shape, 1),
-            window_strides=(*strides, 1),
+            window_strides=(*stride, 1),
             padding=padding,
             base_dilation=base_dilation,
             window_dilation=window_dilation,
@@ -122,7 +122,7 @@ def pool(
 def max_pool(
     shape: Sequence[int],
     *,
-    strides: int | Sequence[int] = 1,
+    stride: int | Sequence[int] = 1,
     padding: Padding = "VALID",
     base_dilation: int | Sequence[int] = 1,
     window_dilation: int | Sequence[int] = 1,
@@ -131,7 +131,7 @@ def max_pool(
     Max pooling.
 
     :param shape: Window shape.
-    :param strides: Window strides.
+    :param stride: Window stride.
     :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
     :param base_dilation: Base dilation.
@@ -143,7 +143,7 @@ def max_pool(
         operator=lax.max,
         identity=-jnp.inf,
         shape=shape,
-        strides=strides,
+        stride=stride,
         padding=padding,
         base_dilation=base_dilation,
         window_dilation=window_dilation,
@@ -153,7 +153,7 @@ def max_pool(
 def mean_pool(
     shape: Sequence[int],
     *,
-    strides: int | Sequence[int] = 1,
+    stride: int | Sequence[int] = 1,
     padding: Padding = "VALID",
     base_dilation: int | Sequence[int] = 1,
     window_dilation: int | Sequence[int] = 1,
@@ -162,7 +162,7 @@ def mean_pool(
     Mean pooling.
 
     :param shape: Window shape.
-    :param strides: Window strides.
+    :param stride: Window stride.
     :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
     :param base_dilation: Base dilation.
@@ -176,7 +176,7 @@ def mean_pool(
         operator=lax.add,
         identity=0,
         shape=shape,
-        strides=strides,
+        stride=stride,
         padding=padding,
         base_dilation=base_dilation,
         window_dilation=window_dilation,

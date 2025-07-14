@@ -283,9 +283,7 @@ def LeNet(input_channels: int = 1, outputs: int = 10):
     Originally designed for grayscale MNIST images and 10 classes.
 
     :param input_channels: Number of input channels.
-    :type input_channels: int
     :param outputs: Number of outputs.
-    :type outputs: int
 
     References:
 
@@ -327,9 +325,7 @@ def AlexNet(input_channels: int = 3, outputs: int = 1000):
     Originally designed for RGB ImageNet images and 1000 classes.
 
     :param input_channels: Number of input channels.
-    :type input_channels: int
     :param outputs: Number of outputs.
-    :type outputs: int
 
     References:
 

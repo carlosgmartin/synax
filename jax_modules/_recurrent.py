@@ -58,16 +58,24 @@ class SimpleRNN:
         self.activation = activation
         self.state_initializer = state_initializer
 
-    def init(self, key: Key) -> tuple[Array, ...]:
+    def init(self, key: Key) -> dict[str, Array]:
         keys = random.split(key, 3)
-        w = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
-        u = self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim))
-        b = self.bias_initializer(keys[2], (self.state_dim,))
-        return w, u, b
+        return {
+            "linear": self.linear_initializer(
+                keys[0], (self.input_dim, self.state_dim)
+            ),
+            "recurrent": self.recurrent_initializer(
+                keys[1], (self.state_dim, self.state_dim)
+            ),
+            "bias": self.bias_initializer(keys[2], (self.state_dim,)),
+        }
 
-    def apply(self, parameters: tuple[Array, ...], state: Array, input: Array) -> Array:
-        w, u, b = parameters
-        y = input @ w + state @ u + b
+    def apply(self, parameters: dict[str, Array], state: Array, input: Array) -> Array:
+        y = (
+            input @ parameters["linear"]
+            + state @ parameters["recurrent"]
+            + parameters["bias"]
+        )
         return self.activation(y)
 
     def init_state(self, key: Key) -> Array:

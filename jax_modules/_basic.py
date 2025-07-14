@@ -1,9 +1,11 @@
-from typing import Any, Callable, Literal, Sequence
+import math
+from typing import Any, Callable, Sequence
 
 from jax import Array, lax, nn
 from jax import numpy as jnp
 
 from ._regularizers import Regularizer, zero
+from ._utils import Padding
 
 Key = Array
 Initializer = Callable[[Key, tuple[int, ...]], Array]
@@ -255,10 +257,9 @@ class Conv:
         input_dimension: int,
         output_dimension: int,
         shape: Sequence[int],
-        stride: Sequence[int] | None = None,
-        padding: Literal["VALID", "SAME", "SAME_LOWER"]
-        | Sequence[tuple[int, int]] = "VALID",
-        dilation: Sequence[int] | None = None,
+        stride: int | Sequence[int] = 1,
+        padding: Padding = "VALID",
+        dilation: int | Sequence[int] = 1,
         initializer: Initializer = nn.initializers.he_normal(),
         groups: int = 1,
     ):
@@ -272,14 +273,23 @@ class Conv:
         self.groups = groups
 
     def init(self, key: Key) -> Array:
-        initializer = self.initializer or nn.initializers.he_normal(
-            range(-len(self.shape), 0)
+        kernel = self.initializer(
+            key, (self.output_dimension, self.input_dimension * math.prod(self.shape))
         )
-        return initializer(
-            key, (self.output_dimension, self.input_dimension, *self.shape)
+        kernel = kernel.reshape(
+            (self.output_dimension, self.input_dimension, *self.shape)
         )
+        return kernel
 
     def apply(self, parameters: Array, input: Array) -> Array:
+        stride = self.stride
+        if isinstance(stride, int):
+            stride = (stride,) * len(self.shape)
+
+        dilation = self.dilation
+        if isinstance(dilation, int):
+            dilation = (dilation,) * len(self.shape)
+
         num_spatial_axes = len(self.shape)
         x = input
         x = jnp.moveaxis(x, -1, -num_spatial_axes - 1)
@@ -287,12 +297,12 @@ class Conv:
         x = lax.conv_general_dilated(
             lhs=x,
             rhs=parameters,
-            window_strides=self.stride or [1] * num_spatial_axes,
+            window_strides=stride,
             padding=self.padding,
-            rhs_dilation=self.dilation,
+            rhs_dilation=dilation,
             feature_group_count=self.groups,
         )
-        x = x[0]
+        x = x.squeeze(0)
         x = jnp.moveaxis(x, -num_spatial_axes - 1, -1)
         return x
 

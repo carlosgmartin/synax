@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Any, Callable, Literal
 
 from jax import Array, lax, nn
 from jax import numpy as jnp
@@ -253,7 +253,8 @@ class Conv:
         output_dimension: int,
         shape: tuple[int, ...],
         strides: tuple[int, ...] | None = None,
-        padding: str | tuple[tuple[int, int]] = "VALID",
+        padding: Literal["VALID", "SAME", "SAME_LOWER"]
+        | tuple[tuple[int, int]] = "VALID",
         dilation: tuple[int, ...] | None = None,
         initializer: Callable = nn.initializers.he_normal(),
         groups: int = 1,

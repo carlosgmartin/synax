@@ -37,7 +37,8 @@ from ._recurrent import MGU as MGU
 # from ._recurrent import ConvolutionalGatedUnit as ConvolutionalGatedUnit
 # from ._recurrent import FastGRNN as FastGRNN
 # from ._recurrent import RecurrentNetwork as RecurrentNetwork
-# from ._recurrent import SimpleRecurrentUnit as SimpleRecurrentUnit
+from ._recurrent import SimpleRNN as SimpleRNN
+
 # from ._recurrent import UpdateGateRNN as UpdateGateRNN
 from ._utils import layer_norm as layer_norm
 from ._utils import max_pool as max_pool

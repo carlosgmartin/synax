@@ -24,8 +24,9 @@ class RecurrentNetwork:
         return lax.scan(f, h, xs)
 
 
-class SimpleRecurrentUnit:
-    """Finding structure in time (1990)
+class SimpleRNN:
+    """Simple recurrent neural network
+    Finding structure in time (1990)
     https://onlinelibrary.wiley.com/doi/10.1207/s15516709cog1402_1"""
 
     def __init__(

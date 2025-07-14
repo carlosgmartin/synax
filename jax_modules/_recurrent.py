@@ -401,7 +401,7 @@ class UpdateGateRNN:
         return g * h + (1 - g) * c
 
 
-class ConvolutionalGatedUnit:
+class ConvGatedUnit:
     def __init__(
         self,
         state_dim: int,

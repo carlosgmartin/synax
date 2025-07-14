@@ -8,10 +8,10 @@ class Bias:
     r"""
     Bias (translation).
 
-    Computes the map
+    Computes
 
     .. math::
-        x \mapsto x + b
+        y = x + b
 
     where :math:`b` is a learned vector.
 
@@ -47,10 +47,10 @@ class Scale:
     r"""
     Elementwise scaling.
 
-    Computes the map
+    Computes
 
     .. math::
-        x \mapsto x \odot a
+        y = x \odot a
 
     where :math:`a` is a learned vector.
 
@@ -88,10 +88,10 @@ class Dense:
 
     Does not include bias.
 
-    Computes the map
+    Computes
 
     .. math::
-        x \mapsto A x
+        y = A x
 
     where :math:`A` is a learned matrix.
 
@@ -131,10 +131,10 @@ class Func:
     r"""
     Function.
 
-    Computes the map
+    Computes
 
     .. math::
-        x \mapsto f(x)
+        y = f(x)
 
     where :math:`f` is a user-specified function.
 

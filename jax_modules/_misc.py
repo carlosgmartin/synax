@@ -68,10 +68,10 @@ class AutoEncoder:
     r"""
     Auto-encoder.
 
-    Computes the function
+    Computes
 
     .. math::
-        x \mapsto g(f(x))
+        y = g(f(x))
 
     where :math:`f` is the encoder and :math:`g` is the decoder.
 
@@ -180,10 +180,10 @@ class GLU:
     r"""
     Gated linear unit.
 
-    Computes the map
+    Computes
 
     .. math::
-        x \mapsto \sigma(A x + b) \odot (C x + d)
+        y = \sigma(A x + b) \odot (C x + d)
 
     where :math:`\sigma` is the sigmoid function, :math:`A, C` are learned
     matrices, and :math:`b, d` are learned vectors.
@@ -244,10 +244,10 @@ class PReLU:
     r"""
     Parametric ReLU.
 
-    Computes the map
+    Computes
 
     .. math::
-        x \mapsto \begin{cases}
+        y = \begin{cases}
             x & x \geq 0 \\
             a x & x < 0
         \end{cases}

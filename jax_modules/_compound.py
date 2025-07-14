@@ -9,16 +9,21 @@ class Chain:
     Compose a list of modules sequentially, using the output of one module as
     the input for the next.
 
-    Computes :math:`y_n` where
+    Computes
 
     .. math::
-        y_1 &= x \\
-        y_{i+1} &= f_i(y_i)
+        y = h_n
+
+    where
+
+    .. math::
+        h_0 &= x \\
+        h_{i+1} &= f_i(h_i)
 
     where :math:`f_i` is module :math:`i`. It therefore has type
 
     .. math::
-        \prod_{i=1}^n (A_i \to A_{i+1}) \to A_1 \to A_n
+        \prod_{i=0}^{n-1} (A_i \to A_{i+1}) \to A_1 \to A_n
 
     :param modules: Sequence of modules.
     :type modules: typing.Sequence[Module]
@@ -51,15 +56,15 @@ class Parallel:
     each element to its corresponding module, and collecting their outputs as a
     tuple.
 
-    Computes the map
+    Computes
 
     .. math::
-        x \mapsto \{f_i(x_i)\}_{i \in [n]}
+        y = \{f_i(x_i)\}_{i \in [n]}
 
     where :math:`f_i` is module :math:`i`. It therefore has type
 
     .. math::
-        \prod_{i=1}^n (A_i \to B_i) \to \prod_{i=1}^n A_i \to \prod_{i=1}^n B_i
+        \prod_{i=0}^{n-1} (A_i \to B_i) \to \prod_{i=0}^{n-1} A_i \to \prod_{i=0}^{n-1} B_i
 
     :param modules: Sequence of modules.
     :type modules: typing.Sequence[Module]
@@ -107,10 +112,10 @@ class Residual:
     r"""
     Residual transformation.
 
-    Computes the map
+    Computes
 
     .. math::
-        x \mapsto x + f(x)
+        y = x + f(x)
 
     where :math:`f` is a given module.
 

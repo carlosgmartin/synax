@@ -1,9 +1,19 @@
 [project]
 name = "synax"
+version = "0.0.0"
+authors = [
+    { name="Carlos Martin", email="cgmartin@cs.cmu.edu" },
+]
+description = "A neural network library for JAX"
+readme = "README.md"
 dynamic = ["version"]
+license = "MIT"
 dependencies = [
     "jax",
 ]
+
+[project.urls]
+Homepage = "https://github.com/carlosgmartin/synax"
 
 [project.optional-dependencies]
 dev = [

@@ -1,9 +1,9 @@
 from ._attention import Attention as Attention
 from ._basic import Bias as Bias
 from ._basic import Conv as Conv
-from ._basic import Dense as Dense
 from ._basic import Embed as Embed
 from ._basic import Func as Func
+from ._basic import Linear as Linear
 from ._basic import Scale as Scale
 from ._compound import Chain as Chain
 from ._compound import Parallel as Parallel

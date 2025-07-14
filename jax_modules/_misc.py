@@ -3,7 +3,7 @@ from functools import partial
 from jax import nn, random
 from jax import numpy as jnp
 
-from ._basic import Bias, Conv, Dense, Func
+from ._basic import Bias, Conv, Func, Linear
 from ._compound import Chain
 from ._recurrent import MGU
 from ._regularizers import zero
@@ -49,7 +49,7 @@ def MLP(
 
     modules = []
     for input_dimension, output_dimension in zip(dimensions[:-1], dimensions[1:]):
-        dense = Dense(
+        linear = Linear(
             input_dimension,
             output_dimension,
             initializer=kernel_initializer,
@@ -60,7 +60,7 @@ def MLP(
             initializer=bias_initializer,
             regularizer=bias_regularizer,
         )
-        modules += [dense, bias, activation]
+        modules += [linear, bias, activation]
     return Chain(modules[:-1])
 
 
@@ -303,13 +303,13 @@ def LeNet():
             Func(nn.tanh),
             Func(mean_pool((2, 2), strides=(2, 2))),
             Func(jnp.ravel),
-            Dense(400, 120),
+            Linear(400, 120),
             Bias(120),
             Func(nn.tanh),
-            Dense(120, 84),
+            Linear(120, 84),
             Bias(84),
             Func(nn.tanh),
-            Dense(84, 10),
+            Linear(84, 10),
             Bias(10),
         ]
     )
@@ -345,15 +345,15 @@ def AlexNet():
             Func(nn.relu),
             Func(max_pool((3, 3), strides=(2, 2))),
             Func(jnp.ravel),
-            Dense(6400, 4096),
+            Linear(6400, 4096),
             Bias(4096),
             Func(nn.relu),
             # dropout 0.5
-            Dense(4096, 4096),
+            Linear(4096, 4096),
             Bias(4096),
             Func(nn.relu),
             # dropout 0.5
-            Dense(4096, 1000),
+            Linear(4096, 1000),
             Bias(1000),
         ]
     )

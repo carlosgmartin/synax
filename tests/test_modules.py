@@ -35,7 +35,7 @@ def test_function(shape=(2, 3, 5), f=lambda x: x * x):
 
 
 def test_dense(input_dim=10, output_dim=20):
-    module = jm.Dense(input_dim, output_dim)
+    module = jm.Linear(input_dim, output_dim)
     param = module.init(key)
     x = jnp.empty(input_dim)
     y = module.apply(param, x)
@@ -44,7 +44,7 @@ def test_dense(input_dim=10, output_dim=20):
 
 def test_parallel(input_dim=3, output_dim_1=5, output_dim_2=7):
     module = jm.Parallel(
-        [jm.Dense(input_dim, output_dim_1), jm.Dense(input_dim, output_dim_2)]
+        [jm.Linear(input_dim, output_dim_1), jm.Linear(input_dim, output_dim_2)]
     )
     param = module.init(key)
     x = jnp.empty(input_dim)
@@ -63,7 +63,7 @@ def test_chain_identity(dim=5):
 
 def test_chain(input_dim=3, hidden_dim=5, output_dim=7):
     module = jm.Chain(
-        [jm.Dense(input_dim, hidden_dim), jm.Dense(hidden_dim, output_dim)]
+        [jm.Linear(input_dim, hidden_dim), jm.Linear(hidden_dim, output_dim)]
     )
     param = module.init(key)
     x = jnp.empty(input_dim)

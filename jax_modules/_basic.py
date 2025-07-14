@@ -82,9 +82,9 @@ class Scale:
         return self.regularizer(param)
 
 
-class Dense:
+class Linear:
     r"""
-    Dense linear transformation.
+    Linear linear transformation.
 
     Does not include bias.
 

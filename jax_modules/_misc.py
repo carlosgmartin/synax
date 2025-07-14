@@ -1,6 +1,7 @@
 from functools import partial
+from typing import Any, Callable
 
-from jax import nn, random
+from jax import Array, nn, random
 from jax import numpy as jnp
 
 from ._basic import Bias, Conv, Func, Linear
@@ -9,31 +10,27 @@ from ._recurrent import MGU
 from ._regularizers import zero
 from ._utils import max_pool, mean_pool
 
+Module = Any
+
 
 def MLP(
-    dimensions,
-    activation=Func(nn.relu),
-    kernel_initializer=nn.initializers.he_normal(),
-    bias_initializer=nn.initializers.zeros,
-    kernel_regularizer=zero,
-    bias_regularizer=zero,
+    dimensions: list[int],
+    activation: Module = Func(nn.relu),
+    kernel_initializer: Callable = nn.initializers.he_normal(),
+    bias_initializer: Callable = nn.initializers.zeros,
+    kernel_regularizer: Callable = zero,
+    bias_regularizer: Callable = zero,
 ):
     """
     Multi-layer perceptron.
 
     :param dimensions: Dimension of each layer.
-    :type dimensions: typing.Sequence[int]
     :param activation: Module to use as an activation function.
         Not applied to the output.
-    :type activation: Module
     :param kernel_initializer: Initializer used for the kernels.
-    :type kernel_initializer: jax.nn.initializers.Initializer
     :param bias_initializer: Initializer used for the biases.
-    :type bias_initializer: jax.nn.initializers.Initializer
     :param kernel_regularizer: Regularizer used for the kernels.
-    :type kernel_regularizer: typing.Callable
     :param bias_regularizer: Regularizer used for the biases.
-    :type bias_regularizer: typing.Callable
 
     References:
 
@@ -47,7 +44,6 @@ def MLP(
     - *Learning representations by back-propagating errors*. 1986.
       https://www.nature.com/articles/323533a0.
     """
-
     modules = []
     for input_dimension, output_dimension in zip(dimensions[:-1], dimensions[1:]):
         linear = Linear(
@@ -77,43 +73,43 @@ class AutoEncoder:
     where :math:`f` is a given encoder and :math:`g` is a given decoder.
 
     :param encoder: Module to use as encoder.
-    :type encoder: Module
     :param decoder: Module to use as decoder.
-    :type decoder: Module
     """
 
-    def __init__(self, encoder, decoder):
+    def __init__(self, encoder: Module, decoder: Module):
         self.encoder = encoder
         self.decoder = decoder
 
-    def init(self, key):
+    def init(self, key: Array) -> dict[str, Any]:
         keys = random.split(key)
         return {
             "encoder": self.encoder.init(keys[0]),
             "decoder": self.decoder.init(keys[1]),
         }
 
-    def encode(self, param, input):
+    def encode(self, param: dict[str, Any], input: Any) -> Any:
         return self.encoder.apply(param["encoder"], input)
 
-    def decode(self, param, input):
+    def decode(self, param: dict[str, Any], input: Any) -> Any:
         return self.decoder.apply(param["decoder"], input)
 
-    def apply(self, param, input):
+    def apply(self, param: dict[str, Any], input: Any) -> Any:
         return self.decode(param, self.encode(param, input))
 
-    def reconstruction_loss(self, param, input):
+    def reconstruction_loss(self, param: dict[str, Any], input: Any) -> Array:
         output = self.apply(param, input)
         diff = input - output
         return (diff * jnp.conj(diff)).sum()
 
-    def parameter_loss(self, param):
+    def parameter_loss(self, param: dict[str, Any]) -> Array:
         encoder_loss = self.encoder.parameter_loss(param["encoder"])
         decoder_loss = self.decoder.parameter_loss(param["decoder"])
         return encoder_loss + decoder_loss
 
 
-def get_von_neumann_neighbors(array, space_dim=None, include_center=False):
+def get_von_neumann_neighbors(
+    array: Array, space_dim: int | None = None, include_center: bool = False
+) -> Array:
     """Get von Neumann neighborhoods of an array."""
     if space_dim is None:
         space_dim = array.ndim - 1
@@ -138,11 +134,11 @@ class NeuralGPU:
 
     def __init__(
         self,
-        state_dim,
-        space_dim=1,
-        cell_cls=partial(MGU, reset_gate=False),
-        global_mean=False,
-        global_max=False,
+        state_dim: int,
+        space_dim: int = 1,
+        cell_cls: Callable[[int, int], Module] = partial(MGU, reset_gate=False),
+        global_mean: bool = False,
+        global_max: bool = False,
     ):
         self.cell = cell_cls(
             state_dim, state_dim * (2 * space_dim + global_mean + global_max)
@@ -150,10 +146,10 @@ class NeuralGPU:
         self.global_mean = global_mean
         self.global_max = global_max
 
-    def init(self, key):
+    def init(self, key: Array) -> Any:
         return self.cell.init(key)
 
-    def apply(self, param, state):
+    def apply(self, param: Any, state: Array) -> Array:
         inputs = []
 
         neighbors = get_von_neumann_neighbors(state)
@@ -190,15 +186,10 @@ class GLU:
     learned matrices, and :math:`b_1` and :math:`b_2` are learned vectors.
 
     :param input_dimension: Dimension of the input.
-    :type input_dimension: int
     :param output_dimension: Dimension of the output.
-    :type output_dimension: int
     :param kernel_initializer: Initializer used for the kernels.
-    :type kernel_initializer: jax.nn.initializers.Initializer
     :param bias_initializer: Initializer used for the biases.
-    :type bias_initializer: jax.nn.initializers.Initializer
     :param sigmoid_fn: Sigmoid function to use. Defaults to the logistic function.
-    :type sigmoid_fn: typing.Callable
 
     References:
 
@@ -208,11 +199,11 @@ class GLU:
 
     def __init__(
         self,
-        input_dimension,
-        output_dimension,
-        kernel_initializer=nn.initializers.he_normal(),
-        bias_initializer=nn.initializers.zeros,
-        sigmoid_fn=nn.sigmoid,
+        input_dimension: int,
+        output_dimension: int,
+        kernel_initializer: Callable = nn.initializers.he_normal(),
+        bias_initializer: Callable = nn.initializers.zeros,
+        sigmoid_fn: Callable[[Array], Array] = nn.sigmoid,
     ):
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
@@ -220,7 +211,7 @@ class GLU:
         self.bias_initializer = bias_initializer
         self.sigmoid_fn = sigmoid_fn
 
-    def init(self, key):
+    def init(self, key: Array) -> tuple[Array, Array]:
         keys = random.split(key, 4)
         w = self.kernel_initializer(
             keys[0], (self.input_dimension, self.output_dimension)
@@ -234,7 +225,7 @@ class GLU:
         bc = jnp.concatenate([b, c], 1)
         return wv, bc
 
-    def apply(self, param, input):
+    def apply(self, param: tuple[Array, Array], input: Array) -> Array:
         wv, bc = param
         x = input @ wv + bc
         y, z = jnp.split(x, [self.output_dimension])
@@ -256,9 +247,7 @@ class PReLU:
     where :math:`a` is a learned slope parameter.
 
     :param initializer: Initializer to use for the slope parameter.
-    :type initializer: jax.nn.initializers.Initializer
     :param regularizer: Regularizer to use for the slope parameter.
-    :type regularizer: typing.Callable
 
     References:
 
@@ -268,23 +257,23 @@ class PReLU:
 
     def __init__(
         self,
-        initializer=nn.initializers.zeros,
-        regularizer=zero,
+        initializer: Callable = nn.initializers.zeros,
+        regularizer: Callable = zero,
     ):
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key):
+    def init(self, key: Array) -> Array:
         return self.initializer(key, ())
 
-    def apply(self, param, input):
+    def apply(self, param: Array, input: Array) -> Array:
         return jnp.where(input > 0, input, input * param)
 
-    def parameter_loss(self, param):
+    def parameter_loss(self, param: Array) -> Array:
         return self.regularizer(param)
 
 
-def LeNet(input_channels=1, outputs=10):
+def LeNet(input_channels: int = 1, outputs: int = 10):
     """
     LeNet convolutional network.
 
@@ -328,7 +317,7 @@ def LeNet(input_channels=1, outputs=10):
     )
 
 
-def AlexNet(input_channels=3, outputs=1000):
+def AlexNet(input_channels: int = 3, outputs: int = 1000):
     """
     AlexNet convolutional network.
 

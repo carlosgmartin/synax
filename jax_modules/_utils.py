@@ -138,25 +138,6 @@ def max_pool(
     )
 
 
-def sum_pool(
-    shape: tuple[int, ...],
-    *,
-    strides: tuple[int, ...] | None = None,
-    padding: Padding = "VALID",
-    base_dilation: tuple[int, ...] | None = None,
-    window_dilation: tuple[int, ...] | None = None,
-) -> Callable[[Array], Array]:
-    return pool(
-        operator=lax.add,
-        identity=0,
-        shape=shape,
-        strides=strides,
-        padding=padding,
-        base_dilation=base_dilation,
-        window_dilation=window_dilation,
-    )
-
-
 def mean_pool(
     shape: tuple[int, ...],
     *,
@@ -178,16 +159,16 @@ def mean_pool(
     size = prod(shape)
 
     def f(x: Array) -> Array:
-        return (
-            sum_pool(
-                shape,
-                strides=strides,
-                padding=padding,
-                base_dilation=base_dilation,
-                window_dilation=window_dilation,
-            )(x)
-            / size
+        g = pool(
+            operator=lax.add,
+            identity=0,
+            shape=shape,
+            strides=strides,
+            padding=padding,
+            base_dilation=base_dilation,
+            window_dilation=window_dilation,
         )
+        return g(x) / size
 
     return f
 

@@ -49,9 +49,13 @@ def linkcode_resolve(domain, info):
             return None
 
     obj_path = inspect.getsourcefile(obj)
+    assert obj_path is not None
 
-    mod = importlib.import_module(inspect.getmodule(obj).__name__.split(".")[0])
+    mod = inspect.getmodule(obj)
+    assert mod is not None
+    mod = importlib.import_module(mod.__name__.split(".")[0])
     mod_path = inspect.getsourcefile(mod)
+    assert mod_path is not None
     pkg_path = os.path.dirname(mod_path)
 
     rel_path = os.path.relpath(obj_path, pkg_path)

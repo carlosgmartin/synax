@@ -86,13 +86,19 @@ def pool(
     identity,
     shape: tuple[int, ...],
     *,
-    strides: tuple[int, ...] | None = None,
+    strides: int | tuple[int, ...] = 1,
     padding: Padding = "VALID",
-    base_dilation: tuple[int, ...] | None = None,
-    window_dilation: tuple[int, ...] | None = None,
+    base_dilation: int | tuple[int, ...] = 1,
+    window_dilation: int | tuple[int, ...] = 1,
 ) -> Callable[[Array], Array]:
-    if strides is None:
-        strides = (1,) * len(shape)
+    if isinstance(strides, int):
+        strides = (strides,) * len(shape)
+
+    if isinstance(base_dilation, int):
+        base_dilation = (base_dilation,) * len(shape)
+
+    if isinstance(window_dilation, int):
+        window_dilation = (window_dilation,) * len(shape)
 
     def f(x: Array) -> Array:
         return lax.reduce_window(
@@ -112,10 +118,10 @@ def pool(
 def max_pool(
     shape: tuple[int, ...],
     *,
-    strides: tuple[int, ...] | None = None,
+    strides: int | tuple[int, ...] = 1,
     padding: Padding = "VALID",
-    base_dilation: tuple[int, ...] | None = None,
-    window_dilation: tuple[int, ...] | None = None,
+    base_dilation: int | tuple[int, ...] = 1,
+    window_dilation: int | tuple[int, ...] = 1,
 ) -> Callable[[Array], Array]:
     """
     Max pooling.
@@ -141,10 +147,10 @@ def max_pool(
 def mean_pool(
     shape: tuple[int, ...],
     *,
-    strides: tuple[int, ...] | None = None,
+    strides: int | tuple[int, ...] = 1,
     padding: Padding = "VALID",
-    base_dilation: tuple[int, ...] | None = None,
-    window_dilation: tuple[int, ...] | None = None,
+    base_dilation: int | tuple[int, ...] = 1,
+    window_dilation: int | tuple[int, ...] = 1,
 ) -> Callable[[Array], Array]:
     """
     Mean pooling.

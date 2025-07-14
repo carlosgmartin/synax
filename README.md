@@ -20,7 +20,7 @@ import jax_modules as jm
 module = jm.MLP([2, 32, 3])
 # Create a random key.
 key = random.key(0)
-# Sample initial parameters.
+# Initialize parameters.
 w = module.init(key)
 # Define an input.
 x = jnp.ones(2)

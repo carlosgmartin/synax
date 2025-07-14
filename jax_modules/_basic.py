@@ -50,9 +50,9 @@ class Bias:
         Apply parameters.
 
         :param parameters: Parameters.
-        :param input: An array of shape ``(..., dimension)``.
+        :param input: Array of shape ``(..., dimension)``.
 
-        :returns: An array of shape ``(..., dimension)``.
+        :returns: Array of shape ``(..., dimension)``.
         """
         return input + parameters
 
@@ -108,9 +108,9 @@ class Scale:
         Apply parameters.
 
         :param parameters: Parameters.
-        :param input: An array of shape ``(..., dimension)``.
+        :param input: Array of shape ``(..., dimension)``.
 
-        :returns: An array of shape ``(..., dimension)``.
+        :returns: Array of shape ``(..., dimension)``.
         """
         return input * parameters
 
@@ -171,9 +171,9 @@ class Linear:
         Apply parameters.
 
         :param parameters: Parameters.
-        :param input: An array of shape ``(..., input_dimension)``.
+        :param input: Array of shape ``(..., input_dimension)``.
 
-        :returns: An array of shape ``(..., output_dimension)``.
+        :returns: Array of shape ``(..., output_dimension)``.
         """
         return input @ parameters
 
@@ -334,9 +334,9 @@ class Embed:
         Apply parameters.
 
         :param parameters: Parameters.
-        :param input: An array of shape ``(...)``.
+        :param input: Array of shape ``(...)``.
 
-        :returns: An array of shape ``(..., dimension)``.
+        :returns: Array of shape ``(..., dimension)``.
         """
         return parameters[input]
 

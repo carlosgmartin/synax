@@ -1,6 +1,5 @@
 [project]
 name = "synax"
-version = "0.0.0"
 authors = [
     { name="Carlos Martin", email="cgmartin@cs.cmu.edu" },
 ]

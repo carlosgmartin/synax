@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Any, Callable, Sequence
 
 from jax import Array, lax, nn, random
 from jax import numpy as jnp
@@ -406,7 +406,7 @@ class ConvolutionalGatedUnit:
         self,
         state_dim: int,
         input_dim: int,
-        shape: tuple[int, ...],
+        shape: Sequence[int],
         new_activation: Callable = nn.tanh,
         update_activation: Callable = nn.sigmoid,
         linear_initializer: Initializer = nn.initializers.he_normal(),

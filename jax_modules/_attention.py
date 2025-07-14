@@ -1,4 +1,6 @@
-from jax import lax, nn, random
+from typing import Callable
+
+from jax import Array, lax, nn, random
 from jax import numpy as jnp
 
 from ._utils import layer_norm
@@ -9,25 +11,17 @@ class Attention:
     Attention.
 
     :param query_input_dim: Dimension of the input used to compute queries.
-    :type query_input_dim: int
     :param key_input_dim: Dimension of the input used to compute keys.
         Defaults to ``query_input_dim``.
-    :type key_input_dim: int | None
     :param value_input_dim: Dimension of the input used to compute values.
         Defaults to ``key_input_dim``.
-    :type value_input_dim: int | None
     :param hidden_dim: Dimension of the embeddings used to compute dot products.
         Defaults to ``query_input_dim``.
-    :type hidden_dim: int
     :param heads: Number of attention heads.
-    :type heads: int
     :param kernel_initializer: Initializer used for the kernels.
-    :type kernel_initializer: jax.nn.initializers.Initializer
     :param bias_initializer: Initializer used for the biases.
-    :type bias_initializer: jax.nn.initializers.Initializer
     :param normalize_qk: Apply layer norm to queries and keys before computing
         dot products.
-    :type normalize_qk: bool
 
     References:
 
@@ -38,14 +32,14 @@ class Attention:
 
     def __init__(
         self,
-        query_input_dim,
-        key_input_dim=None,
-        value_input_dim=None,
+        query_input_dim: int,
+        key_input_dim: int | None = None,
+        value_input_dim: int | None = None,
         hidden_dim=None,
-        heads=1,
-        kernel_initializer=nn.initializers.he_normal(),
-        bias_initializer=nn.initializers.zeros,
-        normalize_qk=False,
+        heads: int = 1,
+        kernel_initializer: Callable = nn.initializers.he_normal(),
+        bias_initializer: Callable = nn.initializers.zeros,
+        normalize_qk: bool = False,
     ):
         if key_input_dim is None:
             key_input_dim = query_input_dim
@@ -63,12 +57,11 @@ class Attention:
         self.bias_initializer = bias_initializer
         self.normalize_qk = normalize_qk
 
-    def init(self, key):
+    def init(self, key: Array) -> dict[str, Array]:
         """
         Sample initial parameters.
 
         :param key: A PRNG key.
-        :param type: jax.Array
         """
         keys = random.split(key, 6)
         return {
@@ -88,38 +81,29 @@ class Attention:
 
     def apply(
         self,
-        param,
-        query_input,
-        key_input=None,
-        value_input=None,
-        mask=None,
-        bias=None,
-        is_causal=False,
-        scale=None,
-    ):
+        param: dict[str, Array],
+        query_input: Array,
+        key_input: Array | None = None,
+        value_input: Array | None = None,
+        mask: Array | None = None,
+        bias: Array | None = None,
+        is_causal: bool = False,
+        scale: float | None = None,
+    ) -> Array:
         """
         Apply the module.
 
         :param param: Module parameters.
-        :type param: typing.Any
         :param query_input: Input used to compute queries.
-        :type query_input: jax.Array
         :param key_input: Input used to compute keys.
-        :type key_input: jax.Array | None
         :param value_input: Input used to compute values.
-        :type value_input: jax.Array | None
         :param mask: Boolean mask used to filter out logits.
-        :type mask: jax.Array | None
         :param bias: Bias array to be added to logits.
-        :type bias: jax.Array | None
         :param is_causal: Apply causal attention.
-        :type bool: bool
         :param scale: Scale for the logits. If ``None``, set to 1 divided by the
             square root of the query's head dimension.
-        :type scale: float | None
 
         :returns: The output array.
-        :rtype: jax.Array
         """
         if key_input is None:
             key_input = query_input

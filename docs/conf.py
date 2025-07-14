@@ -32,7 +32,7 @@ autoapi_options = [
 ]
 autoapi_own_page_level = "method"
 
-linkcode_url = "https://github.com/carlosgmartin/jax_modules/blob/master/jax_modules/{path}#L{start}-L{end}"
+linkcode_url = "https://github.com/carlosgmartin/jax_modules/blob/master/src/jax_modules/{path}#L{start}-L{end}"
 
 
 def linkcode_resolve(domain, info):

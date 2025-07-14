@@ -184,10 +184,10 @@ class GLU:
     Computes
 
     .. math::
-        y = \sigma(A x + b) \odot (C x + d)
+        y = \sigma(A_1 x + b_1) \odot (A_2 x + b_2)
 
-    where :math:`\sigma` is the sigmoid function, :math:`A, C` are learned
-    matrices, and :math:`b, d` are learned vectors.
+    where :math:`\sigma` is the sigmoid function, :math:`A_1, A_2` are learned
+    matrices, and :math:`b_1, b_2` are learned vectors.
 
     :param input_dimension: Dimension of the input.
     :type input_dimension: int

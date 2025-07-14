@@ -288,7 +288,7 @@ def LeNet(input_channels=1, outputs=10):
     """
     LeNet convolutional network.
 
-    Handles 28 × 28 × 1 images.
+    Handles 28 × 28 images.
 
     Originally designed for grayscale MNIST images and 10 classes.
 
@@ -332,7 +332,7 @@ def AlexNet(input_channels=3, outputs=1000):
     """
     AlexNet convolutional network.
 
-    Handles 224 × 224 × 3 images.
+    Handles 224 × 224 images.
 
     Originally designed for RGB ImageNet images and 1000 classes.
 

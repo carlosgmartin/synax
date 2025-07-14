@@ -25,6 +25,7 @@ autoapi_options = [
     "show-module-summary",
     "imported-members",
 ]
+autoapi_own_page_level = "function"
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

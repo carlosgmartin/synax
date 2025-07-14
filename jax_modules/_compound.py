@@ -109,7 +109,7 @@ class Repeat:
 
         return lax.scan(f, input, length=steps, unroll=unroll)
 
-    def parameter_loss(self, parameters: Any) -> jax.Array:
+    def parameter_loss(self, parameters: Any) -> Array:
         return self.module.parameter_loss(parameters)
 
 
@@ -138,11 +138,11 @@ class Residual:
     def init(self, key: Key) -> Any:
         return self.module.init(key)
 
-    def apply(self, parameters: Any, input: jax.Array) -> jax.Array:
+    def apply(self, parameters: Any, input: Array) -> Array:
         output = self.module.apply(parameters, input)
         return input + output
 
-    def parameter_loss(self, parameters: Any) -> jax.Array:
+    def parameter_loss(self, parameters: Any) -> Array:
         return self.module.parameter_loss(parameters)
 
 
@@ -155,6 +155,6 @@ class Switch:
         keys = random.split(key, self.branches)
         return jax.vmap(self.module.init)(keys)
 
-    def apply(self, parameters: Any, branch: jax.Array, input: Any):
+    def apply(self, parameters: Any, branch: Array, input: Any):
         parameters = jax.tree.map(lambda x: x[branch], parameters)
         return self.module.apply(parameters, input)

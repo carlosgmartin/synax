@@ -1,6 +1,9 @@
 [project]
 name = "jax_modules"
 dynamic = ["version"]
+dependencies = [
+    "jax",
+]
 
 [project.optional-dependencies]
 dev = [

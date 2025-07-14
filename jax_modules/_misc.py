@@ -73,7 +73,7 @@ class AutoEncoder:
     .. math::
         y = g(f(x))
 
-    where :math:`f` is the encoder and :math:`g` is the decoder.
+    where :math:`f` is a given encoder and :math:`g` is a given decoder.
 
     :param encoder: Module to use as encoder.
     :type encoder: Module

@@ -1,5 +1,9 @@
+from typing import Any
+
 import jax
-from jax import lax, random
+from jax import Array, lax, random
+
+Module = Any
 
 
 class Chain:
@@ -26,22 +30,21 @@ class Chain:
         \prod_{i=0}^{n-1} (A_i \to A_{i+1}) \to A_0 \to A_n
 
     :param modules: Sequence of modules.
-    :type modules: typing.Sequence[Module]
     """
 
-    def __init__(self, modules):
+    def __init__(self, modules: list[Module]):
         self.modules = modules
 
-    def init(self, key):
+    def init(self, key: jax.Array) -> list[Any]:
         keys = random.split(key, len(self.modules))
         return [module.init(key) for module, key in zip(self.modules, keys)]
 
-    def apply(self, param, input):
+    def apply(self, param: list[Any], input: Any) -> Any:
         for module, param in zip(self.modules, param, strict=True):
             input = module.apply(param, input)
         return input
 
-    def parameter_loss(self, param):
+    def parameter_loss(self, param: list[Any]) -> Array | float:
         return sum(
             module.parameter_loss(param)
             for module, param in zip(self.modules, param, strict=True)
@@ -67,23 +70,22 @@ class Parallel:
         \prod_{i=0}^{n-1} (A_i \to B_i) \to \prod_{i=0}^{n-1} A_i \to \prod_{i=0}^{n-1} B_i
 
     :param modules: Sequence of modules.
-    :type modules: typing.Sequence[Module]
     """
 
-    def __init__(self, modules):
+    def __init__(self, modules: list[Module]):
         self.modules = modules
 
-    def init(self, key):
+    def init(self, key: jax.Array) -> list[Any]:
         keys = random.split(key, len(self.modules))
         return [module.init(key) for module, key in zip(self.modules, keys)]
 
-    def apply(self, param, input):
+    def apply(self, param: list[Any], input: list[Any]) -> list[Any]:
         return [
             module.apply(param, input)
             for module, param, input in zip(self.modules, param, input, strict=True)
         ]
 
-    def parameter_loss(self, param):
+    def parameter_loss(self, param: list[Any]) -> Array | float:
         return sum(
             module.parameter_loss(param)
             for module, param in zip(self.modules, param, strict=True)
@@ -91,20 +93,20 @@ class Parallel:
 
 
 class Repeat:
-    def __init__(self, module):
+    def __init__(self, module: Module):
         self.module = module
 
-    def init(self, key):
+    def init(self, key: Array) -> Any:
         return self.module.init(key)
 
-    def apply(self, param, input, steps, unroll=1):
+    def apply(self, param: Any, input: Any, steps: int, unroll: int = 1):
         def f(x, _):
             y = self.module.apply(param, x)
             return y, x
 
         return lax.scan(f, input, length=steps, unroll=unroll)
 
-    def parameter_loss(self, param):
+    def parameter_loss(self, param: Any) -> jax.Array:
         return self.module.parameter_loss(param)
 
 
@@ -125,32 +127,31 @@ class Residual:
       https://arxiv.org/abs/1512.03385.
 
     :param module: Module to apply.
-    :type module: Module
     """
 
-    def __init__(self, module):
+    def __init__(self, module: Module):
         self.module = module
 
-    def init(self, key):
+    def init(self, key: jax.Array) -> Any:
         return self.module.init(key)
 
-    def apply(self, param, input):
+    def apply(self, param: Any, input: jax.Array) -> jax.Array:
         output = self.module.apply(param, input)
         return input + output
 
-    def parameter_loss(self, param):
+    def parameter_loss(self, param: Any) -> jax.Array:
         return self.module.parameter_loss(param)
 
 
 class Switch:
-    def __init__(self, module, branches):
+    def __init__(self, module: Module, branches: int):
         self.module = module
         self.branches = branches
 
-    def init(self, key):
+    def init(self, key: jax.Array) -> Any:
         keys = random.split(key, self.branches)
         return jax.vmap(self.module.init)(keys)
 
-    def apply(self, param, branch, input):
+    def apply(self, param: Any, branch: jax.Array, input: Any):
         param = jax.tree.map(lambda x: x[branch], param)
         return self.module.apply(param, input)

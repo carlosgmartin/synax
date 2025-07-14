@@ -48,7 +48,7 @@ def test_parallel(input_dim=3, output_dim_1=5, output_dim_2=7):
     )
     param = module.init(key)
     x = jnp.empty(input_dim)
-    y1, y2 = module.apply(param, (x, x))
+    y1, y2 = module.apply(param, [x, x])
     assert y1.shape == (output_dim_1,)
     assert y2.shape == (output_dim_2,)
 

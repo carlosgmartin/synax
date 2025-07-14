@@ -156,6 +156,8 @@ class Conv:
     """
     Convolution.
 
+    Does not include bias.
+
     :param input_dimension: Dimension of the input.
     :type input_dimension: int
     :param output_dimension: Dimension of the output.

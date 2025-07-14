@@ -26,6 +26,20 @@ def test_conv(input_dim=3, output_dim=4, spatial_dims=(20, 18)):
     )
 
 
+def test_max_pool():
+    x = jnp.zeros((10, 8, 3))
+    f = jm.max_pool((2, 2))
+    y = f(x)
+    assert y.shape == (9, 7, 3)
+
+
+def test_mean_pool():
+    x = jnp.zeros((10, 8, 3))
+    f = jm.mean_pool((2, 2))
+    y = f(x)
+    assert y.shape == (9, 7, 3)
+
+
 def test_function(shape=(2, 3, 5), f=lambda x: x * x):
     module = jm.Func(f)
     param = module.init(key)

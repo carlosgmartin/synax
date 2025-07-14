@@ -112,8 +112,8 @@ def pool(
             window_dimensions=(*shape, 1),
             window_strides=(*stride, 1),
             padding=padding,
-            base_dilation=base_dilation,
-            window_dilation=window_dilation,
+            base_dilation=(*base_dilation, 1),
+            window_dilation=(*window_dilation, 1),
         )
 
     return f

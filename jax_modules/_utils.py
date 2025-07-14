@@ -26,6 +26,7 @@ def layer_norm(axis=-1, epsilon=1e-6):
     :math:`\varepsilon` is a small quantity used for numerical stability.
 
     :param axis: Axis or axes along which to normalize.
+        ``None`` means all axes.
     :type axis: int | tuple[int, ...] | None
     :param epsilon: Small quantity used for numerical stability.
     :type epsilon: float
@@ -61,6 +62,7 @@ def rms_norm(axis=-1, epsilon=1e-6):
     :math:`\varepsilon` is a small quantity used for numerical stability.
 
     :param axis: Axis or axes along which to normalize.
+        ``None`` means all axes.
     :type axis: int | tuple[int, ...] | None
     :param epsilon: Small quantity used for numerical stability.
     :type epsilon: float

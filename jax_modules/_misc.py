@@ -248,8 +248,8 @@ class PReLU:
 
     .. math::
         y = \begin{cases}
-            x & x \geq 0 \\
-            a x & x < 0
+            x & x > 0 \\
+            a x & x \leq 0
         \end{cases}
 
     where :math:`a` is a learned slope parameter.

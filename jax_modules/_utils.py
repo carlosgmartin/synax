@@ -130,8 +130,8 @@ def max_pool(
     """
     Max pooling.
 
-    :param shape: Window size for each spatial dimension.
-    :param strides: Stride for each spatial dimension.
+    :param shape: Window shape.
+    :param strides: Window strides.
     :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
     :param base_dilation: Base dilation.
@@ -161,8 +161,8 @@ def mean_pool(
     """
     Mean pooling.
 
-    :param shape: Window size for each spatial dimension.
-    :param strides: Stride for each spatial dimension.
+    :param shape: Window shape.
+    :param strides: Window strides.
     :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
     :param base_dilation: Base dilation.

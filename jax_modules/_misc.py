@@ -213,7 +213,7 @@ class GLU:
         self.bias_initializer = bias_initializer
         self.sigmoid_fn = sigmoid_fn
 
-    def init(self, key: Key) -> tuple[Array, Array]:
+    def init(self, key: Key) -> dict[str, Array]:
         keys = random.split(key, 4)
         w = self.linear_initializer(
             keys[0], (self.input_dimension, self.output_dimension)
@@ -223,13 +223,13 @@ class GLU:
         )
         b = self.bias_initializer(keys[2], (self.output_dimension,))
         c = self.bias_initializer(keys[3], (self.output_dimension,))
-        wv = jnp.concatenate([w, v], 1)
-        bc = jnp.concatenate([b, c], 1)
-        return wv, bc
+        return {
+            "linear": jnp.concatenate([w, v], 1),
+            "bias": jnp.concatenate([b, c], 1),
+        }
 
-    def apply(self, parameters: tuple[Array, Array], input: Array) -> Array:
-        wv, bc = parameters
-        x = input @ wv + bc
+    def apply(self, parameters: dict[str, Array], input: Array) -> Array:
+        x = input @ parameters["linear"] + parameters["bias"]
         y, z = jnp.split(x, [self.output_dimension])
         return y * self.sigmoid_fn(z)
 

@@ -20,20 +20,18 @@ def MLP(
 ):
     lst = []
     for input_dim, output_dim in zip(dims[:-1], dims[1:]):
-        lst += [
-            Dense(
-                input_dim,
-                output_dim,
-                initializer=kernel_initializer,
-                regularizer=kernel_regularizer,
-            ),
-            Bias(
-                output_dim,
-                initializer=bias_initializer,
-                regularizer=bias_regularizer,
-            ),
-            activation,
-        ]
+        dense = Dense(
+            input_dim,
+            output_dim,
+            initializer=kernel_initializer,
+            regularizer=kernel_regularizer,
+        )
+        bias = Bias(
+            output_dim,
+            initializer=bias_initializer,
+            regularizer=bias_regularizer,
+        )
+        lst += [dense, bias, activation]
     return Chain(lst[:-1])
 
 

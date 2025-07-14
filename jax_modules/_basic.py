@@ -279,8 +279,9 @@ class Conv:
             key, (self.output_dimension, self.input_dimension, *self.shape)
         )
 
-    def apply(self, parameters: Array, x: Array) -> Array:
+    def apply(self, parameters: Array, input: Array) -> Array:
         num_spatial_axes = len(self.shape)
+        x = input
         x = jnp.moveaxis(x, -1, -num_spatial_axes - 1)
         x = x[None]
         x = lax.conv_general_dilated(

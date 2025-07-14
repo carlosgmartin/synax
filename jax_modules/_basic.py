@@ -254,11 +254,11 @@ class Conv:
         self,
         input_dimension: int,
         output_dimension: int,
-        shape: tuple[int, ...],
-        strides: tuple[int, ...] | None = None,
+        shape: Sequence[int],
+        strides: Sequence[int] | None = None,
         padding: Literal["VALID", "SAME", "SAME_LOWER"]
         | Sequence[tuple[int, int]] = "VALID",
-        dilation: tuple[int, ...] | None = None,
+        dilation: Sequence[int] | None = None,
         initializer: Initializer = nn.initializers.he_normal(),
         groups: int = 1,
     ):

@@ -47,7 +47,7 @@ class Bias:
 
     def apply(self, parameters: Array, input: Array) -> Array:
         """
-        Apply the module.
+        Apply parameters.
 
         :param parameters: Parameters.
         :param input: An array of shape ``(..., dimension)``.
@@ -105,7 +105,7 @@ class Scale:
 
     def apply(self, parameters: Array, input: Array) -> Array:
         """
-        Apply the module.
+        Apply parameters.
 
         :param parameters: Parameters.
         :param input: An array of shape ``(..., dimension)``.
@@ -168,7 +168,7 @@ class Linear:
 
     def apply(self, parameters: Array, input: Array) -> Array:
         """
-        Apply the module.
+        Apply parameters.
 
         :param parameters: Parameters.
         :param input: An array of shape ``(..., input_dimension)``.
@@ -217,7 +217,7 @@ class Func:
 
     def apply(self, parameters: None, input: Any) -> Any:
         """
-        Apply the module.
+        Apply parameters.
 
         :param parameters: Parameters.
         :param input: An input.
@@ -330,7 +330,7 @@ class Embed:
 
     def apply(self, parameters: Array, input: Array) -> Array:
         """
-        Apply the module.
+        Apply parameters.
 
         :param parameters: Parameters.
         :param input: An array of shape ``(...,)``.

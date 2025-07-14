@@ -27,7 +27,7 @@ def MLP(
     Multi-layer perceptron.
 
     :param dimensions: Dimension of each layer.
-    :param activation: Module to use as an activation function.
+    :param activation: Module used as activation function.
         Not applied to the output.
     :param linear_initializer: Initializer for linear layers.
     :param bias_initializer: Initializer for bias layers.

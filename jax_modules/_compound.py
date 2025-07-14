@@ -23,7 +23,7 @@ class Chain:
     where :math:`f_i` is module :math:`i`. It therefore has type
 
     .. math::
-        \prod_{i=0}^{n-1} (A_i \to A_{i+1}) \to A_1 \to A_n
+        \prod_{i=0}^{n-1} (A_i \to A_{i+1}) \to A_0 \to A_n
 
     :param modules: Sequence of modules.
     :type modules: typing.Sequence[Module]

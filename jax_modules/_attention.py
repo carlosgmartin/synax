@@ -21,8 +21,8 @@ class Attention:
     :param hidden_dim: Dimension of the embeddings used to compute dot products.
         Defaults to ``query_input_dim``.
     :param heads: Number of attention heads.
-    :param linear_initializer: Initializer used for the linear layers.
-    :param bias_initializer: Initializer used for the bias layers.
+    :param linear_initializer: Initializer for linear layers.
+    :param bias_initializer: Initializer for bias layers.
     :param normalize_qk: Apply layer norm to queries and keys before computing
         dot products.
 

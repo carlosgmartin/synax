@@ -29,10 +29,10 @@ def MLP(
     :param dimensions: Dimension of each layer.
     :param activation: Module to use as an activation function.
         Not applied to the output.
-    :param linear_initializer: Initializer used for the linear layers.
-    :param bias_initializer: Initializer used for the bias layers.
-    :param linear_regularizer: Regularizer used for the linear layers.
-    :param bias_regularizer: Regularizer used for the bias layers.
+    :param linear_initializer: Initializer for linear layers.
+    :param bias_initializer: Initializer for bias layers.
+    :param linear_regularizer: Regularizer for linear layers.
+    :param bias_regularizer: Regularizer for bias layers.
 
     References:
 
@@ -189,8 +189,8 @@ class GLU:
 
     :param input_dimension: Input dimension.
     :param output_dimension: Output dimension.
-    :param linear_initializer: Initializer used for the linear layers.
-    :param bias_initializer: Initializer used for the bias layers.
+    :param linear_initializer: Initializer for linear layers.
+    :param bias_initializer: Initializer for bias layers.
     :param sigmoid_fn: Sigmoid function to use. Defaults to the logistic function.
 
     References:

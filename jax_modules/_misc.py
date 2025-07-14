@@ -284,14 +284,24 @@ class PReLU:
         return self.regularizer(param)
 
 
-def LeNet():
+def LeNet(classes=10):
     """
     LeNet convolutional network.
+
+    Handles 28 × 28 × 1 images.
+
+    Originally designed for grayscale MNIST images and 10 classes.
+
+    :param classes: Number of output classes.
+    :type classes: int
 
     References:
 
     - *Gradient-based learning applied to document recognition*. 2002.
       https://ieeexplore.ieee.org/document/726791.
+
+    - *The MNIST database of handwritten digit images for machine learning
+        research*. 2012. https://ieeexplore.ieee.org/document/6296535.
     """
     return Chain(
         [
@@ -311,19 +321,29 @@ def LeNet():
             Bias(84),
             Func(nn.tanh),
             Linear(84, 10),
-            Bias(10),
+            Bias(classes),
         ]
     )
 
 
-def AlexNet():
+def AlexNet(classes=1000):
     """
     AlexNet convolutional network.
+
+    Handles 224 × 224 × 3 images.
+
+    Originally designed for RGB ImageNet images and 1000 classes.
+
+    :param classes: Number of output classes.
+    :type classes: int
 
     References:
 
     - *ImageNet classification with deep convolutional neural networks*. 2017.
       https://dl.acm.org/doi/10.1145/3065386.
+
+    - *Imagenet: A large-scale hierarchical image database*. 2009.
+      https://ieeexplore.ieee.org/document/5206848
     """
     return Chain(
         [
@@ -355,6 +375,6 @@ def AlexNet():
             Func(nn.relu),
             # dropout 0.5
             Linear(4096, 1000),
-            Bias(1000),
+            Bias(classes),
         ]
     )

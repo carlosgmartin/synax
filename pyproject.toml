@@ -11,6 +11,7 @@ dev = [
     "pyright",
     "pytest",
     "furo",
+    "sphinx-autoapi",
 ]
 
 [tool.pyright]

@@ -5,7 +5,24 @@ from jax import numpy as jnp
 
 
 def layer_norm(x, axis=-1, epsilon=1e-6):
-    """Layer normalization.
+    r"""Layer normalization.
+
+    Computes
+
+    .. math::
+        y = \frac{x - \mu}{\sigma}
+
+    where
+
+    .. math::
+        \mu = \frac{1}{n} \sum_i x_i
+
+    is the mean of the elements of :math:`x` and
+
+    .. math::
+        \mu = \sqrt{ \frac{1}{n} \sum_i (x_i - \mu)^2 }
+
+    is the standard deviation of the elements of :math:`x`.
 
     References:
 
@@ -17,8 +34,20 @@ def layer_norm(x, axis=-1, epsilon=1e-6):
 
 
 def rms_norm(x, axis=-1, epsilon=1e-6):
-    """
+    r"""
     Root mean square layer normalization.
+
+    Computes
+
+    .. math::
+        y = \frac{x}{r}
+
+    where
+
+    .. math::
+        r = \sqrt{ \frac{1}{n} \sum_i x_i^2 }
+
+    is the root mean square (RMS) of the elements of :math:`x`.
 
     References:
 

@@ -35,3 +35,11 @@ Run the following after every change:
 ```shell
 ruff check && ruff format && pyright && pytest
 ```
+
+## Documentation
+
+Build documentation:
+
+```shell
+sphinx-build -M html docs docs/_build
+```

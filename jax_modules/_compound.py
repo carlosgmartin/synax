@@ -1,5 +1,5 @@
 import jax
-from jax import flatten_util, lax, random
+from jax import lax, random
 
 
 class Chain:
@@ -91,17 +91,3 @@ class Switch:
     def apply(self, param, branch, input):
         param = jax.tree.map(lambda x: x[branch], param)
         return self.module.apply(param, input)
-
-
-class RavelUnravel:
-    def __init__(self, module):
-        self.module = module
-
-    def init(self, key):
-        return self.module.init(key)
-
-    def apply(self, w, x):
-        x_ravel, unravel = flatten_util.ravel_pytree(x)
-        y_ravel = self.module.apply(w, x_ravel)
-        y = unravel(y_ravel)
-        return y

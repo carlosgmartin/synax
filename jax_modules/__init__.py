@@ -1,3 +1,7 @@
+"""
+This is the top-level package.
+"""
+
 from ._attention import Attention as Attention
 from ._basic import Bias as Bias
 from ._basic import Conv as Conv

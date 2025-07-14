@@ -25,7 +25,7 @@ autosummary_generate = True
 autoapi_dirs = ["../jax_modules"]
 autoapi_options = [
     # "members",
-    "undoc-members",
+    # "undoc-members",
     # "show-inheritance",
     "show-module-summary",
     "imported-members",

@@ -64,6 +64,12 @@ class Attention:
         self.normalize_qk = normalize_qk
 
     def init(self, key):
+        """
+        Sample initial parameters.
+
+        :param key: A PRNG key.
+        :param type: jax.Array
+        """
         keys = random.split(key, 6)
         return {
             "query_kernel": self.kernel_initializer(
@@ -89,7 +95,29 @@ class Attention:
         mask=None,
         bias=None,
         is_causal=False,
+        scale=None,
     ):
+        """
+        Apply the module.
+
+        :param param: Parameters.
+        :type param: typing.Any
+        :param query_input: Input used to compute queries.
+        :type query_input: jax.Array
+        :param key_input: Input used to compute keys.
+        :type key_input: jax.Array | None
+        :param value_input: Input used to compute values.
+        :type value_input: jax.Array | None
+        :param mask: Boolean mask used to filter out logits.
+        :type mask: jax.Array | None
+        :param bias: Bias array to be added to logits.
+        :type bias: jax.Array | None
+        :param is_causal: Apply causal attention.
+        :type bool: bool
+        :param scale: Scale for the logits. If ``None``, set to 1 divided by the
+            square root of the query's head dimension.
+        :type scale: float | None
+        """
         if key_input is None:
             key_input = query_input
         if value_input is None:
@@ -108,6 +136,12 @@ class Attention:
             key = layer_norm()(value)
 
         hidden = nn.dot_product_attention(
-            query, key, value, mask=mask, bias=None, is_causal=is_causal
+            query=query,
+            key=key,
+            value=value,
+            mask=mask,
+            bias=bias,
+            is_causal=is_causal,
+            scale=scale,
         )
         return lax.collapse(hidden, -2)

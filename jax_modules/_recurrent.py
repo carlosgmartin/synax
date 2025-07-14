@@ -1,21 +1,26 @@
-from jax import lax, nn, random
+from typing import Any, Callable
+
+from jax import Array, lax, nn, random
 from jax import numpy as jnp
 
 from ._basic import Bias, Conv
+
+Key = Array
 
 
 class RecurrentNetwork:
     def __init__(self, unit):
         self.unit = unit
 
-    def init(self, key, x):
+    def init(self, key: Key) -> dict[str, Any]:
         keys = random.split(key)
         w = self.unit.init(keys[0])
         h = self.unit.init_state(keys[1])
-        return w, h
+        return {"unit_param": w, "init_state": h}
 
-    def apply(self, param, xs):
-        w, h = param
+    def apply(self, param: dict[str, Any], xs: Array) -> Any:
+        w = param["unit_param"]
+        h = param["init_state"]
 
         def f(h, x):
             h_new = self.unit.apply(w, h, x)
@@ -36,13 +41,13 @@ class SimpleRNN:
 
     def __init__(
         self,
-        state_dim,
-        input_dim,
-        kernel_initializer=nn.initializers.glorot_uniform(),
-        bias_initializer=nn.initializers.zeros,
-        recurrent_initializer=nn.initializers.orthogonal(),
-        activation=nn.tanh,
-        state_initializer=nn.initializers.zeros,
+        state_dim: int,
+        input_dim: int,
+        kernel_initializer: Callable = nn.initializers.glorot_uniform(),
+        bias_initializer: Callable = nn.initializers.zeros,
+        recurrent_initializer: Callable = nn.initializers.orthogonal(),
+        activation: Callable = nn.tanh,
+        state_initializer: Callable = nn.initializers.zeros,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
@@ -52,19 +57,19 @@ class SimpleRNN:
         self.activation = activation
         self.state_initializer = state_initializer
 
-    def init(self, key):
+    def init(self, key: Key) -> tuple[Array, ...]:
         keys = random.split(key, 3)
         w = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
         u = self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim))
         b = self.bias_initializer(keys[2], (self.state_dim,))
         return w, u, b
 
-    def apply(self, param, state, input):
+    def apply(self, param: tuple[Array, ...], state: Array, input: Array) -> Array:
         w, u, b = param
         y = param @ w + state @ u + b
         return self.activation(y)
 
-    def init_state(self, key):
+    def init_state(self, key: Key) -> Array:
         return self.state_initializer(key, (self.state_dim,))
 
 
@@ -80,15 +85,15 @@ class GRU:
 
     def __init__(
         self,
-        state_dim,
-        input_dim,
-        kernel_initializer=nn.initializers.glorot_uniform(),
-        bias_initializer=nn.initializers.zeros,
-        recurrent_initializer=nn.initializers.orthogonal(),
-        reset_activation=nn.sigmoid,
-        update_activation=nn.sigmoid,
-        candidate_activation=nn.tanh,
-        state_initializer=nn.initializers.zeros,
+        state_dim: int,
+        input_dim: int,
+        kernel_initializer: Callable = nn.initializers.glorot_uniform(),
+        bias_initializer: Callable = nn.initializers.zeros,
+        recurrent_initializer: Callable = nn.initializers.orthogonal(),
+        reset_activation: Callable = nn.sigmoid,
+        update_activation: Callable = nn.sigmoid,
+        candidate_activation: Callable = nn.tanh,
+        state_initializer: Callable = nn.initializers.zeros,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
@@ -102,7 +107,7 @@ class GRU:
 
         self.state_initializer = state_initializer
 
-    def init(self, key):
+    def init(self, key: Key) -> tuple[Array, ...]:
         keys = random.split(key, 9)
 
         wz = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
@@ -119,14 +124,14 @@ class GRU:
 
         return bz, br, by, wz, wr, wy, uz, ur, uy
 
-    def apply(self, param, state, input):
+    def apply(self, param: tuple[Array, ...], state: Array, input: Array) -> Array:
         bz, br, by, wz, wr, wy, uz, ur, uy = param
         z = self.update_activation(input @ wz + state @ uz + bz)
         r = self.reset_activation(input @ wr + state @ ur + br)
         y = self.candidate_activation(input @ wy + (r * state) @ uy + by)
         return (1 - z) * state + z * y
 
-    def init_state(self, key):
+    def init_state(self, key: Key) -> Array:
         return self.state_initializer(key, (self.state_dim,))
 
 
@@ -142,15 +147,15 @@ class MGU:
 
     def __init__(
         self,
-        state_dim,
-        input_dim,
-        kernel_initializer=nn.initializers.glorot_uniform(),
-        bias_initializer=nn.initializers.zeros,
-        recurrent_initializer=nn.initializers.orthogonal(),
-        update_activation=nn.sigmoid,
-        candidate_activation=nn.tanh,
-        state_initializer=nn.initializers.zeros,
-        reset_gate=True,
+        state_dim: int,
+        input_dim: int,
+        kernel_initializer: Callable = nn.initializers.glorot_uniform(),
+        bias_initializer: Callable = nn.initializers.zeros,
+        recurrent_initializer: Callable = nn.initializers.orthogonal(),
+        update_activation: Callable = nn.sigmoid,
+        candidate_activation: Callable = nn.tanh,
+        state_initializer: Callable = nn.initializers.zeros,
+        reset_gate: bool = True,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
@@ -164,7 +169,7 @@ class MGU:
         self.state_initializer = state_initializer
         self.reset_gate = reset_gate
 
-    def init(self, key):
+    def init(self, key: Key) -> tuple[Array, ...]:
         keys = random.split(key, 6)
 
         wz = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
@@ -178,7 +183,7 @@ class MGU:
 
         return bz, by, wz, wy, uz, uy
 
-    def apply(self, param, state, input):
+    def apply(self, param: tuple[Array, ...], state: Array, input: Array) -> Array:
         bz, by, wz, wy, uz, uy = param
         z = self.update_activation(input @ wz + state @ uz + bz)
         if self.reset_gate:
@@ -187,7 +192,7 @@ class MGU:
             y = self.candidate_activation(input @ wy + state @ uy + by)
         return (1 - z) * state + z * y
 
-    def init_state(self, key):
+    def init_state(self, key: Key) -> Array:
         return self.state_initializer(key, (self.state_dim,))
 
 
@@ -202,13 +207,16 @@ class BistableRecurrentCell:
     """
 
     def __init__(
-        self, state_dim, input_dim, kernel_initializer=nn.initializers.he_normal()
+        self,
+        state_dim: int,
+        input_dim: int,
+        kernel_initializer: Callable = nn.initializers.he_normal(),
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
         self.kernel_initializer = kernel_initializer
 
-    def init(self, key):
+    def init(self, key: Key) -> tuple[Array, ...]:
         keys = random.split(key, 3)
 
         ua = jnp.eye(self.state_dim)
@@ -220,7 +228,7 @@ class BistableRecurrentCell:
 
         return ua, uc, wa, wc, wy
 
-    def apply(self, param, state, input):
+    def apply(self, param: tuple[Array, ...], state: Array, input: Array) -> Array:
         ua, uc, wa, wc, wy = param
         a = 1 + nn.tanh(input @ wa + state @ ua)
         c = nn.sigmoid(input @ wc + state @ uc)
@@ -240,12 +248,12 @@ class LSTM:
 
     def __init__(
         self,
-        state_dim,
-        input_dim,
-        kernel_initializer=nn.initializers.he_normal(),
-        recurrent_initializer=nn.initializers.orthogonal(),
-        bias_initializer=nn.initializers.zeros,
-        forget_bias=1.0,
+        state_dim: int,
+        input_dim: int,
+        kernel_initializer: Callable = nn.initializers.he_normal(),
+        recurrent_initializer: Callable = nn.initializers.orthogonal(),
+        bias_initializer: Callable = nn.initializers.zeros,
+        forget_bias: float = 1.0,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
@@ -254,7 +262,7 @@ class LSTM:
         self.bias_initializer = bias_initializer
         self.forget_bias = forget_bias
 
-    def init(self, key):
+    def init(self, key: Key) -> tuple[Array, ...]:
         keys = random.split(key, 12)
 
         Uf = self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim))
@@ -274,7 +282,9 @@ class LSTM:
 
         return bf, bi, bg, bo, Wf, Wi, Wg, Wo, Uf, Ui, Ug, Uo
 
-    def apply(self, w, x, h_c):
+    def apply(
+        self, w: tuple[Array, ...], h_c: tuple[Array, Array], x: Array
+    ) -> tuple[Array, Array]:
         bf, bi, bg, bo, Wf, Wi, Wg, Wo, Uf, Ui, Ug, Uo = w
         h, c = h_c
 
@@ -301,17 +311,17 @@ class FastGRNN:
 
     def __init__(
         self,
-        state_dim,
-        input_dim,
-        kernel_initializer=nn.initializers.he_normal(),
-        bias_initializer=nn.initializers.zeros,
+        state_dim: int,
+        input_dim: int,
+        kernel_initializer: Callable = nn.initializers.he_normal(),
+        bias_initializer: Callable = nn.initializers.zeros,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
         self.kernel_initializer = kernel_initializer
         self.bias_initializer = bias_initializer
 
-    def init(self, key):
+    def init(self, key: Key) -> tuple[Array, ...]:
         U = jnp.eye(self.state_dim)
 
         keys = random.split(key, 3)
@@ -326,7 +336,7 @@ class FastGRNN:
 
         return U, W, bz, by, zeta, nu
 
-    def apply(self, w, x, h):
+    def apply(self, w: tuple[Array, ...], h: Array, x: Array) -> Array:
         U, W, bz, by, zeta, nu = w
         z = nn.sigmoid(bz + h @ U + x @ W)
         y = nn.tanh(by + h @ U + x @ W)
@@ -347,12 +357,12 @@ class UpdateGateRNN:
 
     def __init__(
         self,
-        state_dim,
-        input_dim,
-        activation=nn.tanh,
-        kernel_initializer=nn.initializers.he_normal(),
-        recurrent_initializer=nn.initializers.orthogonal(),
-        bias_initializer=nn.initializers.zeros,
+        state_dim: int,
+        input_dim: int,
+        activation: Callable = nn.tanh,
+        kernel_initializer: Callable = nn.initializers.he_normal(),
+        recurrent_initializer: Callable = nn.initializers.orthogonal(),
+        bias_initializer: Callable = nn.initializers.zeros,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
@@ -361,7 +371,7 @@ class UpdateGateRNN:
         self.recurrent_initializer = recurrent_initializer
         self.bias_initializer = bias_initializer
 
-    def init(self, key):
+    def init(self, key: Key) -> tuple[Array, ...]:
         keys = random.split(key, 6)
 
         Uc = self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim))
@@ -375,7 +385,7 @@ class UpdateGateRNN:
 
         return bc, bg, Wc, Wg, Uc, Ug
 
-    def apply(self, w, x, h):
+    def apply(self, w: tuple[Array, ...], h: Array, x: Array) -> Array:
         bc, bg, Wc, Wg, Uc, Ug = w
         c = self.activation(bc + x @ Wc + h @ Uc)
         g = nn.sigmoid(bg + x @ Wg + h @ Ug)
@@ -385,14 +395,14 @@ class UpdateGateRNN:
 class ConvolutionalGatedUnit:
     def __init__(
         self,
-        state_dim,
-        input_dim,
-        shape,
-        new_activation=nn.tanh,
-        update_activation=nn.sigmoid,
-        kernel_initializer=nn.initializers.he_normal(),
-        bias_initializer=nn.initializers.zeros,
-        recurrent_initializer=nn.initializers.orthogonal(),
+        state_dim: int,
+        input_dim: int,
+        shape: tuple[int, ...],
+        new_activation: Callable = nn.tanh,
+        update_activation: Callable = nn.sigmoid,
+        kernel_initializer: Callable = nn.initializers.he_normal(),
+        bias_initializer: Callable = nn.initializers.zeros,
+        recurrent_initializer: Callable = nn.initializers.orthogonal(),
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
@@ -432,7 +442,7 @@ class ConvolutionalGatedUnit:
         self.new_activation = new_activation
         self.update_activation = update_activation
 
-    def init(self, key):
+    def init(self, key: Key) -> dict[str, Any]:
         keys = random.split(key, 6)
         return {
             "new_linear_state": self.new_linear_state.init(keys[0]),
@@ -443,7 +453,7 @@ class ConvolutionalGatedUnit:
             "update_bias": self.update_bias.init(keys[5]),
         }
 
-    def apply(self, param, state, input):
+    def apply(self, param: dict[str, Any], state: Array, input: Array) -> Array:
         new = self.new_linear_state.apply(param["new_linear_state"], state)
         new += self.new_linear_state.apply(param["new_linear_input"], input)
         new += self.new_bias.apply(param["new_bias"], new)

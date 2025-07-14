@@ -20,7 +20,7 @@ def layer_norm(axis=-1, epsilon=1e-6):
     is the mean of the elements of :math:`x` and
 
     .. math::
-        \mu = \sqrt{ \varepsilon + \frac{1}{n} \sum_i (x_i - \mu)^2 }
+        \sigma = \sqrt{ \varepsilon + \frac{1}{n} \sum_i (x_i - \mu)^2 }
 
     is the standard deviation of the elements of :math:`x`.
     :math:`\varepsilon` is a small quantity used for numerical stability.

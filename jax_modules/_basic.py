@@ -39,7 +39,7 @@ class Bias:
         """
         Initialize parameters.
 
-        :param key: A PRNG key.
+        :param key: PRNG key.
 
         :returns: Parameters.
         """
@@ -97,7 +97,7 @@ class Scale:
         """
         Initialize parameters.
 
-        :param key: A PRNG key.
+        :param key: PRNG key.
 
         :returns: Parameters.
         """
@@ -160,7 +160,7 @@ class Linear:
         """
         Initialize parameters.
 
-        :param key: A PRNG key.
+        :param key: PRNG key.
 
         :returns: Parameters.
         """
@@ -209,7 +209,7 @@ class Func:
         """
         Initialize parameters.
 
-        :param key: A PRNG key.
+        :param key: PRNG key.
 
         :returns: Parameters.
         """
@@ -323,7 +323,7 @@ class Embed:
         """
         Initialize parameters.
 
-        :param key: A PRNG key.
+        :param key: PRNG key.
 
         :returns: Parameters.
         """

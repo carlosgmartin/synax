@@ -64,7 +64,7 @@ class Attention:
         """
         Initialize parameters.
 
-        :param key: A PRNG key.
+        :param key: PRNG key.
         """
         keys = random.split(key, 6)
         return {

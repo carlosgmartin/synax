@@ -84,7 +84,7 @@ class Scale:
 
 class Linear:
     r"""
-    Linear linear transformation.
+    Linear transformation.
 
     Does not include bias.
 

@@ -105,22 +105,26 @@ class NeuralCellularAutomaton:
         return self.cell.init(key)
 
     def apply(self, param, state):
+        inputs = []
+
         neighbors = get_von_neumann_neighbors(state)
+        inputs.append(neighbors)
 
         space_dim = state.ndim - 1
         spatial_axes = range(-1 - space_dim, -1)
 
         if self.global_mean:
-            state_mean = state.mean(spatial_axes, keepdims=True)
-            state_mean = jnp.broadcast_to(state_mean, state.shape)
-            neighbors = jnp.concatenate([neighbors, state_mean], -1)
+            x = state.mean(spatial_axes, keepdims=True)
+            x = jnp.broadcast_to(x, state.shape)
+            inputs.append(x)
 
         if self.global_max:
-            state_max = state.max(spatial_axes, keepdims=True)
-            state_max = jnp.broadcast_to(state_max, state.shape)
-            neighbors = jnp.concatenate([neighbors, state_max], -1)
+            x = state.max(spatial_axes, keepdims=True)
+            x = jnp.broadcast_to(x, state.shape)
+            inputs.append(x)
 
-        new_state = self.cell.apply(param, state, neighbors)
+        inputs = jnp.concatenate(inputs, -1)
+        new_state = self.cell.apply(param, state, inputs)
         return new_state
 
 

@@ -5,7 +5,7 @@ from jax import Array, lax, random
 from jax import numpy as jnp
 
 Key = Array
-Axis = int | tuple[int, ...] | None
+Axis = int | Sequence[int] | None
 Padding = Literal["VALID", "SAME", "SAME_BELOW"] | Sequence[tuple[int, int]]
 
 
@@ -84,12 +84,12 @@ def rms_norm(axis: Axis = -1, epsilon: float = 1e-6) -> Callable[[Array], Array]
 def pool(
     operator,
     identity,
-    shape: tuple[int, ...],
+    shape: Sequence[int],
     *,
-    strides: int | tuple[int, ...] = 1,
+    strides: int | Sequence[int] = 1,
     padding: Padding = "VALID",
-    base_dilation: int | tuple[int, ...] = 1,
-    window_dilation: int | tuple[int, ...] = 1,
+    base_dilation: int | Sequence[int] = 1,
+    window_dilation: int | Sequence[int] = 1,
 ) -> Callable[[Array], Array]:
     if isinstance(strides, int):
         strides = (strides,) * len(shape)
@@ -105,8 +105,8 @@ def pool(
             operand=x,
             init_value=identity,
             computation=operator,
-            window_dimensions=shape + (1,),
-            window_strides=strides + (1,),
+            window_dimensions=(*shape, 1),
+            window_strides=(*strides, 1),
             padding=padding,
             base_dilation=base_dilation,
             window_dilation=window_dilation,
@@ -116,12 +116,12 @@ def pool(
 
 
 def max_pool(
-    shape: tuple[int, ...],
+    shape: Sequence[int],
     *,
-    strides: int | tuple[int, ...] = 1,
+    strides: int | Sequence[int] = 1,
     padding: Padding = "VALID",
-    base_dilation: int | tuple[int, ...] = 1,
-    window_dilation: int | tuple[int, ...] = 1,
+    base_dilation: int | Sequence[int] = 1,
+    window_dilation: int | Sequence[int] = 1,
 ) -> Callable[[Array], Array]:
     """
     Max pooling.
@@ -145,12 +145,12 @@ def max_pool(
 
 
 def mean_pool(
-    shape: tuple[int, ...],
+    shape: Sequence[int],
     *,
-    strides: int | tuple[int, ...] = 1,
+    strides: int | Sequence[int] = 1,
     padding: Padding = "VALID",
-    base_dilation: int | tuple[int, ...] = 1,
-    window_dilation: int | tuple[int, ...] = 1,
+    base_dilation: int | Sequence[int] = 1,
+    window_dilation: int | Sequence[int] = 1,
 ) -> Callable[[Array], Array]:
     """
     Mean pooling.

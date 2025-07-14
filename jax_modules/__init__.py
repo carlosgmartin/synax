@@ -7,6 +7,7 @@ from ._basic import Func as Func
 from ._basic import Scale as Scale
 from ._compound import Chain as Chain
 from ._compound import Parallel as Parallel
+from ._compound import Residual as Residual
 from ._misc import GLU as GLU
 from ._misc import MLP as MLP
 from ._misc import AlexNet as AlexNet
@@ -24,7 +25,6 @@ from ._utils import rms_norm as rms_norm
 from ._utils import sum_pool as sum_pool
 
 # from ._compound import Repeat as Repeat
-# from ._compound import Residual as Residual
 # from ._compound import Switch as Switch
 # from ._misc import NeuralCellularAutomaton as NeuralCellularAutomaton
 # from ._parameterizations import AntisymmetricMatrix as AntisymmetricMatrix

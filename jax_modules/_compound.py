@@ -36,16 +36,16 @@ class Chain:
     def __init__(self, modules: Sequence[Module]):
         self.modules = modules
 
-    def init(self, key: Key) -> list[Any]:
+    def init(self, key: Key) -> tuple:
         keys = random.split(key, len(self.modules))
-        return [module.init(key) for module, key in zip(self.modules, keys)]
+        return tuple(module.init(key) for module, key in zip(self.modules, keys))
 
-    def apply(self, parameters: list[Any], input: Any) -> Any:
+    def apply(self, parameters: tuple, input: Any) -> Any:
         for module, param in zip(self.modules, parameters, strict=True):
             input = module.apply(param, input)
         return input
 
-    def parameter_loss(self, parameters: list[Any]) -> Array | float:
+    def parameter_loss(self, parameters: tuple) -> Array | float:
         return sum(
             module.parameter_loss(param)
             for module, param in zip(self.modules, parameters, strict=True)
@@ -76,19 +76,19 @@ class Parallel:
     def __init__(self, modules: Sequence[Module]):
         self.modules = modules
 
-    def init(self, key: Key) -> list[Any]:
+    def init(self, key: Key) -> tuple:
         keys = random.split(key, len(self.modules))
-        return [module.init(key) for module, key in zip(self.modules, keys)]
+        return tuple(module.init(key) for module, key in zip(self.modules, keys))
 
-    def apply(self, parameters: list[Any], input: list[Any]) -> list[Any]:
-        return [
+    def apply(self, parameters: tuple, input: Sequence[Any]) -> tuple:
+        return tuple(
             module.apply(param, input)
             for module, param, input in zip(
                 self.modules, parameters, input, strict=True
             )
-        ]
+        )
 
-    def parameter_loss(self, parameters: list[Any]) -> Array | float:
+    def parameter_loss(self, parameters: tuple) -> Array | float:
         return sum(
             module.parameter_loss(param)
             for module, param in zip(self.modules, parameters, strict=True)

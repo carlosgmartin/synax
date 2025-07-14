@@ -1,4 +1,9 @@
+from typing import Callable
+
+from jax import Array
 from jax import numpy as jnp
+
+Regularizer = Callable[[Array], Array | float]
 
 
 def zero(x):

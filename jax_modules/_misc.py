@@ -7,7 +7,7 @@ from jax import numpy as jnp
 from ._basic import Bias, Conv, Func, Linear
 from ._compound import Chain
 from ._recurrent import MGU
-from ._regularizers import zero
+from ._regularizers import Regularizer, zero
 from ._utils import max_pool, mean_pool
 
 Module = Any
@@ -19,8 +19,8 @@ def MLP(
     activation: Module = Func(nn.relu),
     kernel_initializer: Callable = nn.initializers.he_normal(),
     bias_initializer: Callable = nn.initializers.zeros,
-    kernel_regularizer: Callable = zero,
-    bias_regularizer: Callable = zero,
+    kernel_regularizer: Regularizer = zero,
+    bias_regularizer: Regularizer = zero,
 ):
     """
     Multi-layer perceptron.
@@ -259,7 +259,7 @@ class PReLU:
     def __init__(
         self,
         initializer: Callable = nn.initializers.zeros,
-        regularizer: Callable = zero,
+        regularizer: Regularizer = zero,
     ):
         self.initializer = initializer
         self.regularizer = regularizer
@@ -270,7 +270,7 @@ class PReLU:
     def apply(self, param: Array, input: Array) -> Array:
         return jnp.where(input > 0, input, input * param)
 
-    def parameter_loss(self, param: Array) -> Array:
+    def parameter_loss(self, param: Array) -> Array | float:
         return self.regularizer(param)
 
 

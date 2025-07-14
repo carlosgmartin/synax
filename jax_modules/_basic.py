@@ -3,7 +3,7 @@ from typing import Any, Callable, Literal, Sequence
 from jax import Array, lax, nn
 from jax import numpy as jnp
 
-from ._regularizers import zero
+from ._regularizers import Regularizer, zero
 
 Key = Array
 
@@ -28,7 +28,7 @@ class Bias:
         self,
         dimension: int,
         initializer: Callable = nn.initializers.zeros,
-        regularizer: Callable = zero,
+        regularizer: Regularizer = zero,
     ):
         self.dimension = dimension
         self.initializer = initializer
@@ -55,7 +55,7 @@ class Bias:
         """
         return input + param
 
-    def parameter_loss(self, param: Array) -> Array:
+    def parameter_loss(self, param: Array) -> Array | float:
         """
         Parameter loss.
 
@@ -86,7 +86,7 @@ class Scale:
         self,
         dimension: int,
         initializer: Callable = nn.initializers.ones,
-        regularizer: Callable = zero,
+        regularizer: Regularizer = zero,
     ):
         self.dimension = dimension
         self.initializer = initializer
@@ -113,7 +113,7 @@ class Scale:
         """
         return input * param
 
-    def parameter_loss(self, param: Array) -> Array:
+    def parameter_loss(self, param: Array) -> Array | float:
         """
         Parameter loss.
 
@@ -148,7 +148,7 @@ class Linear:
         input_dimension: int,
         output_dimension: int,
         initializer: Callable = nn.initializers.he_normal(),
-        regularizer: Callable = zero,
+        regularizer: Regularizer = zero,
     ):
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
@@ -176,7 +176,7 @@ class Linear:
         """
         return input @ param
 
-    def parameter_loss(self, param: Array) -> Array:
+    def parameter_loss(self, param: Array) -> Array | float:
         """
         Parameter loss.
 
@@ -310,7 +310,7 @@ class Embed:
         number: int,
         dimension: int,
         initializer: Callable = nn.initializers.normal(),
-        regularizer: Callable = zero,
+        regularizer: Regularizer = zero,
     ):
         self.number = number
         self.dimension = dimension
@@ -338,7 +338,7 @@ class Embed:
         """
         return param[input]
 
-    def parameter_loss(self, param: Array) -> Array:
+    def parameter_loss(self, param: Array) -> Array | float:
         """
         Parameter loss.
 

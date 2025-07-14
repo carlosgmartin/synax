@@ -4,7 +4,7 @@ import jax
 from jax import Array, nn
 from jax import numpy as jnp
 
-from ._regularizers import zero
+from ._regularizers import Regularizer, zero
 
 Key = Array
 
@@ -14,7 +14,7 @@ class Constant:
         self,
         dim: int,
         initializer: Callable = nn.initializers.zeros,
-        regularizer: Callable = zero,
+        regularizer: Regularizer = zero,
     ):
         self.dim = dim
         self.initializer = initializer
@@ -26,7 +26,7 @@ class Constant:
     def apply(self, param: Array) -> Array:
         return param
 
-    def parameter_loss(self, param: Array) -> Array:
+    def parameter_loss(self, param: Array) -> Array | float:
         return self.regularizer(param)
 
 
@@ -35,7 +35,7 @@ class Ball:
         self,
         dim: int,
         initializer: Callable = nn.initializers.zeros,
-        regularizer: Callable = zero,
+        regularizer: Regularizer = zero,
     ):
         self.dim = dim
         self.initializer = initializer
@@ -47,7 +47,7 @@ class Ball:
     def apply(self, param: Array) -> Array:
         return param / jnp.sqrt(1 + param * jnp.conj(param))
 
-    def parameter_loss(self, param: Array) -> Array:
+    def parameter_loss(self, param: Array) -> Array | float:
         return self.regularizer(param)
 
 
@@ -56,7 +56,7 @@ class Simplex:
         self,
         dim: int,
         initializer: Callable = nn.initializers.zeros,
-        regularizer: Callable = zero,
+        regularizer: Regularizer = zero,
     ):
         self.dim = dim
         self.initializer = initializer
@@ -68,7 +68,7 @@ class Simplex:
     def apply(self, param: Array) -> Array:
         return nn.softmax(param)
 
-    def parameter_loss(self, param: Array) -> Array:
+    def parameter_loss(self, param: Array) -> Array | float:
         return self.regularizer(param)
 
 
@@ -93,7 +93,7 @@ class SymmetricMatrix:
         self,
         dim: int,
         initializer: Callable = nn.initializers.zeros,
-        regularizer: Callable = zero,
+        regularizer: Regularizer = zero,
     ):
         self.dim = dim
         self.initializer = initializer
@@ -106,7 +106,7 @@ class SymmetricMatrix:
     def apply(self, param: Array) -> Array:
         return vector_to_symmetric_matrix(param, self.dim)
 
-    def parameter_loss(self, param: Array) -> Array:
+    def parameter_loss(self, param: Array) -> Array | float:
         return self.regularizer(param)
 
 
@@ -115,7 +115,7 @@ class AntisymmetricMatrix:
         self,
         dim: int,
         initializer: Callable = nn.initializers.zeros,
-        regularizer: Callable = zero,
+        regularizer: Regularizer = zero,
     ):
         self.dim = dim
         self.initializer = initializer
@@ -128,7 +128,7 @@ class AntisymmetricMatrix:
     def apply(self, param: Array) -> Array:
         return vector_to_antisymmetric_matrix(param, self.dim)
 
-    def parameter_loss(self, param: Array) -> Array:
+    def parameter_loss(self, param: Array) -> Array | float:
         return self.regularizer(param)
 
 

@@ -334,7 +334,7 @@ class Embed:
         Apply parameters.
 
         :param parameters: Parameters.
-        :param input: An array of shape ``(...,)``.
+        :param input: An array of shape ``(...)``.
 
         :returns: An array of shape ``(..., dimension)``.
         """

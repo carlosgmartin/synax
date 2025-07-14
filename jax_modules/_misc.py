@@ -346,8 +346,8 @@ def AlexNet(input_channels=3, outputs=1000):
     - *ImageNet classification with deep convolutional neural networks*. 2017.
       https://dl.acm.org/doi/10.1145/3065386.
 
-    - *Imagenet: A large-scale hierarchical image database*. 2009.
-      https://ieeexplore.ieee.org/document/5206848
+    - *ImageNet: A large-scale hierarchical image database*. 2009.
+      https://ieeexplore.ieee.org/document/5206848.
     """
     return Chain(
         [

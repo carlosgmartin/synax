@@ -23,6 +23,7 @@ def layer_norm(axis=-1, epsilon=1e-6):
         \mu = \sqrt{ \varepsilon + \frac{1}{n} \sum_i (x_i - \mu)^2 }
 
     is the standard deviation of the elements of :math:`x`.
+    :math:`\varepsilon` is a small quantity used for numerical stability.
 
     :param axis: Axis or axes along which to apply.
     :type axis: int | tuple[int, ...] | None
@@ -57,6 +58,7 @@ def rms_norm(axis=-1, epsilon=1e-6):
         r = \sqrt{ \varepsilon + \frac{1}{n} \sum_i x_i^2 }
 
     is the root mean square (RMS) of the elements of :math:`x`.
+    :math:`\varepsilon` is a small quantity used for numerical stability.
 
     :param axis: Axis or axes along which to apply.
     :type axis: int | tuple[int, ...] | None

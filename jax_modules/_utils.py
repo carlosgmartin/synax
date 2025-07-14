@@ -25,7 +25,7 @@ def layer_norm(axis=-1, epsilon=1e-6):
     is the standard deviation of the elements of :math:`x`.
     :math:`\varepsilon` is a small quantity used for numerical stability.
 
-    :param axis: Axis or axes along which to apply.
+    :param axis: Axis or axes along which to normalize.
     :type axis: int | tuple[int, ...] | None
     :param epsilon: Small quantity used for numerical stability.
     :type epsilon: float
@@ -60,7 +60,7 @@ def rms_norm(axis=-1, epsilon=1e-6):
     is the root mean square (RMS) of the elements of :math:`x`.
     :math:`\varepsilon` is a small quantity used for numerical stability.
 
-    :param axis: Axis or axes along which to apply.
+    :param axis: Axis or axes along which to normalize.
     :type axis: int | tuple[int, ...] | None
     :param epsilon: Small quantity used for numerical stability.
     :type epsilon: float

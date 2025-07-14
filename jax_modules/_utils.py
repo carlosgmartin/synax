@@ -129,7 +129,7 @@ def max_pool(
     """
     return pool(
         operator=lax.max,
-        identity=-float("inf"),
+        identity=-jnp.inf,
         shape=shape,
         strides=strides,
         padding=padding,

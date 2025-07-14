@@ -129,7 +129,7 @@ class Linear:
 
 class Func:
     r"""
-    Function.
+    Function application.
 
     Computes
 

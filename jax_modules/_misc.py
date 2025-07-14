@@ -186,7 +186,7 @@ class GLU:
     .. math::
         y = \sigma(A_1 x + b_1) \odot (A_2 x + b_2)
 
-    where :math:`\sigma` is the sigmoid function, :math:`A_1, A_2` are learned
+    where :math:`\sigma` is a sigmoid function, :math:`A_1, A_2` are learned
     matrices, and :math:`b_1, b_2` are learned vectors.
 
     :param input_dimension: Dimension of the input.

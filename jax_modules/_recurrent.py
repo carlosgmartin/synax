@@ -19,9 +19,9 @@ class RecurrentNetwork:
         h = self.unit.init_state(keys[1])
         return {"unit_param": w, "init_state": h}
 
-    def apply(self, param: dict[str, Any], xs: Array) -> Any:
-        w = param["unit_param"]
-        h = param["init_state"]
+    def apply(self, parameters: dict[str, Any], xs: Array) -> Any:
+        w = parameters["unit_param"]
+        h = parameters["init_state"]
 
         def f(h, x):
             h_new = self.unit.apply(w, h, x)
@@ -65,9 +65,9 @@ class SimpleRNN:
         b = self.bias_initializer(keys[2], (self.state_dim,))
         return w, u, b
 
-    def apply(self, param: tuple[Array, ...], state: Array, input: Array) -> Array:
-        w, u, b = param
-        y = param @ w + state @ u + b
+    def apply(self, parameters: tuple[Array, ...], state: Array, input: Array) -> Array:
+        w, u, b = parameters
+        y = input @ w + state @ u + b
         return self.activation(y)
 
     def init_state(self, key: Key) -> Array:
@@ -125,8 +125,8 @@ class GRU:
 
         return bz, br, by, wz, wr, wy, uz, ur, uy
 
-    def apply(self, param: tuple[Array, ...], state: Array, input: Array) -> Array:
-        bz, br, by, wz, wr, wy, uz, ur, uy = param
+    def apply(self, parameters: tuple[Array, ...], state: Array, input: Array) -> Array:
+        bz, br, by, wz, wr, wy, uz, ur, uy = parameters
         z = self.update_activation(input @ wz + state @ uz + bz)
         r = self.reset_activation(input @ wr + state @ ur + br)
         y = self.candidate_activation(input @ wy + (r * state) @ uy + by)
@@ -184,8 +184,8 @@ class MGU:
 
         return bz, by, wz, wy, uz, uy
 
-    def apply(self, param: tuple[Array, ...], state: Array, input: Array) -> Array:
-        bz, by, wz, wy, uz, uy = param
+    def apply(self, parameters: tuple[Array, ...], state: Array, input: Array) -> Array:
+        bz, by, wz, wy, uz, uy = parameters
         z = self.update_activation(input @ wz + state @ uz + bz)
         if self.reset_gate:
             y = self.candidate_activation(input @ wy + (state * z) @ uy + by)
@@ -229,8 +229,8 @@ class BistableRecurrentCell:
 
         return ua, uc, wa, wc, wy
 
-    def apply(self, param: tuple[Array, ...], state: Array, input: Array) -> Array:
-        ua, uc, wa, wc, wy = param
+    def apply(self, parameters: tuple[Array, ...], state: Array, input: Array) -> Array:
+        ua, uc, wa, wc, wy = parameters
         a = 1 + nn.tanh(input @ wa + state @ ua)
         c = nn.sigmoid(input @ wc + state @ uc)
         y = nn.tanh(input @ wy + state * a)
@@ -454,15 +454,19 @@ class ConvolutionalGatedUnit:
             "update_bias": self.update_bias.init(keys[5]),
         }
 
-    def apply(self, param: dict[str, Any], state: Array, input: Array) -> Array:
-        new = self.new_linear_state.apply(param["new_linear_state"], state)
-        new += self.new_linear_state.apply(param["new_linear_input"], input)
-        new += self.new_bias.apply(param["new_bias"], new)
+    def apply(self, parameters: dict[str, Any], state: Array, input: Array) -> Array:
+        new = self.new_linear_state.apply(parameters["new_linear_state"], state)
+        new += self.new_linear_state.apply(parameters["new_linear_input"], input)
+        new += self.new_bias.apply(parameters["new_bias"], new)
         new = self.new_activation(new)
 
-        update = self.update_linear_state.apply(param["update_linear_state"], state)
-        update += self.update_linear_input.apply(param["update_linear_input"], input)
-        update += self.update_bias.apply(param["update_bias"], update)
+        update = self.update_linear_state.apply(
+            parameters["update_linear_state"], state
+        )
+        update += self.update_linear_input.apply(
+            parameters["update_linear_input"], input
+        )
+        update += self.update_bias.apply(parameters["update_bias"], update)
         update = self.update_activation(update)
 
         return state + update * (new - state)

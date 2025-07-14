@@ -84,7 +84,7 @@ class Attention:
 
     def apply(
         self,
-        param: dict[str, Array],
+        parameters: dict[str, Array],
         query_input: Array,
         key_input: Array | None = None,
         value_input: Array | None = None,
@@ -96,7 +96,7 @@ class Attention:
         """
         Apply the module.
 
-        :param param: Module parameters.
+        :param parameters: Module parameters.
         :param query_input: Input used to compute queries.
         :param key_input: Input used to compute keys.
         :param value_input: Input used to compute values.
@@ -113,13 +113,13 @@ class Attention:
         if value_input is None:
             value_input = key_input
 
-        query = jnp.tensordot(query_input, param["query_kernel"], (-1, -2))
-        key = jnp.tensordot(key_input, param["key_kernel"], (-1, -2))
-        value = jnp.tensordot(value_input, param["value_kernel"], (-1, -2))
+        query = jnp.tensordot(query_input, parameters["query_kernel"], (-1, -2))
+        key = jnp.tensordot(key_input, parameters["key_kernel"], (-1, -2))
+        value = jnp.tensordot(value_input, parameters["value_kernel"], (-1, -2))
 
-        query += param["query_bias"]
-        key += param["key_bias"]
-        value += param["value_bias"]
+        query += parameters["query_bias"]
+        key += parameters["key_bias"]
+        value += parameters["value_bias"]
 
         if self.normalize_qk:
             query = layer_norm()(query)

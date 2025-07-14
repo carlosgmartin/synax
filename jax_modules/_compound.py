@@ -40,15 +40,15 @@ class Chain:
         keys = random.split(key, len(self.modules))
         return [module.init(key) for module, key in zip(self.modules, keys)]
 
-    def apply(self, param: list[Any], input: Any) -> Any:
-        for module, param in zip(self.modules, param, strict=True):
+    def apply(self, parameters: list[Any], input: Any) -> Any:
+        for module, param in zip(self.modules, parameters, strict=True):
             input = module.apply(param, input)
         return input
 
-    def parameter_loss(self, param: list[Any]) -> Array | float:
+    def parameter_loss(self, parameters: list[Any]) -> Array | float:
         return sum(
             module.parameter_loss(param)
-            for module, param in zip(self.modules, param, strict=True)
+            for module, param in zip(self.modules, parameters, strict=True)
         )
 
 
@@ -80,16 +80,18 @@ class Parallel:
         keys = random.split(key, len(self.modules))
         return [module.init(key) for module, key in zip(self.modules, keys)]
 
-    def apply(self, param: list[Any], input: list[Any]) -> list[Any]:
+    def apply(self, parameters: list[Any], input: list[Any]) -> list[Any]:
         return [
             module.apply(param, input)
-            for module, param, input in zip(self.modules, param, input, strict=True)
+            for module, param, input in zip(
+                self.modules, parameters, input, strict=True
+            )
         ]
 
-    def parameter_loss(self, param: list[Any]) -> Array | float:
+    def parameter_loss(self, parameters: list[Any]) -> Array | float:
         return sum(
             module.parameter_loss(param)
-            for module, param in zip(self.modules, param, strict=True)
+            for module, param in zip(self.modules, parameters, strict=True)
         )
 
 
@@ -100,15 +102,15 @@ class Repeat:
     def init(self, key: Key) -> Any:
         return self.module.init(key)
 
-    def apply(self, param: Any, input: Any, steps: int, unroll: int = 1):
+    def apply(self, parameters: Any, input: Any, steps: int, unroll: int = 1):
         def f(x, _):
-            y = self.module.apply(param, x)
+            y = self.module.apply(parameters, x)
             return y, x
 
         return lax.scan(f, input, length=steps, unroll=unroll)
 
-    def parameter_loss(self, param: Any) -> jax.Array:
-        return self.module.parameter_loss(param)
+    def parameter_loss(self, parameters: Any) -> jax.Array:
+        return self.module.parameter_loss(parameters)
 
 
 class Residual:
@@ -136,12 +138,12 @@ class Residual:
     def init(self, key: Key) -> Any:
         return self.module.init(key)
 
-    def apply(self, param: Any, input: jax.Array) -> jax.Array:
-        output = self.module.apply(param, input)
+    def apply(self, parameters: Any, input: jax.Array) -> jax.Array:
+        output = self.module.apply(parameters, input)
         return input + output
 
-    def parameter_loss(self, param: Any) -> jax.Array:
-        return self.module.parameter_loss(param)
+    def parameter_loss(self, parameters: Any) -> jax.Array:
+        return self.module.parameter_loss(parameters)
 
 
 class Switch:
@@ -153,6 +155,6 @@ class Switch:
         keys = random.split(key, self.branches)
         return jax.vmap(self.module.init)(keys)
 
-    def apply(self, param: Any, branch: jax.Array, input: Any):
-        param = jax.tree.map(lambda x: x[branch], param)
-        return self.module.apply(param, input)
+    def apply(self, parameters: Any, branch: jax.Array, input: Any):
+        parameters = jax.tree.map(lambda x: x[branch], parameters)
+        return self.module.apply(parameters, input)

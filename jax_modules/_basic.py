@@ -45,26 +45,26 @@ class Bias:
         """
         return self.initializer(key, (self.dimension,))
 
-    def apply(self, param: Array, input: Array) -> Array:
+    def apply(self, parameters: Array, input: Array) -> Array:
         """
         Apply the module.
 
-        :param param: Module parameters.
+        :param parameters: Module parameters.
         :param input: An array of shape ``(..., dimension)``.
 
         :returns: An array of shape ``(..., dimension)``.
         """
-        return input + param
+        return input + parameters
 
-    def parameter_loss(self, param: Array) -> Array | float:
+    def parameter_loss(self, parameters: Array) -> Array | float:
         """
         Parameter loss.
 
-        :param param: Module parameters.
+        :param parameters: Module parameters.
 
         :returns: A scalar.
         """
-        return self.regularizer(param)
+        return self.regularizer(parameters)
 
 
 class Scale:
@@ -103,26 +103,26 @@ class Scale:
         """
         return self.initializer(key, (self.dimension,))
 
-    def apply(self, param: Array, input: Array) -> Array:
+    def apply(self, parameters: Array, input: Array) -> Array:
         """
         Apply the module.
 
-        :param param: Module parameters.
+        :param parameters: Module parameters.
         :param input: An array of shape ``(..., dimension)``.
 
         :returns: An array of shape ``(..., dimension)``.
         """
-        return input * param
+        return input * parameters
 
-    def parameter_loss(self, param: Array) -> Array | float:
+    def parameter_loss(self, parameters: Array) -> Array | float:
         """
         Parameter loss.
 
-        :param param: Module parameters.
+        :param parameters: Module parameters.
 
         :returns: A scalar.
         """
-        return self.regularizer(param)
+        return self.regularizer(parameters)
 
 
 class Linear:
@@ -166,26 +166,26 @@ class Linear:
         """
         return self.initializer(key, (self.input_dimension, self.output_dimension))
 
-    def apply(self, param: Array, input: Array) -> Array:
+    def apply(self, parameters: Array, input: Array) -> Array:
         """
         Apply the module.
 
-        :param param: Module parameters.
+        :param parameters: Module parameters.
         :param input: An array of shape ``(..., input_dimension)``.
 
         :returns: An array of shape ``(..., output_dimension)``.
         """
-        return input @ param
+        return input @ parameters
 
-    def parameter_loss(self, param: Array) -> Array | float:
+    def parameter_loss(self, parameters: Array) -> Array | float:
         """
         Parameter loss.
 
-        :param param: Module parameters.
+        :param parameters: Module parameters.
 
         :returns: A scalar.
         """
-        return self.regularizer(param)
+        return self.regularizer(parameters)
 
 
 class Func:
@@ -215,11 +215,11 @@ class Func:
         """
         return None
 
-    def apply(self, param: None, input: Any) -> Any:
+    def apply(self, parameters: None, input: Any) -> Any:
         """
         Apply the module.
 
-        :param param: Module parameters.
+        :param parameters: Module parameters.
         :param input: An input.
 
         :returns: The output.
@@ -279,13 +279,13 @@ class Conv:
             key, (self.output_dimension, self.input_dimension, *self.shape)
         )
 
-    def apply(self, param: Array, x: Array) -> Array:
+    def apply(self, parameters: Array, x: Array) -> Array:
         num_spatial_axes = len(self.shape)
         x = jnp.moveaxis(x, -1, -num_spatial_axes - 1)
         x = x[None]
         x = lax.conv_general_dilated(
             lhs=x,
-            rhs=param,
+            rhs=parameters,
             window_strides=self.strides or [1] * num_spatial_axes,
             padding=self.padding,
             rhs_dilation=self.dilation,
@@ -328,23 +328,23 @@ class Embed:
         """
         return self.initializer(key, (self.number, self.dimension))
 
-    def apply(self, param: Array, input: Array) -> Array:
+    def apply(self, parameters: Array, input: Array) -> Array:
         """
         Apply the module.
 
-        :param param: Module parameters.
+        :param parameters: Module parameters.
         :param input: An array of shape ``(...,)``.
 
         :returns: An array of shape ``(..., dimension)``.
         """
-        return param[input]
+        return parameters[input]
 
-    def parameter_loss(self, param: Array) -> Array | float:
+    def parameter_loss(self, parameters: Array) -> Array | float:
         """
         Parameter loss.
 
-        :param param: Module parameters.
+        :param parameters: Module parameters.
 
         :returns: A scalar.
         """
-        return self.regularizer(param)
+        return self.regularizer(parameters)

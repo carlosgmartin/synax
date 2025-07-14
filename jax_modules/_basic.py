@@ -41,7 +41,7 @@ class Bias:
 
         :param key: A PRNG key.
 
-        :returns: Module parameters.
+        :returns: Parameters.
         """
         return self.initializer(key, (self.dimension,))
 
@@ -49,7 +49,7 @@ class Bias:
         """
         Apply the module.
 
-        :param parameters: Module parameters.
+        :param parameters: Parameters.
         :param input: An array of shape ``(..., dimension)``.
 
         :returns: An array of shape ``(..., dimension)``.
@@ -60,7 +60,7 @@ class Bias:
         """
         Parameter loss.
 
-        :param parameters: Module parameters.
+        :param parameters: Parameters.
 
         :returns: A scalar.
         """
@@ -99,7 +99,7 @@ class Scale:
 
         :param key: A PRNG key.
 
-        :returns: Module parameters.
+        :returns: Parameters.
         """
         return self.initializer(key, (self.dimension,))
 
@@ -107,7 +107,7 @@ class Scale:
         """
         Apply the module.
 
-        :param parameters: Module parameters.
+        :param parameters: Parameters.
         :param input: An array of shape ``(..., dimension)``.
 
         :returns: An array of shape ``(..., dimension)``.
@@ -118,7 +118,7 @@ class Scale:
         """
         Parameter loss.
 
-        :param parameters: Module parameters.
+        :param parameters: Parameters.
 
         :returns: A scalar.
         """
@@ -162,7 +162,7 @@ class Linear:
 
         :param key: A PRNG key.
 
-        :returns: Module parameters.
+        :returns: Parameters.
         """
         return self.initializer(key, (self.input_dimension, self.output_dimension))
 
@@ -170,7 +170,7 @@ class Linear:
         """
         Apply the module.
 
-        :param parameters: Module parameters.
+        :param parameters: Parameters.
         :param input: An array of shape ``(..., input_dimension)``.
 
         :returns: An array of shape ``(..., output_dimension)``.
@@ -181,7 +181,7 @@ class Linear:
         """
         Parameter loss.
 
-        :param parameters: Module parameters.
+        :param parameters: Parameters.
 
         :returns: A scalar.
         """
@@ -211,7 +211,7 @@ class Func:
 
         :param key: A PRNG key.
 
-        :returns: Module parameters.
+        :returns: Parameters.
         """
         return None
 
@@ -219,7 +219,7 @@ class Func:
         """
         Apply the module.
 
-        :param parameters: Module parameters.
+        :param parameters: Parameters.
         :param input: An input.
 
         :returns: The output.
@@ -324,7 +324,7 @@ class Embed:
 
         :param key: A PRNG key.
 
-        :returns: Module parameters.
+        :returns: Parameters.
         """
         return self.initializer(key, (self.number, self.dimension))
 
@@ -332,7 +332,7 @@ class Embed:
         """
         Apply the module.
 
-        :param parameters: Module parameters.
+        :param parameters: Parameters.
         :param input: An array of shape ``(...,)``.
 
         :returns: An array of shape ``(..., dimension)``.
@@ -343,7 +343,7 @@ class Embed:
         """
         Parameter loss.
 
-        :param parameters: Module parameters.
+        :param parameters: Parameters.
 
         :returns: A scalar.
         """

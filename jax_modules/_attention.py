@@ -96,7 +96,7 @@ class Attention:
         """
         Apply the module.
 
-        :param parameters: Module parameters.
+        :param parameters: Parameters.
         :param query_input: Input used to compute queries.
         :param key_input: Input used to compute keys.
         :param value_input: Input used to compute values.

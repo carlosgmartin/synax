@@ -172,16 +172,17 @@ def mean_pool(
     """
     size = prod(shape)
 
+    g = pool(
+        operator=lax.add,
+        identity=0,
+        shape=shape,
+        strides=strides,
+        padding=padding,
+        base_dilation=base_dilation,
+        window_dilation=window_dilation,
+    )
+
     def f(x: Array) -> Array:
-        g = pool(
-            operator=lax.add,
-            identity=0,
-            shape=shape,
-            strides=strides,
-            padding=padding,
-            base_dilation=base_dilation,
-            window_dilation=window_dilation,
-        )
         return g(x) / size
 
     return f

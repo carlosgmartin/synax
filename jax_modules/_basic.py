@@ -276,6 +276,13 @@ class Conv:
         self.groups = groups
 
     def init(self, key: Key) -> Array:
+        """
+        Initialize parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         kernel = self.initializer(
             key, (self.output_dimension, self.input_dimension * math.prod(self.shape))
         )
@@ -285,6 +292,15 @@ class Conv:
         return kernel
 
     def apply(self, parameters: Array, input: Array) -> Array:
+        """
+        Apply parameters.
+
+        :param parameters: Parameters.
+        :param input: Array of shape ``(..., input_dimension)``.
+
+        :returns: Array of shape ``(..., output_dimension)``.
+        """
+
         stride = self.stride
         if isinstance(stride, int):
             stride = (stride,) * len(self.shape)

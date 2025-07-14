@@ -26,7 +26,6 @@ from ._utils import layer_norm as layer_norm
 from ._utils import max_pool as max_pool
 from ._utils import mean_pool as mean_pool
 from ._utils import rms_norm as rms_norm
-from ._utils import sum_pool as sum_pool
 
 # from ._compound import Repeat as Repeat
 # from ._compound import Switch as Switch

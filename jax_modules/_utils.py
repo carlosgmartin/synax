@@ -134,14 +134,6 @@ def sum_pool(
     strides: tuple[int, ...] | None = None,
     padding: Padding = "VALID",
 ) -> Callable[[Array], Array]:
-    """
-    Sum pooling.
-
-    :param shape: Window size for each spatial dimension.
-    :param strides: Stride for each spatial dimension.
-    :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
-        of int pairs giving the padding before and after each spatial dimension.
-    """
     return pool(
         operator=lax.add,
         identity=0,

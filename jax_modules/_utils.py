@@ -1,10 +1,14 @@
 from math import prod
+from typing import Callable, Literal, Sequence
 
-from jax import lax, random
+from jax import Array, lax, random
 from jax import numpy as jnp
 
+Key = Array
+Axis = int | tuple[int, ...] | None
 
-def layer_norm(axis=-1, epsilon=1e-6):
+
+def layer_norm(axis: Axis = -1, epsilon: float = 1e-6) -> Callable[[Array], Array]:
     r"""Layer normalization.
 
     Computes
@@ -27,16 +31,14 @@ def layer_norm(axis=-1, epsilon=1e-6):
 
     :param axis: Axis or axes along which to normalize.
         ``None`` means all axes.
-    :type axis: int | tuple[int, ...] | None
     :param epsilon: Small quantity used for numerical stability.
-    :type epsilon: float
 
     References:
 
     - *Layer normalization*. 2016. https://arxiv.org/abs/1607.06450.
     """
 
-    def f(x):
+    def f(x: Array) -> Array:
         x -= x.mean(axis, keepdims=True)
         rms = jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
         return x / rms
@@ -44,7 +46,7 @@ def layer_norm(axis=-1, epsilon=1e-6):
     return f
 
 
-def rms_norm(axis=-1, epsilon=1e-6):
+def rms_norm(axis: Axis = -1, epsilon: float = 1e-6) -> Callable[[Array], Array]:
     r"""
     Root mean square layer normalization.
 
@@ -63,9 +65,7 @@ def rms_norm(axis=-1, epsilon=1e-6):
 
     :param axis: Axis or axes along which to normalize.
         ``None`` means all axes.
-    :type axis: int | tuple[int, ...] | None
     :param epsilon: Small quantity used for numerical stability.
-    :type epsilon: float
 
     References:
 
@@ -73,18 +73,26 @@ def rms_norm(axis=-1, epsilon=1e-6):
       https://arxiv.org/abs/1910.07467.
     """
 
-    def f(x):
+    def f(x: Array) -> Array:
         rms = jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
         return x / rms
 
     return f
 
 
-def pool(operator, identity, shape, *, strides=None, padding="VALID"):
+def pool(
+    operator,
+    identity,
+    shape: tuple[int, ...],
+    *,
+    strides: tuple[int, ...] | None = None,
+    padding: Literal["VALID", "SAME", "SAME_BELOW"]
+    | Sequence[tuple[int, int]] = "VALID",
+):
     if strides is None:
         strides = (1,) * len(shape)
 
-    def f(x):
+    def f(x: Array) -> Array:
         return lax.reduce_window(
             operand=x,
             init_value=identity,
@@ -97,7 +105,13 @@ def pool(operator, identity, shape, *, strides=None, padding="VALID"):
     return f
 
 
-def max_pool(shape, *, strides=None, padding="VALID"):
+def max_pool(
+    shape: tuple[int, ...],
+    *,
+    strides: tuple[int, ...] | None = None,
+    padding: Literal["VALID", "SAME", "SAME_BELOW"]
+    | Sequence[tuple[int, int]] = "VALID",
+):
     """
     Max pooling.
 
@@ -118,7 +132,13 @@ def max_pool(shape, *, strides=None, padding="VALID"):
     )
 
 
-def sum_pool(shape, *, strides=None, padding="VALID"):
+def sum_pool(
+    shape: tuple[int, ...],
+    *,
+    strides: tuple[int, ...] | None = None,
+    padding: Literal["VALID", "SAME", "SAME_BELOW"]
+    | Sequence[tuple[int, int]] = "VALID",
+):
     """
     Sum pooling.
 
@@ -139,7 +159,13 @@ def sum_pool(shape, *, strides=None, padding="VALID"):
     )
 
 
-def mean_pool(shape, *, strides=None, padding="VALID"):
+def mean_pool(
+    shape: tuple[int, ...],
+    *,
+    strides: tuple[int, ...] | None = None,
+    padding: Literal["VALID", "SAME", "SAME_BELOW"]
+    | Sequence[tuple[int, int]] = "VALID",
+):
     """
     Mean pooling.
 
@@ -153,13 +179,13 @@ def mean_pool(shape, *, strides=None, padding="VALID"):
     """
     size = prod(shape)
 
-    def f(x):
+    def f(x: Array) -> Array:
         return sum_pool(shape, strides=strides, padding=padding)(x) / size
 
     return f
 
 
-def dropout(prob):
+def dropout(prob: float) -> Callable[[Array, Key], Array]:
     """
     Dropout.
 
@@ -169,7 +195,7 @@ def dropout(prob):
       detectors*. 2012. https://arxiv.org/abs/1207.0580.
     """
 
-    def f(x, key):
+    def f(x: Array, key: Key) -> Array:
         mask = random.bernoulli(key, prob, x.shape)
         return jnp.where(mask, x / prob, 0)
 

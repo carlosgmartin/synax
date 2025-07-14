@@ -284,7 +284,7 @@ class PReLU:
         return self.regularizer(param)
 
 
-def LeNet(classes=10):
+def LeNet(input_channels=1, outputs=10):
     """
     LeNet convolutional network.
 
@@ -292,8 +292,10 @@ def LeNet(classes=10):
 
     Originally designed for grayscale MNIST images and 10 classes.
 
-    :param classes: Number of output classes.
-    :type classes: int
+    :param input_channels: Number of input channels.
+    :type input_channels: int
+    :param outputs: Number of outputs.
+    :type outputs: int
 
     References:
 
@@ -301,11 +303,11 @@ def LeNet(classes=10):
       https://ieeexplore.ieee.org/document/726791.
 
     - *The MNIST database of handwritten digit images for machine learning
-        research*. 2012. https://ieeexplore.ieee.org/document/6296535.
+      research*. 2012. https://ieeexplore.ieee.org/document/6296535.
     """
     return Chain(
         [
-            Conv(1, 6, (5, 5), padding="SAME"),
+            Conv(input_channels, 6, (5, 5), padding="SAME"),
             Bias(6),
             Func(nn.tanh),
             Func(mean_pool((2, 2), strides=(2, 2))),
@@ -321,12 +323,12 @@ def LeNet(classes=10):
             Bias(84),
             Func(nn.tanh),
             Linear(84, 10),
-            Bias(classes),
+            Bias(outputs),
         ]
     )
 
 
-def AlexNet(classes=1000):
+def AlexNet(input_channels=3, outputs=1000):
     """
     AlexNet convolutional network.
 
@@ -334,8 +336,10 @@ def AlexNet(classes=1000):
 
     Originally designed for RGB ImageNet images and 1000 classes.
 
-    :param classes: Number of output classes.
-    :type classes: int
+    :param input_channels: Number of input channels.
+    :type input_channels: int
+    :param outputs: Number of outputs.
+    :type outputs: int
 
     References:
 
@@ -347,7 +351,7 @@ def AlexNet(classes=1000):
     """
     return Chain(
         [
-            Conv(3, 96, (11, 11), (4, 4)),
+            Conv(input_channels, 96, (11, 11), (4, 4)),
             Bias(96),
             Func(nn.relu),
             Func(max_pool((3, 3), strides=(2, 2))),
@@ -375,6 +379,6 @@ def AlexNet(classes=1000):
             Func(nn.relu),
             # dropout 0.5
             Linear(4096, 1000),
-            Bias(classes),
+            Bias(outputs),
         ]
     )

@@ -18,9 +18,9 @@ Initializer = Callable[[Key, tuple[int, ...]], Array]
 def MLP(
     dimensions: list[int],
     activation: Module = Func(nn.relu),
-    kernel_initializer: Initializer = nn.initializers.he_normal(),
+    linear_initializer: Initializer = nn.initializers.he_normal(),
     bias_initializer: Initializer = nn.initializers.zeros,
-    kernel_regularizer: Regularizer = zero,
+    linear_regularizer: Regularizer = zero,
     bias_regularizer: Regularizer = zero,
 ):
     """
@@ -29,10 +29,10 @@ def MLP(
     :param dimensions: Dimension of each layer.
     :param activation: Module to use as an activation function.
         Not applied to the output.
-    :param kernel_initializer: Initializer used for the kernels.
-    :param bias_initializer: Initializer used for the biases.
-    :param kernel_regularizer: Regularizer used for the kernels.
-    :param bias_regularizer: Regularizer used for the biases.
+    :param linear_initializer: Initializer used for the linear layers.
+    :param bias_initializer: Initializer used for the bias layers.
+    :param linear_regularizer: Regularizer used for the linear layers.
+    :param bias_regularizer: Regularizer used for the bias layers.
 
     References:
 
@@ -51,8 +51,8 @@ def MLP(
         linear = Linear(
             input_dimension,
             output_dimension,
-            initializer=kernel_initializer,
-            regularizer=kernel_regularizer,
+            initializer=linear_initializer,
+            regularizer=linear_regularizer,
         )
         bias = Bias(
             output_dimension,
@@ -189,8 +189,8 @@ class GLU:
 
     :param input_dimension: Input dimension.
     :param output_dimension: Output dimension.
-    :param kernel_initializer: Initializer used for the kernels.
-    :param bias_initializer: Initializer used for the biases.
+    :param linear_initializer: Initializer used for the linear layers.
+    :param bias_initializer: Initializer used for the bias layers.
     :param sigmoid_fn: Sigmoid function to use. Defaults to the logistic function.
 
     References:
@@ -203,22 +203,22 @@ class GLU:
         self,
         input_dimension: int,
         output_dimension: int,
-        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,
         sigmoid_fn: Callable[[Array], Array] = nn.sigmoid,
     ):
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
-        self.kernel_initializer = kernel_initializer
+        self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
         self.sigmoid_fn = sigmoid_fn
 
     def init(self, key: Key) -> tuple[Array, Array]:
         keys = random.split(key, 4)
-        w = self.kernel_initializer(
+        w = self.linear_initializer(
             keys[0], (self.input_dimension, self.output_dimension)
         )
-        v = self.kernel_initializer(
+        v = self.linear_initializer(
             keys[1], (self.input_dimension, self.output_dimension)
         )
         b = self.bias_initializer(keys[2], (self.output_dimension,))

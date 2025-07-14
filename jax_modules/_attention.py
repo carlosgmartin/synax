@@ -21,8 +21,8 @@ class Attention:
     :param hidden_dim: Dimension of the embeddings used to compute dot products.
         Defaults to ``query_input_dim``.
     :param heads: Number of attention heads.
-    :param kernel_initializer: Initializer used for the kernels.
-    :param bias_initializer: Initializer used for the biases.
+    :param linear_initializer: Initializer used for the linear layers.
+    :param bias_initializer: Initializer used for the bias layers.
     :param normalize_qk: Apply layer norm to queries and keys before computing
         dot products.
 
@@ -40,7 +40,7 @@ class Attention:
         value_input_dim: int | None = None,
         hidden_dim=None,
         heads: int = 1,
-        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,
         normalize_qk: bool = False,
     ):
@@ -56,7 +56,7 @@ class Attention:
         self.value_input_dim = value_input_dim
         self.hidden_dim = hidden_dim
         self.heads = heads
-        self.kernel_initializer = kernel_initializer
+        self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
         self.normalize_qk = normalize_qk
 
@@ -68,13 +68,13 @@ class Attention:
         """
         keys = random.split(key, 6)
         return {
-            "query_kernel": self.kernel_initializer(
+            "query_kernel": self.linear_initializer(
                 keys[0], (self.heads, self.query_input_dim, self.hidden_dim)
             ),
-            "key_kernel": self.kernel_initializer(
+            "key_kernel": self.linear_initializer(
                 keys[1], (self.heads, self.key_input_dim, self.hidden_dim)
             ),
-            "value_kernel": self.kernel_initializer(
+            "value_kernel": self.linear_initializer(
                 keys[2], (self.heads, self.value_input_dim, self.hidden_dim)
             ),
             "query_bias": self.bias_initializer(keys[3], (self.heads, self.hidden_dim)),

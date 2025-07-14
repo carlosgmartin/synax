@@ -44,7 +44,7 @@ class SimpleRNN:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Initializer = nn.initializers.glorot_uniform(),
+        linear_initializer: Initializer = nn.initializers.glorot_uniform(),
         bias_initializer: Initializer = nn.initializers.zeros,
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         activation: Callable = nn.tanh,
@@ -52,7 +52,7 @@ class SimpleRNN:
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
-        self.kernel_initializer = kernel_initializer
+        self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
         self.recurrent_initializer = recurrent_initializer
         self.activation = activation
@@ -60,7 +60,7 @@ class SimpleRNN:
 
     def init(self, key: Key) -> tuple[Array, ...]:
         keys = random.split(key, 3)
-        w = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
+        w = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
         u = self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim))
         b = self.bias_initializer(keys[2], (self.state_dim,))
         return w, u, b
@@ -88,7 +88,7 @@ class GRU:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Initializer = nn.initializers.glorot_uniform(),
+        linear_initializer: Initializer = nn.initializers.glorot_uniform(),
         bias_initializer: Initializer = nn.initializers.zeros,
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         reset_activation: Callable = nn.sigmoid,
@@ -98,7 +98,7 @@ class GRU:
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
-        self.kernel_initializer = kernel_initializer
+        self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
         self.recurrent_initializer = recurrent_initializer
 
@@ -111,9 +111,9 @@ class GRU:
     def init(self, key: Key) -> tuple[Array, ...]:
         keys = random.split(key, 9)
 
-        wz = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
-        wr = self.kernel_initializer(keys[1], (self.input_dim, self.state_dim))
-        wy = self.kernel_initializer(keys[2], (self.input_dim, self.state_dim))
+        wz = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
+        wr = self.linear_initializer(keys[1], (self.input_dim, self.state_dim))
+        wy = self.linear_initializer(keys[2], (self.input_dim, self.state_dim))
 
         uz = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
         ur = self.recurrent_initializer(keys[4], (self.state_dim, self.state_dim))
@@ -150,7 +150,7 @@ class MGU:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Initializer = nn.initializers.glorot_uniform(),
+        linear_initializer: Initializer = nn.initializers.glorot_uniform(),
         bias_initializer: Initializer = nn.initializers.zeros,
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         update_activation: Callable = nn.sigmoid,
@@ -160,7 +160,7 @@ class MGU:
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
-        self.kernel_initializer = kernel_initializer
+        self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
         self.recurrent_initializer = recurrent_initializer
 
@@ -173,8 +173,8 @@ class MGU:
     def init(self, key: Key) -> tuple[Array, ...]:
         keys = random.split(key, 6)
 
-        wz = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
-        wy = self.kernel_initializer(keys[1], (self.input_dim, self.state_dim))
+        wz = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
+        wy = self.linear_initializer(keys[1], (self.input_dim, self.state_dim))
 
         uz = self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim))
         uy = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
@@ -211,11 +211,11 @@ class BistableRecurrentCell:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        linear_initializer: Initializer = nn.initializers.he_normal(),
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
-        self.kernel_initializer = kernel_initializer
+        self.linear_initializer = linear_initializer
 
     def init(self, key: Key) -> tuple[Array, ...]:
         keys = random.split(key, 3)
@@ -223,9 +223,9 @@ class BistableRecurrentCell:
         ua = jnp.eye(self.state_dim)
         uc = jnp.eye(self.state_dim)
 
-        wa = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
-        wc = self.kernel_initializer(keys[1], (self.input_dim, self.state_dim))
-        wy = self.kernel_initializer(keys[2], (self.input_dim, self.state_dim))
+        wa = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
+        wc = self.linear_initializer(keys[1], (self.input_dim, self.state_dim))
+        wy = self.linear_initializer(keys[2], (self.input_dim, self.state_dim))
 
         return ua, uc, wa, wc, wy
 
@@ -251,14 +251,14 @@ class LSTM:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        linear_initializer: Initializer = nn.initializers.he_normal(),
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         bias_initializer: Initializer = nn.initializers.zeros,
         forget_bias: float = 1.0,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
-        self.kernel_initializer = kernel_initializer
+        self.linear_initializer = linear_initializer
         self.recurrent_initializer = recurrent_initializer
         self.bias_initializer = bias_initializer
         self.forget_bias = forget_bias
@@ -271,10 +271,10 @@ class LSTM:
         Ug = self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim))
         Uo = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
 
-        Wf = self.kernel_initializer(keys[4], (self.input_dim, self.state_dim))
-        Wi = self.kernel_initializer(keys[5], (self.input_dim, self.state_dim))
-        Wg = self.kernel_initializer(keys[6], (self.input_dim, self.state_dim))
-        Wo = self.kernel_initializer(keys[7], (self.input_dim, self.state_dim))
+        Wf = self.linear_initializer(keys[4], (self.input_dim, self.state_dim))
+        Wi = self.linear_initializer(keys[5], (self.input_dim, self.state_dim))
+        Wg = self.linear_initializer(keys[6], (self.input_dim, self.state_dim))
+        Wo = self.linear_initializer(keys[7], (self.input_dim, self.state_dim))
 
         bf = self.bias_initializer(keys[8], (self.state_dim,)) + self.forget_bias
         bi = self.bias_initializer(keys[9], (self.state_dim,))
@@ -314,12 +314,12 @@ class FastGRNN:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
-        self.kernel_initializer = kernel_initializer
+        self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
 
     def init(self, key: Key) -> tuple[Array, ...]:
@@ -327,7 +327,7 @@ class FastGRNN:
 
         keys = random.split(key, 3)
 
-        W = self.kernel_initializer(keys[0], (self.input_dim, self.state_dim))
+        W = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
 
         bz = self.bias_initializer(keys[1], (self.state_dim,))
         by = self.bias_initializer(keys[2], (self.state_dim,))
@@ -361,14 +361,14 @@ class UpdateGateRNN:
         state_dim: int,
         input_dim: int,
         activation: Callable = nn.tanh,
-        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        linear_initializer: Initializer = nn.initializers.he_normal(),
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         bias_initializer: Initializer = nn.initializers.zeros,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
         self.activation = activation
-        self.kernel_initializer = kernel_initializer
+        self.linear_initializer = linear_initializer
         self.recurrent_initializer = recurrent_initializer
         self.bias_initializer = bias_initializer
 
@@ -378,8 +378,8 @@ class UpdateGateRNN:
         Uc = self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim))
         Ug = self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim))
 
-        Wc = self.kernel_initializer(keys[2], (self.input_dim, self.state_dim))
-        Wg = self.kernel_initializer(keys[3], (self.input_dim, self.state_dim))
+        Wc = self.linear_initializer(keys[2], (self.input_dim, self.state_dim))
+        Wg = self.linear_initializer(keys[3], (self.input_dim, self.state_dim))
 
         bc = self.bias_initializer(keys[4], (self.state_dim,))
         bg = self.bias_initializer(keys[5], (self.state_dim,))
@@ -401,7 +401,7 @@ class ConvolutionalGatedUnit:
         shape: tuple[int, ...],
         new_activation: Callable = nn.tanh,
         update_activation: Callable = nn.sigmoid,
-        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
     ):
@@ -419,7 +419,7 @@ class ConvolutionalGatedUnit:
             self.input_dim,
             self.state_dim,
             shape=shape,
-            initializer=kernel_initializer,
+            initializer=linear_initializer,
             padding="SAME",
         )
         self.new_bias = Bias(self.state_dim, initializer=bias_initializer)
@@ -435,7 +435,7 @@ class ConvolutionalGatedUnit:
             self.input_dim,
             self.state_dim,
             shape=shape,
-            initializer=kernel_initializer,
+            initializer=linear_initializer,
             padding="SAME",
         )
         self.update_bias = Bias(self.state_dim, initializer=bias_initializer)

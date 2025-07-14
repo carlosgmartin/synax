@@ -247,7 +247,7 @@ class Conv:
         spatial dimension.
         When the padding is an odd number, "SAME" adds the extra padding at the
         end, while "SAME_LOWER" adds the extra padding at the beginning.
-    :param window_dilation: Window dilation.
+    :param dilation: Window dilation.
     :param base_dilation: Base dilation.
     :param initializer: Initializer for the convolution kernel.
     :param groups: Number of groups to split the input channels into.
@@ -260,7 +260,7 @@ class Conv:
         shape: Sequence[int],
         stride: int | Sequence[int] = 1,
         padding: Padding = "VALID",
-        window_dilation: int | Sequence[int] = 1,
+        dilation: int | Sequence[int] = 1,
         base_dilation: int | Sequence[int] = 1,
         initializer: Initializer = nn.initializers.he_normal(),
         groups: int = 1,
@@ -270,7 +270,7 @@ class Conv:
         self.shape = shape
         self.stride = stride
         self.padding = padding
-        self.window_dilation = window_dilation
+        self.dilation = dilation
         self.base_dilation = base_dilation
         self.initializer = initializer
         self.groups = groups
@@ -305,9 +305,9 @@ class Conv:
         if isinstance(stride, int):
             stride = (stride,) * len(self.shape)
 
-        window_dilation = self.window_dilation
-        if isinstance(window_dilation, int):
-            window_dilation = (window_dilation,) * len(self.shape)
+        dilation = self.dilation
+        if isinstance(dilation, int):
+            dilation = (dilation,) * len(self.shape)
 
         base_dilation = self.base_dilation
         if isinstance(base_dilation, int):
@@ -322,7 +322,7 @@ class Conv:
             rhs=parameters,
             window_strides=stride,
             padding=self.padding,
-            rhs_dilation=window_dilation,
+            rhs_dilation=dilation,
             lhs_dilation=base_dilation,
             feature_group_count=self.groups,
         )

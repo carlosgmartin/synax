@@ -117,6 +117,9 @@ class Attention:
         :param scale: Scale for the logits. If ``None``, set to 1 divided by the
             square root of the query's head dimension.
         :type scale: float | None
+
+        :returns: The output array.
+        :rtype: jax.Array
         """
         if key_input is None:
             key_input = query_input

@@ -5,16 +5,26 @@ from jax import numpy as jnp
 
 
 def layer_norm(x, axis=-1, epsilon=1e-6):
-    """Layer normalization (2016)
-    https://arxiv.org/abs/1607.06450"""
+    """Layer normalization.
+
+    References:
+
+    - *Layer normalization*. 2016. https://arxiv.org/abs/1607.06450.
+    """
     x -= x.mean(axis, keepdims=True)
     rms = jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
     return x / rms
 
 
 def rms_norm(x, axis=-1, epsilon=1e-6):
-    """Root mean square layer normalization (2019)
-    https://arxiv.org/abs/1910.07467"""
+    """
+    Root mean square layer normalization.
+
+    References:
+
+    - *Root mean square layer normalization*. 2019.
+      https://arxiv.org/abs/1910.07467.
+    """
     rms = jnp.sqrt((x * jnp.conj(x)).mean(axis, keepdims=True) + epsilon)
     return x / rms
 
@@ -37,6 +47,9 @@ def pool(operator, identity, shape, *, strides=None, padding="VALID"):
 
 
 def max_pool(shape, *, strides=None, padding="VALID"):
+    """
+    Max pooling.
+    """
     return pool(
         operator=lax.max,
         identity=-float("inf"),
@@ -47,6 +60,9 @@ def max_pool(shape, *, strides=None, padding="VALID"):
 
 
 def sum_pool(shape, *, strides=None, padding="VALID"):
+    """
+    Sum pooling.
+    """
     return pool(
         operator=lax.add,
         identity=0,
@@ -57,6 +73,9 @@ def sum_pool(shape, *, strides=None, padding="VALID"):
 
 
 def mean_pool(shape, *, strides=None, padding="VALID"):
+    """
+    Mean pooling.
+    """
     size = prod(shape)
 
     def f(x):
@@ -66,8 +85,14 @@ def mean_pool(shape, *, strides=None, padding="VALID"):
 
 
 def dropout(prob):
-    """Improving neural networks by preventing co-adaptation of feature detectors
-    https://arxiv.org/abs/1207.0580"""
+    """
+    Dropout.
+
+    References:
+
+    - *Improving neural networks by preventing co-adaptation of feature
+      detectors*. 2012. https://arxiv.org/abs/1207.0580.
+    """
 
     def f(x, key):
         mask = random.bernoulli(key, prob, x.shape)

@@ -5,11 +5,15 @@ from ._utils import layer_norm
 
 
 class Attention:
-    """Attention is all you need (2017)
-    https://arxiv.org/abs/1706.03762
+    """
+    Attention.
 
-    Scaling vision transformers to 22 billion parameters (2023)
-    https://arxiv.org/abs/2302.05442"""
+    References:
+
+    - *Attention is all you need*. 2017. https://arxiv.org/abs/1706.03762.
+
+    - *Scaling vision transformers to 22 billion parameters*. 2023. https://arxiv.org/abs/2302.05442.
+    """
 
     def __init__(
         self,

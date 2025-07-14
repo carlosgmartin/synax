@@ -26,7 +26,7 @@ from ._utils import sum_pool as sum_pool
 
 # from ._compound import Repeat as Repeat
 # from ._compound import Switch as Switch
-# from ._misc import NeuralCellularAutomaton as NeuralCellularAutomaton
+# from ._misc import NeuralGPU as NeuralGPU
 # from ._parameterizations import AntisymmetricMatrix as AntisymmetricMatrix
 # from ._parameterizations import Ball as Ball
 # from ._parameterizations import Constant as Constant

@@ -3,6 +3,10 @@ from jax import lax, random
 
 
 class Chain:
+    """
+    Serial composition.
+    """
+
     def __init__(self, modules):
         self.modules = modules
 
@@ -23,6 +27,10 @@ class Chain:
 
 
 class Parallel:
+    """
+    Parallel composition.
+    """
+
     def __init__(self, modules):
         self.modules = modules
 
@@ -62,8 +70,14 @@ class Repeat:
 
 
 class Residual:
-    """Deep residual learning for image recognition
-    https://arxiv.org/abs/1512.03385"""
+    """
+    Residual transformation.
+
+    References:
+
+    - *Deep residual learning for image recognition*. 2015.
+      https://arxiv.org/abs/1512.03385
+    """
 
     def __init__(self, module):
         self.module = module

@@ -5,6 +5,17 @@ from ._regularizers import zero
 
 
 class Bias:
+    """
+    Bias.
+
+    :param dimension: Input dimension.
+    :type dimension: int
+    :param initializer: Initializer.
+    :type initializer: jax.nn.initializers.Initializer
+    :param regularizer: Regularizer.
+    :type regularizer: typing.Callable
+    """
+
     def __init__(
         self,
         dimension,
@@ -26,6 +37,17 @@ class Bias:
 
 
 class Scale:
+    """
+    Elementwise scaling.
+
+    :param dimension: Input dimension.
+    :type dimension: int
+    :param initializer: Initializer.
+    :type initializer: jax.nn.initializers.Initializer
+    :param regularizer: Regularizer.
+    :type regularizer: typing.Callable
+    """
+
     def __init__(
         self,
         dimension,
@@ -47,14 +69,17 @@ class Scale:
 
 
 class Dense:
-    """Applies a linear transformation. Does not include bias.
+    """
+    Dense linear transformation.
+
+    Does not include bias.
 
     :param input_dimension: Input dimension.
     :type input_dimension: int
     :param output_dimension: Output dimension.
     :type output_dimension: int
     :param initializer: Initializer.
-    :type initializer: nn.initializers.Initializer
+    :type initializer: jax.nn.initializers.Initializer
     :param regularizer: Regularizer.
     :type regularizer: typing.Callable
     """
@@ -82,6 +107,13 @@ class Dense:
 
 
 class Func:
+    """
+    Function.
+
+    :param function: Function.
+    :type function: typing.Callable
+    """
+
     def __init__(self, function):
         self.function = function
 
@@ -93,11 +125,33 @@ class Func:
 
 
 class Conv:
+    """
+    Convolution.
+
+    :param input_dimension: Input dimension.
+    :type input_dimension: int
+    :param output_dimension: Output dimension.
+    :type output_dimension: int
+    :param shape: Window size for each spatial dimension.
+    :type shape: tuple[int, ...]
+    :param strides: Stride for each spatial dimension.
+    :type strides: tuple[int, ...] | None
+    :param padding: Padding.  Can be "SAME", "SAME_LOWER", "VALID", or a sequence
+        of int pairs giving the padding before and after each spatial dimension.
+    :type padding: str | Sequence[tuple[int, int]]
+    :param dilation: Dilation factor for each spatial dimension.
+    :type dilation: tuple[int, ...] | None
+    :param initializer: Initializer for the convolution kernel.
+    :type initializer: jax.nn.initializers.Initializer
+    :param groups: Number of groups to split the input channels into.
+    :type groups: int
+    """
+
     def __init__(
         self,
         input_dimension,
         output_dimension,
-        window_shape,
+        shape,
         strides=None,
         padding="VALID",
         dilation=None,
@@ -106,7 +160,7 @@ class Conv:
     ):
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
-        self.window_shape = window_shape
+        self.shape = shape
         self.strides = strides
         self.padding = padding
         self.dilation = dilation
@@ -115,14 +169,14 @@ class Conv:
 
     def init(self, key):
         initializer = self.initializer or nn.initializers.he_normal(
-            range(-len(self.window_shape), 0)
+            range(-len(self.shape), 0)
         )
         return initializer(
-            key, (self.output_dimension, self.input_dimension, *self.window_shape)
+            key, (self.output_dimension, self.input_dimension, *self.shape)
         )
 
     def apply(self, w, x):
-        num_spatial_axes = len(self.window_shape)
+        num_spatial_axes = len(self.shape)
         x = jnp.moveaxis(x, -1, -num_spatial_axes - 1)
         x = x[None]
         x = lax.conv_general_dilated(
@@ -139,6 +193,17 @@ class Conv:
 
 
 class Embed:
+    """
+    Embedding.
+
+    :param embed: Number of embeddings.
+    :type embed: int
+    :param dimension: Dimension of each embedding.
+    :type dimension: int
+    :initializer: Initializer for embeddings.
+    :type initializer: jax.nn.initializers.Initializer
+    """
+
     def __init__(
         self,
         number,

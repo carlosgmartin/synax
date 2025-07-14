@@ -18,6 +18,22 @@ def MLP(
     kernel_regularizer=zero,
     bias_regularizer=zero,
 ):
+    """
+    Multi-layer perceptron.
+
+    References:
+
+    - *A logical calculus of the ideas immanent in nervous activity*. 1943.
+      https://link.springer.com/article/10.1007/BF02478259.
+
+    - *The perceptron: A probabilistic model for information storage and
+      organization in the brain*. 1958.
+      https://psycnet.apa.org/record/1959-09865-001.
+
+    - *Learning representations by back-propagating errors*. 1986.
+      https://www.nature.com/articles/323533a0.
+    """
+
     modules = []
     for input_dim, output_dim in zip(dims[:-1], dims[1:]):
         dense = Dense(
@@ -36,6 +52,10 @@ def MLP(
 
 
 class AutoEncoder:
+    """
+    Auto-encoder.
+    """
+
     def __init__(self, encoder, decoder):
         self.encoder = encoder
         self.decoder = decoder
@@ -81,9 +101,14 @@ def get_von_neumann_neighbors(array, space_dim=None, include_center=False):
     return neighbors
 
 
-class NeuralCellularAutomaton:
-    """Neural GPUs learn algorithms (2015)
-    https://arxiv.org/abs/1511.08228"""
+class NeuralGPU:
+    """
+    Neural GPU.
+
+    References:
+
+    - *Neural GPUs learn algorithms*. 2015. https://arxiv.org/abs/1511.08228.
+    """
 
     def __init__(
         self,
@@ -127,9 +152,14 @@ class NeuralCellularAutomaton:
 
 
 class GLU:
-    """Gated linear unit
-    Language modeling with gated convolutional networks (2016)
-    https://arxiv.org/abs/1612.08083"""
+    """
+    Gated linear unit.
+
+    References:
+
+    - *Language modeling with gated convolutional networks*. 2016.
+      https://arxiv.org/abs/1612.08083
+    """
 
     def __init__(
         self,
@@ -161,7 +191,14 @@ class GLU:
 
 
 class PReLU:
-    """Parametric ReLU"""
+    """
+    Parametric ReLU.
+
+    References:
+
+    - *Delving deep into rectifiers: surpassing human-level performance on ImageNet classification*.
+      2015. https://arxiv.org/abs/1502.01852.
+    """
 
     def __init__(
         self,
@@ -182,8 +219,14 @@ class PReLU:
 
 
 def LeNet():
-    """Gradient-based learning applied to document recognition
-    https://ieeexplore.ieee.org/document/726791"""
+    """
+    LeNet convolutional network.
+
+    References:
+
+    - *Gradient-based learning applied to document recognition*. 2002.
+      https://ieeexplore.ieee.org/document/726791.
+    """
     return Chain(
         [
             Conv(1, 6, (5, 5), padding="SAME"),
@@ -208,8 +251,14 @@ def LeNet():
 
 
 def AlexNet():
-    """ImageNet classification with deep convolutional neural networks
-    https://dl.acm.org/doi/10.1145/3065386"""
+    """
+    AlexNet convolutional network.
+
+    References:
+
+    - *ImageNet classification with deep convolutional neural networks*. 2017.
+      https://dl.acm.org/doi/10.1145/3065386.
+    """
     return Chain(
         [
             Conv(3, 96, (11, 11), (4, 4)),

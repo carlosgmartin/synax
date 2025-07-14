@@ -25,9 +25,14 @@ class RecurrentNetwork:
 
 
 class SimpleRNN:
-    """Simple recurrent neural network
-    Finding structure in time (1990)
-    https://onlinelibrary.wiley.com/doi/10.1207/s15516709cog1402_1"""
+    """
+    Simple recurrent neural network.
+
+    References:
+
+    - *Finding structure in time*. 1990.
+      https://onlinelibrary.wiley.com/doi/10.1207/s15516709cog1402_1.
+    """
 
     def __init__(
         self,
@@ -64,10 +69,14 @@ class SimpleRNN:
 
 
 class GRU:
-    """Gated recurrent unit
-    Learning phrase representations using RNN encoder-decoder for statistical machine
-        translation (2014)
-    https://arxiv.org/abs/1406.1078"""
+    """
+    Gated recurrent unit.
+
+    References:
+
+    - *Learning phrase representations using RNN encoder-decoder for statistical
+      machine*. 2014. https://arxiv.org/abs/1406.1078.
+    """
 
     def __init__(
         self,
@@ -122,9 +131,14 @@ class GRU:
 
 
 class MGU:
-    """Minimal gated unit
-    Minimal gated unit for recurrent neural networks (2016)
-    https://arxiv.org/abs/1603.09420"""
+    """
+    Minimal gated unit.
+
+    References:
+
+    - *Minimal gated unit for recurrent neural networks*. 2016.
+      https://arxiv.org/abs/1603.09420.
+    """
 
     def __init__(
         self,
@@ -178,8 +192,14 @@ class MGU:
 
 
 class BistableRecurrentCell:
-    """A bio-inspired bistable recurrent cell allows for long-lasting memory (2020)
-    https://arxiv.org/abs/2006.05252"""
+    """
+    Bi-stable recurrent cell.
+
+    References:
+
+    - *A bio-inspired bistable recurrent cell allows for long-lasting memory*.
+      2020. https://arxiv.org/abs/2006.05252.
+    """
 
     def __init__(
         self, state_dim, input_dim, kernel_initializer=nn.initializers.he_normal()
@@ -209,9 +229,14 @@ class BistableRecurrentCell:
 
 
 class LSTM:
-    """Long short term memory
-    LSTM can solve hard long time lag problems (1996)
-    https://dl.acm.org/doi/10.5555/2998981.2999048"""
+    """
+    Long short term memory.
+
+    References:
+
+    - *LSTM can solve hard long time lag problems*. 1996.
+      https://dl.acm.org/doi/10.5555/2998981.2999048
+    """
 
     def __init__(
         self,
@@ -265,9 +290,14 @@ class LSTM:
 
 
 class FastGRNN:
-    """FastGRNN: a fast, accurate, stable and tiny kilobyte sized gated recurrent neural
-        network (2019)
-    https://arxiv.org/abs/1901.02358"""
+    """
+    Fast gated RNN.
+
+    References:
+
+    - *FastGRNN: a fast, accurate, stable and tiny kilobyte sized gated
+      recurrent neural network. 2019. https://arxiv.org/abs/1901.02358.
+    """
 
     def __init__(
         self,
@@ -306,8 +336,14 @@ class FastGRNN:
 
 
 class UpdateGateRNN:
-    """Capacity and trainability in recurrent neural networks (2017)
-    https://openreview.net/forum?id=BydARw9ex"""
+    """
+    Update gate RNN.
+
+    References:
+
+    - *Capacity and trainability in recurrent neural networks*. 2017.
+      https://openreview.net/forum?id=BydARw9ex.
+    """
 
     def __init__(
         self,
@@ -351,7 +387,7 @@ class ConvolutionalGatedUnit:
         self,
         state_dim,
         input_dim,
-        window_shape,
+        shape,
         new_activation=nn.tanh,
         update_activation=nn.sigmoid,
         kernel_initializer=nn.initializers.he_normal(),
@@ -364,14 +400,14 @@ class ConvolutionalGatedUnit:
         self.new_linear_state = Conv(
             self.state_dim,
             self.state_dim,
-            window_shape=window_shape,
+            shape=shape,
             initializer=recurrent_initializer,
             padding="SAME",
         )
         self.new_linear_input = Conv(
             self.input_dim,
             self.state_dim,
-            window_shape=window_shape,
+            shape=shape,
             initializer=kernel_initializer,
             padding="SAME",
         )
@@ -380,14 +416,14 @@ class ConvolutionalGatedUnit:
         self.update_linear_state = Conv(
             self.state_dim,
             self.state_dim,
-            window_shape=window_shape,
+            shape=shape,
             initializer=recurrent_initializer,
             padding="SAME",
         )
         self.update_linear_input = Conv(
             self.input_dim,
             self.state_dim,
-            window_shape=window_shape,
+            shape=shape,
             initializer=kernel_initializer,
             padding="SAME",
         )

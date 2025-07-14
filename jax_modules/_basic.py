@@ -199,7 +199,7 @@ class Func:
 
     where :math:`f` is a user-specified function.
 
-    :param function: Function to apply to input.
+    :param function: Function to apply.
     """
 
     def __init__(self, function: Callable):

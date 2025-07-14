@@ -26,6 +26,8 @@ w = module.init(key)
 x = jnp.ones(2)
 # Compute the output.
 y = module.apply(w, x)
+# Print the output.
+print(y)
 ```
 
 ## Codebase quality control

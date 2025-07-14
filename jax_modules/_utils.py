@@ -88,6 +88,8 @@ def pool(
     *,
     strides: tuple[int, ...] | None = None,
     padding: Padding = "VALID",
+    base_dilation: tuple[int, ...] | None = None,
+    window_dilation: tuple[int, ...] | None = None,
 ) -> Callable[[Array], Array]:
     if strides is None:
         strides = (1,) * len(shape)
@@ -100,6 +102,8 @@ def pool(
             window_dimensions=shape + (1,),
             window_strides=strides + (1,),
             padding=padding,
+            base_dilation=base_dilation,
+            window_dilation=window_dilation,
         )
 
     return f
@@ -110,6 +114,8 @@ def max_pool(
     *,
     strides: tuple[int, ...] | None = None,
     padding: Padding = "VALID",
+    base_dilation: tuple[int, ...] | None = None,
+    window_dilation: tuple[int, ...] | None = None,
 ) -> Callable[[Array], Array]:
     """
     Max pooling.
@@ -118,6 +124,8 @@ def max_pool(
     :param strides: Stride for each spatial dimension.
     :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
+    :param base_dilation: Base dilation.
+    :param window_dilation: Window dilation.
     """
     return pool(
         operator=lax.max,
@@ -125,6 +133,8 @@ def max_pool(
         shape=shape,
         strides=strides,
         padding=padding,
+        base_dilation=base_dilation,
+        window_dilation=window_dilation,
     )
 
 
@@ -133,6 +143,8 @@ def sum_pool(
     *,
     strides: tuple[int, ...] | None = None,
     padding: Padding = "VALID",
+    base_dilation: tuple[int, ...] | None = None,
+    window_dilation: tuple[int, ...] | None = None,
 ) -> Callable[[Array], Array]:
     return pool(
         operator=lax.add,
@@ -140,6 +152,8 @@ def sum_pool(
         shape=shape,
         strides=strides,
         padding=padding,
+        base_dilation=base_dilation,
+        window_dilation=window_dilation,
     )
 
 
@@ -148,6 +162,8 @@ def mean_pool(
     *,
     strides: tuple[int, ...] | None = None,
     padding: Padding = "VALID",
+    base_dilation: tuple[int, ...] | None = None,
+    window_dilation: tuple[int, ...] | None = None,
 ) -> Callable[[Array], Array]:
     """
     Mean pooling.
@@ -156,11 +172,22 @@ def mean_pool(
     :param strides: Stride for each spatial dimension.
     :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
+    :param base_dilation: Base dilation.
+    :param window_dilation: Window dilation.
     """
     size = prod(shape)
 
     def f(x: Array) -> Array:
-        return sum_pool(shape, strides=strides, padding=padding)(x) / size
+        return (
+            sum_pool(
+                shape,
+                strides=strides,
+                padding=padding,
+                base_dilation=base_dilation,
+                window_dilation=window_dilation,
+            )(x)
+            / size
+        )
 
     return f
 

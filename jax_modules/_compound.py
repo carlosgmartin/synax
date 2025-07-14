@@ -3,8 +3,25 @@ from jax import lax, random
 
 
 class Chain:
-    """
-    Serial composition.
+    r"""
+    Sequential composition.
+
+    Compose a list of modules sequentially, using the output of one module as
+    the input for the next.
+
+    Computes :math:`y_n` where
+
+    .. math::
+        y_1 &= x \\
+        y_{i+1} &= f_i(y_i)
+
+    where :math:`f_i` is module :math:`i`. It therefore has type
+
+    .. math::
+        \prod_{i=1}^n (A_i \to A_{i+1}) \to A_1 \to A_n
+
+    :param modules: Sequence of modules.
+    :type modules: typing.Sequence[Module]
     """
 
     def __init__(self, modules):
@@ -27,8 +44,25 @@ class Chain:
 
 
 class Parallel:
-    """
+    r"""
     Parallel composition.
+
+    Compose a list of modules in parallel, receiving a tuple as input, passing
+    each element to its corresponding module, and collecting their outputs as a
+    tuple.
+
+    Computes the map
+
+    .. math::
+        x \mapsto \{f_i(x_i)\}_{i \in [n]}
+
+    where :math:`f_i` is module :math:`i`. It therefore has type
+
+    .. math::
+        \prod_{i=1}^n (A_i \to B_i) \to \prod_{i=1}^n A_i \to \prod_{i=1}^n B_i
+
+    :param modules: Sequence of modules.
+    :type modules: typing.Sequence[Module]
     """
 
     def __init__(self, modules):
@@ -70,13 +104,23 @@ class Repeat:
 
 
 class Residual:
-    """
+    r"""
     Residual transformation.
+
+    Computes the map
+
+    .. math::
+        x \mapsto x + f(x)
+
+    where :math:`f` is a given module.
 
     References:
 
     - *Deep residual learning for image recognition*. 2015.
-      https://arxiv.org/abs/1512.03385
+      https://arxiv.org/abs/1512.03385.
+
+    :param module: Module to apply.
+    :type module: Module
     """
 
     def __init__(self, module):

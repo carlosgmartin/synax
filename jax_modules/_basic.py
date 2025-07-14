@@ -5,10 +5,17 @@ from ._regularizers import zero
 
 
 class Bias:
-    """
-    Bias.
+    r"""
+    Bias (translation).
 
-    :param dimension: Input dimension.
+    Computes the map
+
+    .. math::
+        x \mapsto x + b
+
+    where :math:`b` is a learned vector.
+
+    :param dimension: Dimension of the input.
     :type dimension: int
     :param initializer: Initializer.
     :type initializer: jax.nn.initializers.Initializer
@@ -37,10 +44,17 @@ class Bias:
 
 
 class Scale:
-    """
+    r"""
     Elementwise scaling.
 
-    :param dimension: Input dimension.
+    Computes the map
+
+    .. math::
+        x \mapsto x \odot a
+
+    where :math:`a` is a learned vector.
+
+    :param dimension: Dimension of the input.
     :type dimension: int
     :param initializer: Initializer.
     :type initializer: jax.nn.initializers.Initializer
@@ -69,14 +83,21 @@ class Scale:
 
 
 class Dense:
-    """
+    r"""
     Dense linear transformation.
 
     Does not include bias.
 
-    :param input_dimension: Input dimension.
+    Computes the map
+
+    .. math::
+        x \mapsto A x
+
+    where :math:`A` is a learned matrix.
+
+    :param input_dimension: Dimension of the input.
     :type input_dimension: int
-    :param output_dimension: Output dimension.
+    :param output_dimension: Dimension of the output.
     :type output_dimension: int
     :param initializer: Initializer.
     :type initializer: jax.nn.initializers.Initializer
@@ -107,10 +128,17 @@ class Dense:
 
 
 class Func:
-    """
+    r"""
     Function.
 
-    :param function: Function.
+    Computes the map
+
+    .. math::
+        x \mapsto f(x)
+
+    where :math:`f` is a user-specified function.
+
+    :param function: Function to apply to input.
     :type function: typing.Callable
     """
 
@@ -128,15 +156,15 @@ class Conv:
     """
     Convolution.
 
-    :param input_dimension: Input dimension.
+    :param input_dimension: Dimension of the input.
     :type input_dimension: int
-    :param output_dimension: Output dimension.
+    :param output_dimension: Dimension of the output.
     :type output_dimension: int
     :param shape: Window size for each spatial dimension.
     :type shape: tuple[int, ...]
     :param strides: Stride for each spatial dimension.
     :type strides: tuple[int, ...] | None
-    :param padding: Padding.  Can be "SAME", "SAME_LOWER", "VALID", or a sequence
+    :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
         of int pairs giving the padding before and after each spatial dimension.
     :type padding: str | Sequence[tuple[int, int]]
     :param dilation: Dilation factor for each spatial dimension.
@@ -196,8 +224,8 @@ class Embed:
     """
     Embedding.
 
-    :param embed: Number of embeddings.
-    :type embed: int
+    :param number: Number of embeddings.
+    :type number: int
     :param dimension: Dimension of each embedding.
     :type dimension: int
     :initializer: Initializer for embeddings.

@@ -11,7 +11,7 @@ from ._utils import max_pool, mean_pool
 
 
 def MLP(
-    dims,
+    dimensions,
     activation=Func(nn.relu),
     kernel_initializer=nn.initializers.he_normal(),
     bias_initializer=nn.initializers.zeros,
@@ -20,6 +20,19 @@ def MLP(
 ):
     """
     Multi-layer perceptron.
+
+    :param dimensions: Dimension of each layer.
+    :type dimensions: typing.Sequence[int]
+    :param activation: Module to use as an activation function.
+    :type activation: Module
+    :param kernel_initializer: Initializer used for the kernels.
+    :type kernel_initializer: jax.nn.initializers.Initializer
+    :param bias_initializer: Initializer used for the biases.
+    :type bias_initializer: jax.nn.initializers.Initializer
+    :param kernel_regularizer: Regularizer used for the kernels.
+    :type kernel_regularizer: typing.Callable
+    :param bias_regularizer: Regularizer used for the biases.
+    :type bias_regularizer: typing.Callable
 
     References:
 
@@ -35,15 +48,15 @@ def MLP(
     """
 
     modules = []
-    for input_dim, output_dim in zip(dims[:-1], dims[1:]):
+    for input_dimension, output_dimension in zip(dimensions[:-1], dimensions[1:]):
         dense = Dense(
-            input_dim,
-            output_dim,
+            input_dimension,
+            output_dimension,
             initializer=kernel_initializer,
             regularizer=kernel_regularizer,
         )
         bias = Bias(
-            output_dim,
+            output_dimension,
             initializer=bias_initializer,
             regularizer=bias_regularizer,
         )
@@ -52,8 +65,20 @@ def MLP(
 
 
 class AutoEncoder:
-    """
+    r"""
     Auto-encoder.
+
+    Computes the function
+
+    .. math::
+        x \mapsto g(f(x))
+
+    where :math:`f` is the encoder and :math:`g` is the decoder.
+
+    :param encoder: Module to use as encoder.
+    :type encoder: Module
+    :param decoder: Module to use as decoder.
+    :type decoder: Module
     """
 
     def __init__(self, encoder, decoder):
@@ -152,8 +177,27 @@ class NeuralGPU:
 
 
 class GLU:
-    """
+    r"""
     Gated linear unit.
+
+    Computes the map
+
+    .. math::
+        x \mapsto \sigma(A x + b) \odot (C x + d)
+
+    where :math:`\sigma` is the sigmoid function, :math:`A, C` are learned
+    matrices, and :math:`b, d` are learned vectors.
+
+    :param input_dimension: Dimension of the input.
+    :type input_dimension: int
+    :param output_dimension: Dimension of the output.
+    :type output_dimension: int
+    :param kernel_initializer: Initializer used for the kernels.
+    :type kernel_initializer: jax.nn.initializers.Initializer
+    :param bias_initializer: Initializer used for the biases.
+    :type bias_initializer: jax.nn.initializers.Initializer
+    :param sigmoid_fn: Sigmoid function to use. Defaults to the logistic function.
+    :type sigmoid_fn: typing.Callable
 
     References:
 
@@ -163,22 +207,28 @@ class GLU:
 
     def __init__(
         self,
-        input_dim,
-        output_dim,
+        input_dimension,
+        output_dimension,
         kernel_initializer=nn.initializers.he_normal(),
         bias_initializer=nn.initializers.zeros,
+        sigmoid_fn=nn.sigmoid,
     ):
-        self.input_dim = input_dim
-        self.output_dim = output_dim
+        self.input_dimension = input_dimension
+        self.output_dimension = output_dimension
         self.kernel_initializer = kernel_initializer
         self.bias_initializer = bias_initializer
+        self.sigmoid_fn = sigmoid_fn
 
     def init(self, key):
         keys = random.split(key, 4)
-        w = self.kernel_initializer(keys[0], (self.input_dim, self.output_dim))
-        v = self.kernel_initializer(keys[1], (self.input_dim, self.output_dim))
-        b = self.bias_initializer(keys[2], (self.output_dim,))
-        c = self.bias_initializer(keys[3], (self.output_dim,))
+        w = self.kernel_initializer(
+            keys[0], (self.input_dimension, self.output_dimension)
+        )
+        v = self.kernel_initializer(
+            keys[1], (self.input_dimension, self.output_dimension)
+        )
+        b = self.bias_initializer(keys[2], (self.output_dimension,))
+        c = self.bias_initializer(keys[3], (self.output_dimension,))
         wv = jnp.concatenate([w, v], 1)
         bc = jnp.concatenate([b, c], 1)
         return wv, bc
@@ -186,13 +236,28 @@ class GLU:
     def apply(self, param, input):
         wv, bc = param
         x = input @ wv + bc
-        y, z = jnp.split(x, [self.output_dim])
-        return y * nn.sigmoid(z)
+        y, z = jnp.split(x, [self.output_dimension])
+        return y * self.sigmoid_fn(z)
 
 
 class PReLU:
-    """
+    r"""
     Parametric ReLU.
+
+    Computes the map
+
+    .. math::
+        x \mapsto \begin{cases}
+            x & x \geq 0 \\
+            a x & x < 0
+        \end{cases}
+
+    where :math:`a` is a learned slope parameter.
+
+    :param initializer: Initializer to use for the slope parameter.
+    :type initializer: jax.nn.initializers.Initializer
+    :param regularizer: Regularizer to use for the slope parameter.
+    :type regularizer: typing.Callable
 
     References:
 

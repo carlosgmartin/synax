@@ -49,6 +49,14 @@ def pool(operator, identity, shape, *, strides=None, padding="VALID"):
 def max_pool(shape, *, strides=None, padding="VALID"):
     """
     Max pooling.
+
+    :param shape: Window size for each spatial dimension.
+    :type shape: tuple[int, ...]
+    :param strides: Stride for each spatial dimension.
+    :type strides: tuple[int, ...] | None
+    :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
+        of int pairs giving the padding before and after each spatial dimension.
+    :type padding: str | Sequence[tuple[int, int]]
     """
     return pool(
         operator=lax.max,
@@ -62,6 +70,14 @@ def max_pool(shape, *, strides=None, padding="VALID"):
 def sum_pool(shape, *, strides=None, padding="VALID"):
     """
     Sum pooling.
+
+    :param shape: Window size for each spatial dimension.
+    :type shape: tuple[int, ...]
+    :param strides: Stride for each spatial dimension.
+    :type strides: tuple[int, ...] | None
+    :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
+        of int pairs giving the padding before and after each spatial dimension.
+    :type padding: str | Sequence[tuple[int, int]]
     """
     return pool(
         operator=lax.add,
@@ -75,6 +91,14 @@ def sum_pool(shape, *, strides=None, padding="VALID"):
 def mean_pool(shape, *, strides=None, padding="VALID"):
     """
     Mean pooling.
+
+    :param shape: Window size for each spatial dimension.
+    :type shape: tuple[int, ...]
+    :param strides: Stride for each spatial dimension.
+    :type strides: tuple[int, ...] | None
+    :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
+        of int pairs giving the padding before and after each spatial dimension.
+    :type padding: str | Sequence[tuple[int, int]]
     """
     size = prod(shape)
 

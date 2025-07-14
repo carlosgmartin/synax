@@ -8,6 +8,27 @@ class Attention:
     """
     Attention.
 
+    :param query_input_dim: Dimension of the input used to compute queries.
+    :type query_input_dim: int
+    :param key_input_dim: Dimension of the input used to compute keys.
+        Defaults to ``query_input_dim``.
+    :type key_input_dim: int | None
+    :param value_input_dim: Dimension of the input used to compute values.
+        Defaults to ``key_input_dim``.
+    :type value_input_dim: int | None
+    :param hidden_dim: Dimension of the embeddings used to compute dot products.
+        Defaults to ``query_input_dim``.
+    :type hidden_dim: int
+    :param heads: Number of attention heads.
+    :type heads: int
+    :param kernel_initializer: Initializer used for the kernels.
+    :type kernel_initializer: jax.nn.initializers.Initializer
+    :param bias_initializer: Initializer used for the biases.
+    :type bias_initializer: jax.nn.initializers.Initializer
+    :param normalize_qk: Apply layer norm to queries and keys before computing
+        dot products.
+    :type normalize_qk: bool
+
     References:
 
     - *Attention is all you need*. 2017. https://arxiv.org/abs/1706.03762.

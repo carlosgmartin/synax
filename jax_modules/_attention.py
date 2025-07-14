@@ -5,6 +5,9 @@ from jax import numpy as jnp
 
 from ._utils import layer_norm
 
+Key = Array
+Initializer = Callable[[Key, tuple[int, ...]], Array]
+
 
 class Attention:
     """
@@ -37,8 +40,8 @@ class Attention:
         value_input_dim: int | None = None,
         hidden_dim=None,
         heads: int = 1,
-        kernel_initializer: Callable = nn.initializers.he_normal(),
-        bias_initializer: Callable = nn.initializers.zeros,
+        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        bias_initializer: Initializer = nn.initializers.zeros,
         normalize_qk: bool = False,
     ):
         if key_input_dim is None:

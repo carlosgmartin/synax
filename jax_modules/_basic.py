@@ -6,6 +6,7 @@ from jax import numpy as jnp
 from ._regularizers import Regularizer, zero
 
 Key = Array
+Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
 class Bias:
@@ -27,7 +28,7 @@ class Bias:
     def __init__(
         self,
         dimension: int,
-        initializer: Callable = nn.initializers.zeros,
+        initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
     ):
         self.dimension = dimension
@@ -85,7 +86,7 @@ class Scale:
     def __init__(
         self,
         dimension: int,
-        initializer: Callable = nn.initializers.ones,
+        initializer: Initializer = nn.initializers.ones,
         regularizer: Regularizer = zero,
     ):
         self.dimension = dimension
@@ -147,7 +148,7 @@ class Linear:
         self,
         input_dimension: int,
         output_dimension: int,
-        initializer: Callable = nn.initializers.he_normal(),
+        initializer: Initializer = nn.initializers.he_normal(),
         regularizer: Regularizer = zero,
     ):
         self.input_dimension = input_dimension
@@ -258,7 +259,7 @@ class Conv:
         padding: Literal["VALID", "SAME", "SAME_LOWER"]
         | Sequence[tuple[int, int]] = "VALID",
         dilation: tuple[int, ...] | None = None,
-        initializer: Callable = nn.initializers.he_normal(),
+        initializer: Initializer = nn.initializers.he_normal(),
         groups: int = 1,
     ):
         self.input_dimension = input_dimension
@@ -309,7 +310,7 @@ class Embed:
         self,
         number: int,
         dimension: int,
-        initializer: Callable = nn.initializers.normal(),
+        initializer: Initializer = nn.initializers.normal(),
         regularizer: Regularizer = zero,
     ):
         self.number = number

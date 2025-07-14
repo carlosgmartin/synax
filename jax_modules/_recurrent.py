@@ -6,6 +6,7 @@ from jax import numpy as jnp
 from ._basic import Bias, Conv
 
 Key = Array
+Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
 class RecurrentNetwork:
@@ -43,11 +44,11 @@ class SimpleRNN:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Callable = nn.initializers.glorot_uniform(),
-        bias_initializer: Callable = nn.initializers.zeros,
-        recurrent_initializer: Callable = nn.initializers.orthogonal(),
+        kernel_initializer: Initializer = nn.initializers.glorot_uniform(),
+        bias_initializer: Initializer = nn.initializers.zeros,
+        recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         activation: Callable = nn.tanh,
-        state_initializer: Callable = nn.initializers.zeros,
+        state_initializer: Initializer = nn.initializers.zeros,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
@@ -87,13 +88,13 @@ class GRU:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Callable = nn.initializers.glorot_uniform(),
-        bias_initializer: Callable = nn.initializers.zeros,
-        recurrent_initializer: Callable = nn.initializers.orthogonal(),
+        kernel_initializer: Initializer = nn.initializers.glorot_uniform(),
+        bias_initializer: Initializer = nn.initializers.zeros,
+        recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         reset_activation: Callable = nn.sigmoid,
         update_activation: Callable = nn.sigmoid,
         candidate_activation: Callable = nn.tanh,
-        state_initializer: Callable = nn.initializers.zeros,
+        state_initializer: Initializer = nn.initializers.zeros,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
@@ -149,12 +150,12 @@ class MGU:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Callable = nn.initializers.glorot_uniform(),
-        bias_initializer: Callable = nn.initializers.zeros,
-        recurrent_initializer: Callable = nn.initializers.orthogonal(),
+        kernel_initializer: Initializer = nn.initializers.glorot_uniform(),
+        bias_initializer: Initializer = nn.initializers.zeros,
+        recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         update_activation: Callable = nn.sigmoid,
         candidate_activation: Callable = nn.tanh,
-        state_initializer: Callable = nn.initializers.zeros,
+        state_initializer: Initializer = nn.initializers.zeros,
         reset_gate: bool = True,
     ):
         self.input_dim = input_dim
@@ -210,7 +211,7 @@ class BistableRecurrentCell:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Callable = nn.initializers.he_normal(),
+        kernel_initializer: Initializer = nn.initializers.he_normal(),
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
@@ -250,9 +251,9 @@ class LSTM:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Callable = nn.initializers.he_normal(),
-        recurrent_initializer: Callable = nn.initializers.orthogonal(),
-        bias_initializer: Callable = nn.initializers.zeros,
+        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        recurrent_initializer: Initializer = nn.initializers.orthogonal(),
+        bias_initializer: Initializer = nn.initializers.zeros,
         forget_bias: float = 1.0,
     ):
         self.state_dim = state_dim
@@ -313,8 +314,8 @@ class FastGRNN:
         self,
         state_dim: int,
         input_dim: int,
-        kernel_initializer: Callable = nn.initializers.he_normal(),
-        bias_initializer: Callable = nn.initializers.zeros,
+        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        bias_initializer: Initializer = nn.initializers.zeros,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
@@ -360,9 +361,9 @@ class UpdateGateRNN:
         state_dim: int,
         input_dim: int,
         activation: Callable = nn.tanh,
-        kernel_initializer: Callable = nn.initializers.he_normal(),
-        recurrent_initializer: Callable = nn.initializers.orthogonal(),
-        bias_initializer: Callable = nn.initializers.zeros,
+        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        recurrent_initializer: Initializer = nn.initializers.orthogonal(),
+        bias_initializer: Initializer = nn.initializers.zeros,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
@@ -400,9 +401,9 @@ class ConvolutionalGatedUnit:
         shape: tuple[int, ...],
         new_activation: Callable = nn.tanh,
         update_activation: Callable = nn.sigmoid,
-        kernel_initializer: Callable = nn.initializers.he_normal(),
-        bias_initializer: Callable = nn.initializers.zeros,
-        recurrent_initializer: Callable = nn.initializers.orthogonal(),
+        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        bias_initializer: Initializer = nn.initializers.zeros,
+        recurrent_initializer: Initializer = nn.initializers.orthogonal(),
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim

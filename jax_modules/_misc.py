@@ -12,13 +12,14 @@ from ._utils import max_pool, mean_pool
 
 Module = Any
 Key = Array
+Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
 def MLP(
     dimensions: list[int],
     activation: Module = Func(nn.relu),
-    kernel_initializer: Callable = nn.initializers.he_normal(),
-    bias_initializer: Callable = nn.initializers.zeros,
+    kernel_initializer: Initializer = nn.initializers.he_normal(),
+    bias_initializer: Initializer = nn.initializers.zeros,
     kernel_regularizer: Regularizer = zero,
     bias_regularizer: Regularizer = zero,
 ):
@@ -202,8 +203,8 @@ class GLU:
         self,
         input_dimension: int,
         output_dimension: int,
-        kernel_initializer: Callable = nn.initializers.he_normal(),
-        bias_initializer: Callable = nn.initializers.zeros,
+        kernel_initializer: Initializer = nn.initializers.he_normal(),
+        bias_initializer: Initializer = nn.initializers.zeros,
         sigmoid_fn: Callable[[Array], Array] = nn.sigmoid,
     ):
         self.input_dimension = input_dimension
@@ -258,7 +259,7 @@ class PReLU:
 
     def __init__(
         self,
-        initializer: Callable = nn.initializers.zeros,
+        initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
     ):
         self.initializer = initializer

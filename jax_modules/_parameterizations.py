@@ -7,13 +7,14 @@ from jax import numpy as jnp
 from ._regularizers import Regularizer, zero
 
 Key = Array
+Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
 class Constant:
     def __init__(
         self,
         dim: int,
-        initializer: Callable = nn.initializers.zeros,
+        initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
     ):
         self.dim = dim
@@ -34,7 +35,7 @@ class Ball:
     def __init__(
         self,
         dim: int,
-        initializer: Callable = nn.initializers.zeros,
+        initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
     ):
         self.dim = dim
@@ -55,7 +56,7 @@ class Simplex:
     def __init__(
         self,
         dim: int,
-        initializer: Callable = nn.initializers.zeros,
+        initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
     ):
         self.dim = dim
@@ -92,7 +93,7 @@ class SymmetricMatrix:
     def __init__(
         self,
         dim: int,
-        initializer: Callable = nn.initializers.zeros,
+        initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
     ):
         self.dim = dim
@@ -114,7 +115,7 @@ class AntisymmetricMatrix:
     def __init__(
         self,
         dim: int,
-        initializer: Callable = nn.initializers.zeros,
+        initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
     ):
         self.dim = dim

@@ -1,9 +1,7 @@
 __pycache__/
-.mypy_cache/
 .pytest_cache/
 .DS_Store
 *.egg-info/
-build/
 dist/
 .ruff_cache/
 docs/_build

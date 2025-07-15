@@ -62,7 +62,7 @@ class Attention:
 
     def init(self, key: Array) -> dict[str, Array]:
         """
-        Initialize parameters.
+        Sample initial parameters.
 
         :param key: PRNG key.
         """

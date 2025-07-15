@@ -39,7 +39,7 @@ class Bias:
 
     def init(self, key: Key) -> Array:
         """
-        Initialize parameters.
+        Sample initial parameters.
 
         :param key: PRNG key.
 
@@ -97,7 +97,7 @@ class Scale:
 
     def init(self, key: Key) -> Array:
         """
-        Initialize parameters.
+        Sample initial parameters.
 
         :param key: PRNG key.
 
@@ -160,7 +160,7 @@ class Linear:
 
     def init(self, key: Key) -> Array:
         """
-        Initialize parameters.
+        Sample initial parameters.
 
         :param key: PRNG key.
 
@@ -209,7 +209,7 @@ class Func:
 
     def init(self, key: Key) -> None:
         """
-        Initialize parameters.
+        Sample initial parameters.
 
         :param key: PRNG key.
 
@@ -277,7 +277,7 @@ class Conv:
 
     def init(self, key: Key) -> Array:
         """
-        Initialize parameters.
+        Sample initial parameters.
 
         :param key: PRNG key.
 
@@ -355,7 +355,7 @@ class Embed:
 
     def init(self, key: Key) -> Array:
         """
-        Initialize parameters.
+        Sample initial parameters.
 
         :param key: PRNG key.
 

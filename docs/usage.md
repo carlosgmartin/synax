@@ -12,7 +12,7 @@ module = synax.MLP([2, 32, 3])
 # Create a PRNG key.
 key = random.key(0)
 
-# Initialize parameters.
+# Sample initial parameters.
 w = module.init(key)
 
 # Define an input.

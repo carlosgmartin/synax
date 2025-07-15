@@ -1,29 +1,13 @@
 # Usage
 
-Example:
+The following script is a basic example of how to use the library:
 
-```python3
-from jax import numpy as jnp, random
-import synax
-
-# Create a module.
-module = synax.MLP([2, 32, 3])
-
-# Create a PRNG key.
-key = random.key(0)
-
-# Sample initial parameters.
-w = module.init(key)
-
-# Define an input.
-x = jnp.ones(2)
-
-# Compute the output.
-y = module.apply(w, x)
-
-# Print the output.
-print(y)
+```{literalinclude} ../examples/basic.py
+:language: python
+:linenos:
 ```
+
+Output:
 
 ```
 [-1.2567853  -0.80044776  0.5694267 ]
@@ -37,40 +21,14 @@ A module has the following methods:
 
 ## Defining a custom module
 
-Here is an example of a custom module:
+The following script shows how to define a custom module:
 
-```python3
-from jax import random, nn
-
-class Affine:
-    """Affine map."""
-
-    def __init__(
-        self,
-        input_dim,
-        output_dim,
-        weight_init=nn.initializers.he_normal(),
-        bias_init=nn.initializers.zeros,
-    ):
-        self.input_dim = input_dim
-        self.output_dim = output_dim
-        self.weight_init = weight_init
-        self.bias_init = bias_init
-
-    def init(self, key):
-        keys = random.split(key)
-        weight = self.weight_init(keys[0], (self.input_dim, self.output_dim))
-        bias = self.bias_init(keys[1], (self.output_dim,))
-        return {"weight": weight, "bias": bias}
-
-    def apply(self, params, input):
-        return input @ params["weight"] + params["bias"]
-
-module = Affine(3, 2)
-key = random.key(0)
-params = module.init(key)
-print(params)
+```{literalinclude} ../examples/module.py
+:language: python
+:linenos:
 ```
+
+Output:
 
 ```
 {'weight': Array([[ 0.8737965 , -0.79177886],

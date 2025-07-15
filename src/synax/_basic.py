@@ -64,7 +64,7 @@ class Bias:
 
         :param parameters: Parameters.
 
-        :returns: A scalar.
+        :returns: Scalar.
         """
         return self.regularizer(parameters)
 
@@ -122,7 +122,7 @@ class Scale:
 
         :param parameters: Parameters.
 
-        :returns: A scalar.
+        :returns: Scalar.
         """
         return self.regularizer(parameters)
 
@@ -185,7 +185,7 @@ class Linear:
 
         :param parameters: Parameters.
 
-        :returns: A scalar.
+        :returns: Scalar.
         """
         return self.regularizer(parameters)
 
@@ -380,6 +380,6 @@ class Embed:
 
         :param parameters: Parameters.
 
-        :returns: A scalar.
+        :returns: Scalar.
         """
         return self.regularizer(parameters)

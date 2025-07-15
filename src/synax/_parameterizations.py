@@ -35,6 +35,13 @@ class Constant:
         return parameters
 
     def parameter_loss(self, parameters: Array) -> Array | float:
+        """
+        Parameter loss.
+
+        :param parameters: Parameters.
+
+        :returns: Scalar.
+        """
         return self.regularizer(parameters)
 
 
@@ -63,6 +70,13 @@ class Ball:
         return parameters / jnp.sqrt(1 + parameters * jnp.conj(parameters))
 
     def parameter_loss(self, parameters: Array) -> Array | float:
+        """
+        Parameter loss.
+
+        :param parameters: Parameters.
+
+        :returns: Scalar.
+        """
         return self.regularizer(parameters)
 
 
@@ -91,6 +105,13 @@ class Simplex:
         return nn.softmax(parameters)
 
     def parameter_loss(self, parameters: Array) -> Array | float:
+        """
+        Parameter loss.
+
+        :param parameters: Parameters.
+
+        :returns: Scalar.
+        """
         return self.regularizer(parameters)
 
 
@@ -136,6 +157,13 @@ class SymmetricMatrix:
         return vector_to_symmetric_matrix(parameters, self.dim)
 
     def parameter_loss(self, parameters: Array) -> Array | float:
+        """
+        Parameter loss.
+
+        :param parameters: Parameters.
+
+        :returns: Scalar.
+        """
         return self.regularizer(parameters)
 
 
@@ -165,6 +193,13 @@ class AntisymmetricMatrix:
         return vector_to_antisymmetric_matrix(parameters, self.dim)
 
     def parameter_loss(self, parameters: Array) -> Array | float:
+        """
+        Parameter loss.
+
+        :param parameters: Parameters.
+
+        :returns: Scalar.
+        """
         return self.regularizer(parameters)
 
 

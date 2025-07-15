@@ -53,6 +53,13 @@ class Chain:
         return input
 
     def parameter_loss(self, parameters: tuple[Any, ...]) -> Array | float:
+        """
+        Parameter loss.
+
+        :param parameters: Parameters.
+
+        :returns: Scalar.
+        """
         return sum(
             module.parameter_loss(param)
             for module, param in zip(self.modules, parameters, strict=True)
@@ -105,6 +112,13 @@ class Parallel:
         )
 
     def parameter_loss(self, parameters: tuple[Any, ...]) -> Array | float:
+        """
+        Parameter loss.
+
+        :param parameters: Parameters.
+
+        :returns: Scalar.
+        """
         return sum(
             module.parameter_loss(param)
             for module, param in zip(self.modules, parameters, strict=True)
@@ -133,6 +147,13 @@ class Repeat:
         return lax.scan(f, input, length=steps, unroll=unroll)
 
     def parameter_loss(self, parameters: Any) -> Array:
+        """
+        Parameter loss.
+
+        :param parameters: Parameters.
+
+        :returns: Scalar.
+        """
         return self.module.parameter_loss(parameters)
 
 
@@ -173,6 +194,13 @@ class Residual:
         return input + output
 
     def parameter_loss(self, parameters: Any) -> Array:
+        """
+        Parameter loss.
+
+        :param parameters: Parameters.
+
+        :returns: Scalar.
+        """
         return self.module.parameter_loss(parameters)
 
 

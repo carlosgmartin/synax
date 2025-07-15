@@ -8,7 +8,7 @@ A magic-free, purely-functional neural network library for [JAX](https://github.
 
 No tracing. No transforms. No mutation. Just functions.
 
-### [Documentation](https://carlosgmartin.com/synax)
+Documentation can be found [here](https://carlosgmartin.com/synax).
 
 > [!NOTE]
 > This library is under active development. Expect breaking changes.

@@ -1,12 +1,12 @@
 # Installation
 
-To install from repo (latest version):
+You can install the latest development version as follows:
 
 ```shell
 pip install git+https://github.com/carlosgmartin/synax
 ```
 
-To install from pip:
+You can install the latest released version on PyPI as follows:
 
 ```shell
 pip install synax

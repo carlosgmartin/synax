@@ -28,15 +28,5 @@ docs = [
     "myst-parser",
 ]
 
-[tool.pyright]
-
 [tool.ruff]
 fix = true
-
-[tool.ruff.lint]
-ignore = [
-    "E741",
-]
-extend-select = [
-    "I",
-]

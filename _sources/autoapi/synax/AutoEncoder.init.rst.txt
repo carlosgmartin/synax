@@ -1,0 +1,11 @@
+synax.AutoEncoder.init
+======================
+
+.. py:method:: synax.AutoEncoder.init(key: Key) -> dict[str, Any]
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

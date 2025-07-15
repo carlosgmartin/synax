@@ -1,0 +1,11 @@
+synax.GRU.init
+==============
+
+.. py:method:: synax.GRU.init(key: Key) -> tuple[jax.Array, Ellipsis]
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

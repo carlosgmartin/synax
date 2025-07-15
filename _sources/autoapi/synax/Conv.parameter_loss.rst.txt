@@ -1,0 +1,11 @@
+synax.Conv.parameter_loss
+=========================
+
+.. py:method:: synax.Conv.parameter_loss(parameters: jax.Array) -> float
+
+   Parameter loss.
+
+   :param parameters: Parameters.
+
+   :returns: Scalar.
+

@@ -1,0 +1,19 @@
+synax.Attention.apply
+=====================
+
+.. py:method:: synax.Attention.apply(parameters: dict[str, jax.Array], query_input: jax.Array, key_input: jax.Array | None = None, value_input: jax.Array | None = None, mask: jax.Array | None = None, bias: jax.Array | None = None, is_causal: bool = False, scale: float | None = None) -> jax.Array
+
+   Apply module.
+
+   :param parameters: Parameters.
+   :param query_input: Input used to compute queries.
+   :param key_input: Input used to compute keys.
+   :param value_input: Input used to compute values.
+   :param mask: Boolean mask used to filter out logits.
+   :param bias: Bias array to be added to logits.
+   :param is_causal: Apply causal attention.
+   :param scale: Scale for the logits. If ``None``, set to 1 divided by the
+       square root of the query's head dimension.
+
+   :returns: The output array.
+

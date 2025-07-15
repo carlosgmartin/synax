@@ -1,0 +1,12 @@
+synax.Conv.apply
+================
+
+.. py:method:: synax.Conv.apply(parameters: jax.Array, input: jax.Array) -> jax.Array
+
+   Apply module.
+
+   :param parameters: Parameters.
+   :param input: Array of shape ``(..., input_dimension)``.
+
+   :returns: Array of shape ``(..., output_dimension)``.
+

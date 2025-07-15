@@ -1,0 +1,11 @@
+synax.Embed.parameter_loss
+==========================
+
+.. py:method:: synax.Embed.parameter_loss(parameters: jax.Array) -> jax.Array | float
+
+   Parameter loss.
+
+   :param parameters: Parameters.
+
+   :returns: Scalar.
+

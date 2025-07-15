@@ -1,0 +1,31 @@
+synax.SimpleRNN
+===============
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/SimpleRNN.init
+   /autoapi/synax/SimpleRNN.apply
+   /autoapi/synax/SimpleRNN.parameter_loss
+
+.. py:class:: synax.SimpleRNN(state_dim: int, input_dim: int, recurrent_initializer: Initializer = nn.initializers.orthogonal(), linear_initializer: Initializer = nn.initializers.glorot_uniform(), bias_initializer: Initializer = nn.initializers.zeros, recurrent_regularizer: synax._regularizers.Regularizer = zero, linear_regularizer: synax._regularizers.Regularizer = zero, bias_regularizer: synax._regularizers.Regularizer = zero, activation: Callable[[jax.Array], jax.Array] = nn.tanh, state_initializer: Initializer = nn.initializers.zeros)
+
+
+
+   Simple recurrent unit.
+
+   References:
+
+   - *Finding structure in time*. 1990.
+     https://onlinelibrary.wiley.com/doi/10.1207/s15516709cog1402_1.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.SimpleRNN.init
+   synax.SimpleRNN.apply
+   synax.SimpleRNN.parameter_loss
+
+

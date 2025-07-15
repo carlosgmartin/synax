@@ -1,0 +1,11 @@
+synax.Func.parameter_loss
+=========================
+
+.. py:method:: synax.Func.parameter_loss(parameters: None) -> float
+
+   Parameter loss.
+
+   :param parameters: Parameters.
+
+   :returns: Scalar.
+

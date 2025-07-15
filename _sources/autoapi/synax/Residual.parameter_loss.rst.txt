@@ -1,0 +1,11 @@
+synax.Residual.parameter_loss
+=============================
+
+.. py:method:: synax.Residual.parameter_loss(parameters: Any) -> jax.Array
+
+   Parameter loss.
+
+   :param parameters: Parameters.
+
+   :returns: Scalar.
+

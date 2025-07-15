@@ -1,0 +1,11 @@
+synax.MGU.init
+==============
+
+.. py:method:: synax.MGU.init(key: Key) -> tuple[jax.Array, Ellipsis]
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

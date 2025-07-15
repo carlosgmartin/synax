@@ -1,0 +1,11 @@
+synax.Residual.init
+===================
+
+.. py:method:: synax.Residual.init(key: Key) -> Any
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

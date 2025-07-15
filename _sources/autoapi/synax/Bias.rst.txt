@@ -1,0 +1,37 @@
+synax.Bias
+==========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Bias.init
+   /autoapi/synax/Bias.apply
+   /autoapi/synax/Bias.parameter_loss
+
+.. py:class:: synax.Bias(dimension: int, initializer: Initializer = nn.initializers.zeros, regularizer: synax._regularizers.Regularizer = zero)
+
+
+
+   Bias (translation).
+
+   Computes
+
+   .. math::
+       y = x + b
+
+   where :math:`b` is a learned vector.
+
+   :param dimension: Input dimension.
+   :param initializer: Initializer.
+   :param regularizer: Regularizer.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Bias.init
+   synax.Bias.apply
+   synax.Bias.parameter_loss
+
+

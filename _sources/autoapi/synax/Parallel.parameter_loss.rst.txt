@@ -1,0 +1,11 @@
+synax.Parallel.parameter_loss
+=============================
+
+.. py:method:: synax.Parallel.parameter_loss(parameters: tuple[Any, Ellipsis]) -> jax.Array | float
+
+   Parameter loss.
+
+   :param parameters: Parameters.
+
+   :returns: Scalar.
+

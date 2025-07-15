@@ -1,0 +1,11 @@
+synax.AutoEncoder.parameter_loss
+================================
+
+.. py:method:: synax.AutoEncoder.parameter_loss(parameters: dict[str, Any]) -> jax.Array
+
+   Parameter loss.
+
+   :param parameters: Parameters.
+
+   :returns: Scalar.
+

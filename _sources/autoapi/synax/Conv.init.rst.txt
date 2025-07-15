@@ -1,0 +1,11 @@
+synax.Conv.init
+===============
+
+.. py:method:: synax.Conv.init(key: Key) -> jax.Array
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

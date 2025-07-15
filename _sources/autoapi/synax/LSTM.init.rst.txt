@@ -1,0 +1,11 @@
+synax.LSTM.init
+===============
+
+.. py:method:: synax.LSTM.init(key: Key) -> tuple[jax.Array, Ellipsis]
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

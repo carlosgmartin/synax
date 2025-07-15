@@ -1,0 +1,40 @@
+synax.Linear
+============
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Linear.init
+   /autoapi/synax/Linear.apply
+   /autoapi/synax/Linear.parameter_loss
+
+.. py:class:: synax.Linear(input_dimension: int, output_dimension: int, initializer: Initializer = nn.initializers.he_normal(), regularizer: synax._regularizers.Regularizer = zero)
+
+
+
+   Linear map.
+
+   Does not include bias.
+
+   Computes
+
+   .. math::
+       y = A x
+
+   where :math:`A` is a learned matrix.
+
+   :param input_dimension: Input dimension.
+   :param output_dimension: Output dimension.
+   :param initializer: Initializer.
+   :param regularizer: Regularizer.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Linear.init
+   synax.Linear.apply
+   synax.Linear.parameter_loss
+
+

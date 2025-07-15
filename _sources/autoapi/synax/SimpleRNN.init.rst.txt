@@ -1,0 +1,11 @@
+synax.SimpleRNN.init
+====================
+
+.. py:method:: synax.SimpleRNN.init(key: Key) -> dict[str, jax.Array]
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

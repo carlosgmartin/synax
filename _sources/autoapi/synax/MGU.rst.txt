@@ -1,0 +1,25 @@
+synax.MGU
+=========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/MGU.init
+
+.. py:class:: synax.MGU(state_dim: int, input_dim: int, linear_initializer: Initializer = nn.initializers.glorot_uniform(), bias_initializer: Initializer = nn.initializers.zeros, recurrent_initializer: Initializer = nn.initializers.orthogonal(), update_activation: Callable[[jax.Array], jax.Array] = nn.sigmoid, candidate_activation: Callable[[jax.Array], jax.Array] = nn.tanh, state_initializer: Initializer = nn.initializers.zeros, reset_gate: bool = True)
+
+   Minimal gated unit.
+
+   References:
+
+   - *Minimal gated unit for recurrent neural networks*. 2016.
+     https://arxiv.org/abs/1603.09420.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.MGU.init
+
+

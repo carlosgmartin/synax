@@ -1,0 +1,11 @@
+synax.Attention.init
+====================
+
+.. py:method:: synax.Attention.init(key: jax.Array) -> dict[str, jax.Array]
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

@@ -1,0 +1,11 @@
+synax.PReLU.init
+================
+
+.. py:method:: synax.PReLU.init(key: Key) -> jax.Array
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

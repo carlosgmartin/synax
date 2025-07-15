@@ -36,7 +36,7 @@ autoapi_own_page_level = "method"
 linkcode_url = "https://github.com/carlosgmartin/synax/blob/master/src/synax/{path}#L{start}-L{end}"
 
 
-def linkcode_resolve(domain, info):
+def linkcode_resolve(domain: str, info: dict[str, str]) -> str | None:
     if domain != "py":
         return None
 

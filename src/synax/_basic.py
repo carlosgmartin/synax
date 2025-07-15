@@ -204,7 +204,7 @@ class Func:
     :param function: Function to apply.
     """
 
-    def __init__(self, function: Callable):
+    def __init__(self, function: Callable[[Any], Any]):
         self.function = function
 
     def init(self, key: Key) -> None:

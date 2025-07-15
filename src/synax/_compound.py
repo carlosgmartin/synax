@@ -36,16 +36,16 @@ class Chain:
     def __init__(self, modules: Sequence[Module]):
         self.modules = modules
 
-    def init(self, key: Key) -> tuple:
+    def init(self, key: Key) -> tuple[Any, ...]:
         keys = random.split(key, len(self.modules))
         return tuple(module.init(key) for module, key in zip(self.modules, keys))
 
-    def apply(self, parameters: tuple, input: Any) -> Any:
+    def apply(self, parameters: tuple[Any, ...], input: Any) -> Any:
         for module, param in zip(self.modules, parameters, strict=True):
             input = module.apply(param, input)
         return input
 
-    def parameter_loss(self, parameters: tuple) -> Array | float:
+    def parameter_loss(self, parameters: tuple[Any, ...]) -> Array | float:
         return sum(
             module.parameter_loss(param)
             for module, param in zip(self.modules, parameters, strict=True)
@@ -76,11 +76,13 @@ class Parallel:
     def __init__(self, modules: Sequence[Module]):
         self.modules = modules
 
-    def init(self, key: Key) -> tuple:
+    def init(self, key: Key) -> tuple[Any, ...]:
         keys = random.split(key, len(self.modules))
         return tuple(module.init(key) for module, key in zip(self.modules, keys))
 
-    def apply(self, parameters: tuple, input: Sequence[Any]) -> tuple:
+    def apply(
+        self, parameters: tuple[Any, ...], input: Sequence[Any]
+    ) -> tuple[Any, ...]:
         return tuple(
             module.apply(param, input)
             for module, param, input in zip(
@@ -88,7 +90,7 @@ class Parallel:
             )
         )
 
-    def parameter_loss(self, parameters: tuple) -> Array | float:
+    def parameter_loss(self, parameters: tuple[Any, ...]) -> Array | float:
         return sum(
             module.parameter_loss(param)
             for module, param in zip(self.modules, parameters, strict=True)
@@ -102,8 +104,8 @@ class Repeat:
     def init(self, key: Key) -> Any:
         return self.module.init(key)
 
-    def apply(self, parameters: Any, input: Any, steps: int, unroll: int = 1):
-        def f(x, _):
+    def apply(self, parameters: Any, input: Any, steps: int, unroll: int = 1) -> Any:
+        def f(x: Any, _: None) -> Any:
             y = self.module.apply(parameters, x)
             return y, x
 
@@ -155,6 +157,9 @@ class Switch:
         keys = random.split(key, self.branches)
         return jax.vmap(self.module.init)(keys)
 
-    def apply(self, parameters: Any, branch: Array, input: Any):
-        parameters = jax.tree.map(lambda x: x[branch], parameters)
+    def apply(self, parameters: Any, branch: Array, input: Any) -> Any:
+        def f(x: Array) -> Array:
+            return x[branch]
+
+        parameters = jax.tree.map(f, parameters)
         return self.module.apply(parameters, input)

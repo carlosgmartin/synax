@@ -22,7 +22,7 @@ def MLP(
     bias_initializer: Initializer = nn.initializers.zeros,
     linear_regularizer: Regularizer = zero,
     bias_regularizer: Regularizer = zero,
-):
+) -> Module:
     """
     Multi-layer perceptron.
 
@@ -110,7 +110,9 @@ class AutoEncoder:
 
 
 def get_von_neumann_neighbors(
-    array: Array, space_dim: int | None = None, include_center: bool = False
+    array: Array,
+    space_dim: int | None = None,
+    include_center: bool = False,
 ) -> Array:
     """Get von Neumann neighborhoods of an array."""
     if space_dim is None:
@@ -275,7 +277,7 @@ class PReLU:
         return self.regularizer(parameters)
 
 
-def LeNet(input_channels: int = 1, outputs: int = 10):
+def LeNet(input_channels: int = 1, outputs: int = 10) -> Module:
     """
     LeNet convolutional network.
 
@@ -317,7 +319,7 @@ def LeNet(input_channels: int = 1, outputs: int = 10):
     )
 
 
-def AlexNet(input_channels: int = 3, outputs: int = 1000):
+def AlexNet(input_channels: int = 3, outputs: int = 1000) -> Module:
     """
     AlexNet convolutional network.
 

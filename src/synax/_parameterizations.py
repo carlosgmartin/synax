@@ -75,18 +75,18 @@ class Simplex:
 
 def vector_to_symmetric_matrix(vector: Array, dim: int) -> Array:
     i = jnp.triu_indices(dim)
-    A = jnp.zeros([dim, dim], vector.dtype)
-    A = A.at[i].set(vector)
-    A = A.T.at[i].set(vector)
-    return A
+    a = jnp.zeros([dim, dim], vector.dtype)
+    a = a.at[i].set(vector)
+    a = a.T.at[i].set(vector)
+    return a
 
 
 def vector_to_antisymmetric_matrix(vector: Array, dim: int) -> Array:
     i = jnp.triu_indices(dim, 1)
-    A = jnp.zeros([dim, dim], vector.dtype)
-    A = A.at[i].set(vector)
-    A = A.T.at[i].set(-vector)
-    return A
+    a = jnp.zeros([dim, dim], vector.dtype)
+    a = a.at[i].set(vector)
+    a = a.T.at[i].set(-vector)
+    return a
 
 
 class SymmetricMatrix:

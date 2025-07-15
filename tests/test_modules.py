@@ -1,12 +1,14 @@
+from typing import Callable
+
+from jax import Array, random
 from jax import numpy as jnp
-from jax import random
 
 import synax
 
 key = random.key(0)
 
 
-def test_bias(d=10):
+def test_bias(d: int = 10):
     module = synax.Bias(d)
     param = module.init(key)
     x = jnp.empty(d)
@@ -14,7 +16,9 @@ def test_bias(d=10):
     assert y.shape == x.shape
 
 
-def test_conv(input_dim=3, output_dim=4, spatial_dims=(20, 18)):
+def test_conv(
+    input_dim: int = 3, output_dim: int = 4, spatial_dims: tuple[int, ...] = (20, 18)
+):
     module = synax.Conv(input_dim, output_dim, (3, 3))
     param = module.init(key)
     x = jnp.empty(spatial_dims + (input_dim,))
@@ -40,7 +44,9 @@ def test_mean_pool():
     assert y.shape == (9, 7, 3)
 
 
-def test_function(shape=(2, 3, 5), f=lambda x: x * x):
+def test_function(
+    shape: tuple[int, ...] = (2, 3, 5), f: Callable[[Array], Array] = lambda x: x * x
+):
     module = synax.Func(f)
     param = module.init(key)
     x = jnp.empty(shape)
@@ -67,7 +73,7 @@ def test_parallel(input_dim=3, output_dim_1=5, output_dim_2=7):
     assert y2.shape == (output_dim_2,)
 
 
-def test_chain_identity(dim=5):
+def test_chain_identity(dim: int = 5):
     module = synax.Chain([])
     param = module.init(key)
     x = jnp.arange(dim)
@@ -75,7 +81,7 @@ def test_chain_identity(dim=5):
     assert (y == x).all()
 
 
-def test_chain(input_dim=3, hidden_dim=5, output_dim=7):
+def test_chain(input_dim: int = 3, hidden_dim: int = 5, output_dim: int = 7):
     module = synax.Chain(
         [synax.Linear(input_dim, hidden_dim), synax.Linear(hidden_dim, output_dim)]
     )
@@ -110,13 +116,13 @@ def test_mlp():
 
 
 def test_attention(
-    query_input_dim=3,
-    key_input_dim=5,
-    value_input_dim=7,
-    hidden_dim=11,
-    heads=13,
-    source_len=17,
-    target_len=19,
+    query_input_dim: int = 3,
+    key_input_dim: int = 5,
+    value_input_dim: int = 7,
+    hidden_dim: int = 11,
+    heads: int = 13,
+    source_len: int = 17,
+    target_len: int = 19,
 ):
     module = synax.Attention(
         query_input_dim=query_input_dim,

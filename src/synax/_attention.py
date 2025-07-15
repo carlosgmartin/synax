@@ -38,7 +38,7 @@ class Attention:
         query_input_dim: int,
         key_input_dim: int | None = None,
         value_input_dim: int | None = None,
-        hidden_dim=None,
+        hidden_dim: int | None = None,
         heads: int = 1,
         linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,

@@ -19,11 +19,11 @@ class RecurrentNetwork:
         h = self.unit.init_state(keys[1])
         return {"unit_param": w, "init_state": h}
 
-    def apply(self, parameters: dict[str, Any], xs: Array) -> Any:
+    def apply(self, parameters: dict[str, Any], xs: Any) -> Any:
         w = parameters["unit_param"]
         h = parameters["init_state"]
 
-        def f(h, x):
+        def f(h: Any, x: Any) -> Any:
             h_new = self.unit.apply(w, h, x)
             return h_new, h
 
@@ -47,7 +47,7 @@ class SimpleRNN:
         linear_initializer: Initializer = nn.initializers.glorot_uniform(),
         bias_initializer: Initializer = nn.initializers.zeros,
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
-        activation: Callable = nn.tanh,
+        activation: Callable[[Array], Array] = nn.tanh,
         state_initializer: Initializer = nn.initializers.zeros,
     ):
         self.input_dim = input_dim
@@ -99,9 +99,9 @@ class GRU:
         linear_initializer: Initializer = nn.initializers.glorot_uniform(),
         bias_initializer: Initializer = nn.initializers.zeros,
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
-        reset_activation: Callable = nn.sigmoid,
-        update_activation: Callable = nn.sigmoid,
-        candidate_activation: Callable = nn.tanh,
+        reset_activation: Callable[[Array], Array] = nn.sigmoid,
+        update_activation: Callable[[Array], Array] = nn.sigmoid,
+        candidate_activation: Callable[[Array], Array] = nn.tanh,
         state_initializer: Initializer = nn.initializers.zeros,
     ):
         self.input_dim = input_dim
@@ -161,8 +161,8 @@ class MGU:
         linear_initializer: Initializer = nn.initializers.glorot_uniform(),
         bias_initializer: Initializer = nn.initializers.zeros,
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
-        update_activation: Callable = nn.sigmoid,
-        candidate_activation: Callable = nn.tanh,
+        update_activation: Callable[[Array], Array] = nn.sigmoid,
+        candidate_activation: Callable[[Array], Array] = nn.tanh,
         state_initializer: Initializer = nn.initializers.zeros,
         reset_gate: bool = True,
     ):
@@ -368,7 +368,7 @@ class UpdateGateRNN:
         self,
         state_dim: int,
         input_dim: int,
-        activation: Callable = nn.tanh,
+        activation: Callable[[Array], Array] = nn.tanh,
         linear_initializer: Initializer = nn.initializers.he_normal(),
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         bias_initializer: Initializer = nn.initializers.zeros,
@@ -407,8 +407,8 @@ class ConvGatedUnit:
         state_dim: int,
         input_dim: int,
         shape: Sequence[int],
-        new_activation: Callable = nn.tanh,
-        update_activation: Callable = nn.sigmoid,
+        new_activation: Callable[[Array], Array] = nn.tanh,
+        update_activation: Callable[[Array], Array] = nn.sigmoid,
         linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),

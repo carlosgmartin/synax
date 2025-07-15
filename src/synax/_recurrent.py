@@ -3,25 +3,18 @@ from typing import Any, Callable, Sequence
 from jax import Array, lax, nn, random
 from jax import numpy as jnp
 
-from ._basic import Bias, Conv
+from ._basic import Bias, Conv, BaseModule
 
 Key = Array
 Initializer = Callable[[Key, tuple[int, ...]], Array]
 Module = Any
 
 
-class RecurrentNetwork:
+class RecurrentNetwork(BaseModule):
     def __init__(self, unit: Module):
         self.unit = unit
 
     def init(self, key: Key) -> dict[str, Any]:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         keys = random.split(key)
         w = self.unit.init(keys[0])
         h = self.unit.init_state(keys[1])
@@ -36,6 +29,9 @@ class RecurrentNetwork:
             return h_new, h
 
         return lax.scan(f, h, xs)
+
+    def parameter_loss(self, parameters: dict[str, Any]) -> Array | float:
+        return self.unit.parameter_loss(parameters)
 
 
 class SimpleRNN:

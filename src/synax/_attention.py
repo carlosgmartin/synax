@@ -5,11 +5,13 @@ from jax import numpy as jnp
 
 from ._utils import layer_norm
 
+from ._basic import BaseModule
+
 Key = Array
 Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
-class Attention:
+class Attention(BaseModule):
     """
     Attention.
 
@@ -61,13 +63,6 @@ class Attention:
         self.normalize_qk = normalize_qk
 
     def init(self, key: Array) -> dict[str, Array]:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         keys = random.split(key, 6)
         return {
             "query_kernel": self.linear_initializer(
@@ -137,3 +132,6 @@ class Attention:
             scale=scale,
         )
         return lax.collapse(hidden, -2)
+
+    def parameter_loss(self, parameters: dict[str, Array]) -> float:
+        return 0.0

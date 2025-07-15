@@ -5,12 +5,13 @@ from jax import Array, nn
 from jax import numpy as jnp
 
 from ._regularizers import Regularizer, zero
+from ._basic import BaseModule
 
 Key = Array
 Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
-class Constant:
+class Constant(BaseModule):
     def __init__(
         self,
         dim: int,
@@ -22,30 +23,16 @@ class Constant:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         return self.initializer(key, (self.dim,))
 
     def apply(self, parameters: Array) -> Array:
         return parameters
 
     def parameter_loss(self, parameters: Array) -> Array | float:
-        """
-        Parameter loss.
-
-        :param parameters: Parameters.
-
-        :returns: Scalar.
-        """
         return self.regularizer(parameters)
 
 
-class Ball:
+class Ball(BaseModule):
     def __init__(
         self,
         dim: int,
@@ -57,30 +44,16 @@ class Ball:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         return self.initializer(key, (self.dim,))
 
     def apply(self, parameters: Array) -> Array:
         return parameters / jnp.sqrt(1 + parameters * jnp.conj(parameters))
 
     def parameter_loss(self, parameters: Array) -> Array | float:
-        """
-        Parameter loss.
-
-        :param parameters: Parameters.
-
-        :returns: Scalar.
-        """
         return self.regularizer(parameters)
 
 
-class Simplex:
+class Simplex(BaseModule):
     def __init__(
         self,
         dim: int,
@@ -92,26 +65,12 @@ class Simplex:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         return self.initializer(key, (self.dim,))
 
     def apply(self, parameters: Array) -> Array:
         return nn.softmax(parameters)
 
     def parameter_loss(self, parameters: Array) -> Array | float:
-        """
-        Parameter loss.
-
-        :param parameters: Parameters.
-
-        :returns: Scalar.
-        """
         return self.regularizer(parameters)
 
 
@@ -131,7 +90,7 @@ def vector_to_antisymmetric_matrix(vector: Array, dim: int) -> Array:
     return a
 
 
-class SymmetricMatrix:
+class SymmetricMatrix(BaseModule):
     def __init__(
         self,
         dim: int,
@@ -143,13 +102,6 @@ class SymmetricMatrix:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         n = self.dim * (self.dim + 1) // 2
         return self.initializer(key, (n,))
 
@@ -157,17 +109,10 @@ class SymmetricMatrix:
         return vector_to_symmetric_matrix(parameters, self.dim)
 
     def parameter_loss(self, parameters: Array) -> Array | float:
-        """
-        Parameter loss.
-
-        :param parameters: Parameters.
-
-        :returns: Scalar.
-        """
         return self.regularizer(parameters)
 
 
-class AntisymmetricMatrix:
+class AntisymmetricMatrix(BaseModule):
     def __init__(
         self,
         dim: int,
@@ -179,13 +124,6 @@ class AntisymmetricMatrix:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         n = self.dim * (self.dim - 1) // 2
         return self.initializer(key, (n,))
 
@@ -193,13 +131,6 @@ class AntisymmetricMatrix:
         return vector_to_antisymmetric_matrix(parameters, self.dim)
 
     def parameter_loss(self, parameters: Array) -> Array | float:
-        """
-        Parameter loss.
-
-        :param parameters: Parameters.
-
-        :returns: Scalar.
-        """
         return self.regularizer(parameters)
 
 

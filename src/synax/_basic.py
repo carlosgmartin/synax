@@ -1,5 +1,6 @@
 import math
 from typing import Any, Callable, Sequence
+import abc
 
 from jax import Array, lax, nn
 from jax import numpy as jnp
@@ -11,7 +12,31 @@ Key = Array
 Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
-class Bias:
+class BaseModule(abc.ABC):
+    @abc.abstractmethod
+    def init(self, key: Key) -> Any:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def parameter_loss(self, parameters: Any) -> Array | float:
+        """
+        Parameter loss.
+
+        :param parameters: Parameters.
+
+        :returns: Scalar.
+        """
+        raise NotImplementedError
+
+
+class Bias(BaseModule):
     r"""
     Bias (translation).
 
@@ -38,13 +63,6 @@ class Bias:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         return self.initializer(key, (self.dimension,))
 
     def apply(self, parameters: Array, input: Array) -> Array:
@@ -59,17 +77,10 @@ class Bias:
         return input + parameters
 
     def parameter_loss(self, parameters: Array) -> Array | float:
-        """
-        Parameter loss.
-
-        :param parameters: Parameters.
-
-        :returns: Scalar.
-        """
         return self.regularizer(parameters)
 
 
-class Scale:
+class Scale(BaseModule):
     r"""
     Elementwise scaling.
 
@@ -96,13 +107,6 @@ class Scale:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         return self.initializer(key, (self.dimension,))
 
     def apply(self, parameters: Array, input: Array) -> Array:
@@ -117,17 +121,10 @@ class Scale:
         return input * parameters
 
     def parameter_loss(self, parameters: Array) -> Array | float:
-        """
-        Parameter loss.
-
-        :param parameters: Parameters.
-
-        :returns: Scalar.
-        """
         return self.regularizer(parameters)
 
 
-class Linear:
+class Linear(BaseModule):
     r"""
     Linear map.
 
@@ -159,13 +156,6 @@ class Linear:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         return self.initializer(key, (self.input_dimension, self.output_dimension))
 
     def apply(self, parameters: Array, input: Array) -> Array:
@@ -180,17 +170,10 @@ class Linear:
         return input @ parameters
 
     def parameter_loss(self, parameters: Array) -> Array | float:
-        """
-        Parameter loss.
-
-        :param parameters: Parameters.
-
-        :returns: Scalar.
-        """
         return self.regularizer(parameters)
 
 
-class Func:
+class Func(BaseModule):
     r"""
     Function application.
 
@@ -208,13 +191,6 @@ class Func:
         self.function = function
 
     def init(self, key: Key) -> None:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         return None
 
     def apply(self, parameters: None, input: Any) -> Any:
@@ -228,8 +204,11 @@ class Func:
         """
         return self.function(input)
 
+    def parameter_loss(self, parameters: None) -> float:
+        return 0.0
 
-class Conv:
+
+class Conv(BaseModule):
     """
     Convolution.
 
@@ -276,13 +255,6 @@ class Conv:
         self.groups = groups
 
     def init(self, key: Key) -> Array:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         kernel = self.initializer(
             key, (self.output_dimension, self.input_dimension * math.prod(self.shape))
         )
@@ -330,8 +302,11 @@ class Conv:
         x = jnp.moveaxis(x, -num_spatial_axes - 1, -1)
         return x
 
+    def parameter_loss(self, parameters: Array) -> float:
+        return 0.0
 
-class Embed:
+
+class Embed(BaseModule):
     """
     Embedding.
 
@@ -354,13 +329,6 @@ class Embed:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         return self.initializer(key, (self.number, self.dimension))
 
     def apply(self, parameters: Array, input: Array) -> Array:
@@ -375,11 +343,4 @@ class Embed:
         return parameters[input]
 
     def parameter_loss(self, parameters: Array) -> Array | float:
-        """
-        Parameter loss.
-
-        :param parameters: Parameters.
-
-        :returns: Scalar.
-        """
         return self.regularizer(parameters)

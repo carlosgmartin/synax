@@ -4,7 +4,7 @@ from typing import Any, Callable, Sequence
 from jax import Array, nn, random
 from jax import numpy as jnp
 
-from ._basic import Bias, Conv, Func, Linear
+from ._basic import Bias, Conv, Func, Linear, BaseModule
 from ._compound import Chain
 from ._recurrent import MGU
 from ._regularizers import Regularizer, zero
@@ -63,7 +63,7 @@ def MLP(
     return Chain(modules[:-1])
 
 
-class AutoEncoder:
+class AutoEncoder(BaseModule):
     r"""
     Auto-encoder.
 
@@ -83,13 +83,6 @@ class AutoEncoder:
         self.decoder = decoder
 
     def init(self, key: Key) -> dict[str, Any]:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         keys = random.split(key)
         return {
             "encoder": self.encoder.init(keys[0]),
@@ -111,13 +104,6 @@ class AutoEncoder:
         return (diff * jnp.conj(diff)).sum()
 
     def parameter_loss(self, parameters: dict[str, Any]) -> Array:
-        """
-        Parameter loss.
-
-        :param parameters: Parameters.
-
-        :returns: Scalar.
-        """
         encoder_loss = self.encoder.parameter_loss(parameters["encoder"])
         decoder_loss = self.decoder.parameter_loss(parameters["decoder"])
         return encoder_loss + decoder_loss
@@ -141,7 +127,7 @@ def get_von_neumann_neighbors(
     return neighbors
 
 
-class NeuralGPU:
+class NeuralGPU(BaseModule):
     """
     Neural GPU.
 
@@ -165,13 +151,6 @@ class NeuralGPU:
         self.global_max = global_max
 
     def init(self, key: Key) -> Any:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         return self.cell.init(key)
 
     def apply(self, parameters: Any, state: Array) -> Array:
@@ -198,7 +177,7 @@ class NeuralGPU:
         return new_state
 
 
-class GLU:
+class GLU(BaseModule):
     r"""
     Gated linear unit.
 
@@ -237,13 +216,6 @@ class GLU:
         self.sigmoid_fn = sigmoid_fn
 
     def init(self, key: Key) -> dict[str, Array]:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         keys = random.split(key, 4)
         w = self.linear_initializer(
             keys[0], (self.input_dimension, self.output_dimension)
@@ -264,7 +236,7 @@ class GLU:
         return y * self.sigmoid_fn(z)
 
 
-class PReLU:
+class PReLU(BaseModule):
     r"""
     Parametric ReLU.
 
@@ -296,26 +268,12 @@ class PReLU:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         return self.initializer(key, ())
 
     def apply(self, parameters: Array, input: Array) -> Array:
         return jnp.where(input > 0, input, input * parameters)
 
     def parameter_loss(self, parameters: Array) -> Array | float:
-        """
-        Parameter loss.
-
-        :param parameters: Parameters.
-
-        :returns: Scalar.
-        """
         return self.regularizer(parameters)
 
 

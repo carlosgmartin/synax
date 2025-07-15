@@ -32,7 +32,7 @@ class RecurrentNetwork:
 
 class SimpleRNN:
     """
-    Simple recurrent neural network.
+    Simple recurrent unit.
 
     References:
 

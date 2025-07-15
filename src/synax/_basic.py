@@ -129,7 +129,7 @@ class Scale:
 
 class Linear:
     r"""
-    Linear transformation.
+    Linear map.
 
     Does not include bias.
 

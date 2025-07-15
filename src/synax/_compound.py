@@ -115,7 +115,7 @@ class Repeat:
 
 class Residual:
     r"""
-    Residual transformation.
+    Residual map.
 
     Computes
 

@@ -6,7 +6,7 @@
 
 A magic-free, purely-functional neural network library for [JAX](https://github.com/jax-ml/jax).
 
-No tracing. No transforms. Just purely-functional JAX.
+No tracing. No transforms. No mutation. Just functions.
 
 ## Installation
 

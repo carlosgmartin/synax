@@ -94,7 +94,7 @@ class Attention:
         scale: float | None = None,
     ) -> Array:
         """
-        Apply parameters.
+        Apply module.
 
         :param parameters: Parameters.
         :param query_input: Input used to compute queries.

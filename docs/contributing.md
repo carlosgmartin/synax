@@ -14,7 +14,7 @@ Instructions:
 1. Perform an editable installation:
 
     ```shell
-    pip install -e .
+    pip install -e ".[dev,docs]"
     ```
 
 1. Add the original repo as an upstream remote:

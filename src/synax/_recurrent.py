@@ -4,6 +4,7 @@ from jax import Array, lax, nn, random
 from jax import numpy as jnp
 
 from ._basic import Bias, Conv, BaseModule
+from ._regularizers import Regularizer, zero
 
 Key = Array
 Initializer = Callable[[Key, tuple[int, ...]], Array]
@@ -34,7 +35,7 @@ class RecurrentNetwork(BaseModule):
         return self.unit.parameter_loss(parameters)
 
 
-class SimpleRNN:
+class SimpleRNN(BaseModule):
     """
     Simple recurrent unit.
 
@@ -48,28 +49,27 @@ class SimpleRNN:
         self,
         state_dim: int,
         input_dim: int,
+        recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         linear_initializer: Initializer = nn.initializers.glorot_uniform(),
         bias_initializer: Initializer = nn.initializers.zeros,
-        recurrent_initializer: Initializer = nn.initializers.orthogonal(),
+        recurrent_regularizer: Regularizer = zero,
+        linear_regularizer: Regularizer = zero,
+        bias_regularizer: Regularizer = zero,
         activation: Callable[[Array], Array] = nn.tanh,
         state_initializer: Initializer = nn.initializers.zeros,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
+        self.recurrent_initializer = recurrent_initializer
         self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
-        self.recurrent_initializer = recurrent_initializer
+        self.recurrent_regularizer = recurrent_regularizer
+        self.linear_regularizer = linear_regularizer
+        self.bias_regularizer = self.bias_regularizer
         self.activation = activation
         self.state_initializer = state_initializer
 
     def init(self, key: Key) -> dict[str, Array]:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
         keys = random.split(key, 3)
         return {
             "linear": self.linear_initializer(
@@ -82,6 +82,14 @@ class SimpleRNN:
         }
 
     def apply(self, parameters: dict[str, Array], state: Array, input: Array) -> Array:
+        """
+        Apply module.
+
+        :param parameters: Parameters.
+        :param state: Array of shape ``(..., state_dim)``.
+        :param input: Array of shape ``(..., input_dim)``.
+        :returns: Array of shape ``(..., output_dim)``.
+        """
         y = (
             input @ parameters["linear"]
             + state @ parameters["recurrent"]
@@ -91,6 +99,12 @@ class SimpleRNN:
 
     def init_state(self, key: Key) -> Array:
         return self.state_initializer(key, (self.state_dim,))
+
+    def parameter_loss(self, parameters: dict[str, Array]) -> Array | float:
+        loss = self.linear_regularizer(parameters["linear"])
+        loss += self.recurrent_regularizer(parameters["recurrent"])
+        loss += self.bias_regularizer(parameters["recurrent"])
+        return loss
 
 
 class GRU:

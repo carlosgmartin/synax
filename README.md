@@ -11,4 +11,4 @@ No tracing. No transforms. No mutation. Just functions.
 Documentation can be found [here](https://carlosgmartin.com/synax).
 
 > [!NOTE]
-> This library is under active development. Expect breaking changes.
+> This library is under active development. Breaking changes may occur.

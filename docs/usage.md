@@ -78,7 +78,9 @@ print(params)
        [-0.7620363 ,  0.5188657 ]], dtype=float32), 'bias': Array([0., 0.], dtype=float32)}
 ```
 
-## Training on MNIST
+## Example: Training on MNIST
+
+The following script trains a model on the [MNIST dataset](https://www.tensorflow.org/datasets/catalog/mnist).
 
 ```{literalinclude} ../examples/mnist.py
 :language: python

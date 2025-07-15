@@ -31,9 +31,9 @@ print(y)
 
 Modules have at least two methods: ``init`` and ``apply``.
 
-``init`` takes a [JAX PRNG key](https://docs.jax.dev/en/latest/_autosummary/jax.random.key.html) and samples initial parameters for the module.
+- ``init`` takes a [JAX PRNG key](https://docs.jax.dev/en/latest/_autosummary/jax.random.key.html) and returns initial parameters for the module.
 
-``apply`` takes these parameters, together with any other inputs, and yields the output of the module.
+- ``apply`` takes the module's parameters, together with any inputs, and returns the output of the module.
 
 Here is an example custom module:
 

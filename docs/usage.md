@@ -29,27 +29,35 @@ print(y)
 [-1.2567853  -0.80044776  0.5694267 ]
 ```
 
-Modules have at least two methods: ``init`` and ``apply``.
+A module has the following methods:
 
 - ``init`` takes a [JAX PRNG key](https://docs.jax.dev/en/latest/_autosummary/jax.random.key.html) and returns initial parameters for the module.
 
 - ``apply`` takes the module's parameters, together with any inputs, and returns the output of the module.
 
-Here is an example custom module:
+Here is an example of a custom module:
 
 ```python3
 from jax import random, nn
 
 class Affine:
 
-    def __init__(self, in_dim, out_dim):
-        self.in_dim = in_dim
-        self.out_dim = out_dim
+    def __init__(
+        self,
+        input_dim,
+        output_dim,
+        weight_init=nn.initializers.he_normal(),
+        bias_init=nn.initializers.zeros,
+    ):
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.weight_init = weight_init
+        self.bias_init = bias_init
 
     def init(self, key):
         keys = random.split(key)
-        weight = nn.initializers.he_normal()(keys[0], (self.in_dim, self.out_dim))
-        bias = nn.initializers.zeros(keys[1], (self.out_dim,))
+        weight = self.weight_init(keys[0], (self.input_dim, self.output_dim))
+        bias = self.bias_init(keys[1], (self.output_dim,))
         return {"weight": weight, "bias": bias}
 
     def apply(self, params, input):

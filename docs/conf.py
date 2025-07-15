@@ -20,9 +20,10 @@ author = "Carlos Martin"
 extensions = [
     "autoapi.extension",
     "sphinx.ext.linkcode",
+    "myst_parser",
 ]
 autosummary_generate = True
-autoapi_dirs = ["../src/synax"]
+autoapi_dirs = ["../src/synax", "."]
 autoapi_options = [
     # "members",
     # "undoc-members",

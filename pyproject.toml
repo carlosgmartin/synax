@@ -22,6 +22,7 @@ dev = [
     "pytest",
     "furo",
     "sphinx-autoapi",
+    "myst-parser",
 ]
 
 [tool.pyright]

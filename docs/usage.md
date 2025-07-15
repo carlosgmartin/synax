@@ -39,7 +39,6 @@ Here is an example custom module:
 
 ```python3
 from jax import random, nn
-import synax
 
 class Affine:
 

@@ -55,7 +55,7 @@ Instructions:
 
     ```shell
     git fetch upstream
-    git rebase upstream/main
+    git rebase upstream/master
     ```
 
 1. Push your commit:

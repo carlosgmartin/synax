@@ -1,5 +1,5 @@
-Synax documentation
-===================
+Documentation
+=============
 
 .. toctree::
     :maxdepth: 1

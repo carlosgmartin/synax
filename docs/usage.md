@@ -9,7 +9,7 @@ import synax
 # Create a module.
 module = synax.MLP([2, 32, 3])
 
-# Create a random key.
+# Create a PRNG key.
 key = random.key(0)
 
 # Initialize parameters.

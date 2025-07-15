@@ -118,8 +118,8 @@ def get_model(args, info):
     num_labels = info.features["label"].num_classes
     match args.model:
         case "lenet":
-            assert image_shape[:-1] == (28, 28)
-            return synax.LeNet(input_channels=image_shape[-1], outputs=num_labels)
+            assert image_shape[:2] == (28, 28)
+            return synax.LeNet(input_channels=image_shape[2], outputs=num_labels)
         case other:
             raise NotImplementedError(other)
 

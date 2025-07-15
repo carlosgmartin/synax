@@ -35,6 +35,8 @@ A module has the following methods:
 
 - ``apply`` takes the module's parameters, together with any inputs, and returns the output of the module.
 
+## Defining a custom module
+
 Here is an example of a custom module:
 
 ```python3
@@ -74,4 +76,11 @@ print(params)
 {'weight': Array([[ 0.8737965 , -0.79177886],
        [-0.65683264, -1.0112412 ],
        [-0.7620363 ,  0.5188657 ]], dtype=float32), 'bias': Array([0., 0.], dtype=float32)}
+```
+
+## Training on MNIST
+
+```{literalinclude} ../examples/mnist.py
+:language: python
+:linenos:
 ```

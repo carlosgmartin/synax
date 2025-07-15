@@ -11,7 +11,7 @@ key = random.key(0)
 def test_bias(d: int = 10):
     module = synax.Bias(d)
     param = module.init(key)
-    x = jnp.empty(d)
+    x = jnp.zeros(d)
     y = module.apply(param, x)
     assert y.shape == x.shape
 
@@ -21,7 +21,7 @@ def test_conv(
 ):
     module = synax.Conv(input_dim, output_dim, (3, 3))
     param = module.init(key)
-    x = jnp.empty(spatial_dims + (input_dim,))
+    x = jnp.zeros(spatial_dims + (input_dim,))
     y = module.apply(param, x)
     assert y.shape == spatial_dims[:-2] + (
         spatial_dims[-2] - 2,
@@ -49,25 +49,25 @@ def test_function(
 ):
     module = synax.Func(f)
     param = module.init(key)
-    x = jnp.empty(shape)
+    x = jnp.zeros(shape)
     y = module.apply(param, x)
     assert (y == f(x)).all()
 
 
-def test_dense(input_dim=10, output_dim=20):
+def test_dense(input_dim: int = 10, output_dim: int = 20):
     module = synax.Linear(input_dim, output_dim)
     param = module.init(key)
-    x = jnp.empty(input_dim)
+    x = jnp.zeros(input_dim)
     y = module.apply(param, x)
     assert y.shape == (output_dim,)
 
 
-def test_parallel(input_dim=3, output_dim_1=5, output_dim_2=7):
+def test_parallel(input_dim: int = 3, output_dim_1: int = 5, output_dim_2: int = 7):
     module = synax.Parallel(
         [synax.Linear(input_dim, output_dim_1), synax.Linear(input_dim, output_dim_2)]
     )
     param = module.init(key)
-    x = jnp.empty(input_dim)
+    x = jnp.zeros(input_dim)
     y1, y2 = module.apply(param, [x, x])
     assert y1.shape == (output_dim_1,)
     assert y2.shape == (output_dim_2,)
@@ -86,7 +86,7 @@ def test_chain(input_dim: int = 3, hidden_dim: int = 5, output_dim: int = 7):
         [synax.Linear(input_dim, hidden_dim), synax.Linear(hidden_dim, output_dim)]
     )
     param = module.init(key)
-    x = jnp.empty(input_dim)
+    x = jnp.zeros(input_dim)
     y = module.apply(param, x)
     assert y.shape == (output_dim,)
 
@@ -94,7 +94,7 @@ def test_chain(input_dim: int = 3, hidden_dim: int = 5, output_dim: int = 7):
 def test_lenet():
     module = synax.LeNet()
     param = module.init(key)
-    x = jnp.empty((28, 28, 1))
+    x = jnp.zeros((28, 28, 1))
     y = module.apply(param, x)
     assert y.shape == (10,)
 
@@ -102,7 +102,7 @@ def test_lenet():
 def test_alexnet():
     module = synax.AlexNet()
     param = module.init(key)
-    x = jnp.empty((224, 224, 3))
+    x = jnp.zeros((224, 224, 3))
     y = module.apply(param, x)
     assert y.shape == (1000,)
 
@@ -110,7 +110,7 @@ def test_alexnet():
 def test_mlp():
     module = synax.MLP([3, 4, 5, 6])
     param = module.init(key)
-    x = jnp.empty(3)
+    x = jnp.zeros(3)
     y = module.apply(param, x)
     assert y.shape == (6,)
 
@@ -132,9 +132,9 @@ def test_attention(
         heads=heads,
     )
     param = module.init(key)
-    query_input = jnp.empty((target_len, query_input_dim))
-    key_input = jnp.empty((source_len, key_input_dim))
-    value_input = jnp.empty((source_len, value_input_dim))
+    query_input = jnp.zeros((target_len, query_input_dim))
+    key_input = jnp.zeros((source_len, key_input_dim))
+    value_input = jnp.zeros((source_len, value_input_dim))
     output = module.apply(
         param,
         query_input=query_input,

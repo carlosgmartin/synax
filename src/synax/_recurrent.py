@@ -7,10 +7,11 @@ from ._basic import Bias, Conv
 
 Key = Array
 Initializer = Callable[[Key, tuple[int, ...]], Array]
+Module = Any
 
 
 class RecurrentNetwork:
-    def __init__(self, unit):
+    def __init__(self, unit: Module):
         self.unit = unit
 
     def init(self, key: Key) -> dict[str, Any]:

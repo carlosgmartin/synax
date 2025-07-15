@@ -37,7 +37,7 @@ def scale(regularizer: Regularizer, scale: float) -> Regularizer:
 
 
 def add(regularizers: Sequence[Regularizer]) -> Regularizer:
-    def f(x):
+    def f(x: Any) -> Array | float:
         return sum(regularizer(x) for regularizer in regularizers)
 
     return f

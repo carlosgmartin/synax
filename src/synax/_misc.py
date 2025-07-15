@@ -46,7 +46,7 @@ def MLP(
     - *Learning representations by back-propagating errors*. 1986.
       https://www.nature.com/articles/323533a0.
     """
-    modules = []
+    modules: list[Module] = []
     for input_dimension, output_dimension in zip(dimensions[:-1], dimensions[1:]):
         linear = Linear(
             input_dimension,

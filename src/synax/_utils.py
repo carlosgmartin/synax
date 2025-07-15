@@ -1,5 +1,5 @@
 from math import prod
-from typing import Callable, Literal, Sequence
+from typing import Any, Callable, Literal, Sequence
 
 from jax import Array, lax, random
 from jax import numpy as jnp
@@ -86,8 +86,8 @@ def rms_norm(axis: Axis = -1, epsilon: float = 1e-6) -> Callable[[Array], Array]
 
 
 def pool(
-    operator,
-    identity,
+    operator: Callable[[Any, Any], Any],
+    identity: Any,
     shape: Sequence[int],
     *,
     stride: int | Sequence[int] = 1,

@@ -41,6 +41,7 @@ Here is an example of a custom module:
 from jax import random, nn
 
 class Affine:
+    """Affine map."""
 
     def __init__(
         self,
@@ -61,8 +62,7 @@ class Affine:
         return {"weight": weight, "bias": bias}
 
     def apply(self, params, input):
-        output = input @ params["weight"] + params["bias"]
-        return output
+        return input @ params["weight"] + params["bias"]
 
 module = Affine(3, 2)
 key = random.key(0)

@@ -36,7 +36,7 @@ def sample_batch_indices(key, num_examples, batch_size):
 
 
 def train(ds, info, model, optimizer, key, epochs, batch_size, epoch_callback):
-    def example_loss_fn(params, instance):
+    def get_example_loss(params, instance):
         image = instance["image"]
         label = instance["label"]
         image /= 255
@@ -45,8 +45,8 @@ def train(ds, info, model, optimizer, key, epochs, batch_size, epoch_callback):
         error = logits.argmax() != label
         return loss, {"loss": loss, "error": error}
 
-    def batch_loss_fn(params, batch):
-        losses, metrics = jax.vmap(example_loss_fn, [None, 0])(params, batch)
+    def get_batch_loss(params, batch):
+        losses, metrics = jax.vmap(get_example_loss, [None, 0])(params, batch)
         mean_loss = losses.mean(0)
         mean_metrics = jax.tree.map(lambda x: x.mean(0), metrics)
         return mean_loss, mean_metrics
@@ -54,7 +54,7 @@ def train(ds, info, model, optimizer, key, epochs, batch_size, epoch_callback):
     def run_batch(state, batch):
         params = state["params"]
         opt_state = state["optimizer"]
-        grads, metrics = jax.grad(batch_loss_fn, has_aux=True)(params, batch)
+        grads, metrics = jax.grad(get_batch_loss, has_aux=True)(params, batch)
         updates, opt_state = optimizer.update(grads, opt_state, params)
         params = optax.apply_updates(params, updates)
         state = {
@@ -76,7 +76,7 @@ def train(ds, info, model, optimizer, key, epochs, batch_size, epoch_callback):
         state |= {"epochs": state["epochs"] + 1}
         train_metrics = jax.tree.map(lambda x: x.mean(0), train_metrics)
 
-        _, test_metrics = batch_loss_fn(state["params"], ds["test"])
+        _, test_metrics = get_batch_loss(state["params"], ds["test"])
 
         metrics = {"train": train_metrics, "test": test_metrics}
 

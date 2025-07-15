@@ -37,6 +37,13 @@ Instructions:
     ruff check && ruff format && pyright && pytest
     ```
 
+1. If you have edited the documentation, build and preview it:
+
+    ```shell
+    sphinx-build -M html docs docs/_build
+    open docs/_build/html/index.html
+    ```
+
 1. Add the files you have modified and create a commit:
 
     ```shell

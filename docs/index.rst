@@ -10,4 +10,3 @@ Documentation
     installation
     usage
     contributing
-    building

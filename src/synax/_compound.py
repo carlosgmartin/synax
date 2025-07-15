@@ -37,6 +37,13 @@ class Chain:
         self.modules = modules
 
     def init(self, key: Key) -> tuple[Any, ...]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, len(self.modules))
         return tuple(module.init(key) for module, key in zip(self.modules, keys))
 
@@ -77,6 +84,13 @@ class Parallel:
         self.modules = modules
 
     def init(self, key: Key) -> tuple[Any, ...]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, len(self.modules))
         return tuple(module.init(key) for module, key in zip(self.modules, keys))
 
@@ -102,6 +116,13 @@ class Repeat:
         self.module = module
 
     def init(self, key: Key) -> Any:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.module.init(key)
 
     def apply(self, parameters: Any, input: Any, steps: int, unroll: int = 1) -> Any:
@@ -138,6 +159,13 @@ class Residual:
         self.module = module
 
     def init(self, key: Key) -> Any:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.module.init(key)
 
     def apply(self, parameters: Any, input: Array) -> Array:
@@ -154,6 +182,13 @@ class Switch:
         self.branches = branches
 
     def init(self, key: Key) -> Any:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, self.branches)
         return jax.vmap(self.module.init)(keys)
 

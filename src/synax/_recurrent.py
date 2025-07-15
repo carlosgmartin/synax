@@ -15,6 +15,13 @@ class RecurrentNetwork:
         self.unit = unit
 
     def init(self, key: Key) -> dict[str, Any]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key)
         w = self.unit.init(keys[0])
         h = self.unit.init_state(keys[1])
@@ -60,6 +67,13 @@ class SimpleRNN:
         self.state_initializer = state_initializer
 
     def init(self, key: Key) -> dict[str, Array]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, 3)
         return {
             "linear": self.linear_initializer(
@@ -118,6 +132,13 @@ class GRU:
         self.state_initializer = state_initializer
 
     def init(self, key: Key) -> tuple[Array, ...]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, 9)
 
         wz = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
@@ -180,6 +201,13 @@ class MGU:
         self.reset_gate = reset_gate
 
     def init(self, key: Key) -> tuple[Array, ...]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, 6)
 
         wz = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
@@ -227,6 +255,13 @@ class BistableRecurrentCell:
         self.linear_initializer = linear_initializer
 
     def init(self, key: Key) -> tuple[Array, ...]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, 3)
 
         ua = jnp.eye(self.state_dim)
@@ -273,6 +308,13 @@ class LSTM:
         self.forget_bias = forget_bias
 
     def init(self, key: Key) -> tuple[Array, ...]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, 12)
 
         Uf = self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim))
@@ -332,6 +374,13 @@ class FastGRNN:
         self.bias_initializer = bias_initializer
 
     def init(self, key: Key) -> tuple[Array, ...]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         U = jnp.eye(self.state_dim)
 
         keys = random.split(key, 3)
@@ -382,6 +431,13 @@ class UpdateGateRNN:
         self.bias_initializer = bias_initializer
 
     def init(self, key: Key) -> tuple[Array, ...]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, 6)
 
         Uc = self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim))
@@ -453,6 +509,13 @@ class ConvGatedUnit:
         self.update_activation = update_activation
 
     def init(self, key: Key) -> dict[str, Any]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, 6)
         return {
             "new_linear_state": self.new_linear_state.init(keys[0]),

@@ -22,6 +22,13 @@ class Constant:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.initializer(key, (self.dim,))
 
     def apply(self, parameters: Array) -> Array:
@@ -43,6 +50,13 @@ class Ball:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.initializer(key, (self.dim,))
 
     def apply(self, parameters: Array) -> Array:
@@ -64,6 +78,13 @@ class Simplex:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.initializer(key, (self.dim,))
 
     def apply(self, parameters: Array) -> Array:
@@ -101,6 +122,13 @@ class SymmetricMatrix:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         n = self.dim * (self.dim + 1) // 2
         return self.initializer(key, (n,))
 
@@ -123,6 +151,13 @@ class AntisymmetricMatrix:
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         n = self.dim * (self.dim - 1) // 2
         return self.initializer(key, (n,))
 
@@ -139,6 +174,13 @@ class SpecialOrthogonalMatrix:
         self.transform = transform
 
     def init(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.antisymmetric.init(key)
 
     def apply(self, parameters: Array) -> Array:

@@ -65,6 +65,8 @@ class Attention:
         Sample initial parameters.
 
         :param key: PRNG key.
+
+        :returns: Parameters.
         """
         keys = random.split(key, 6)
         return {

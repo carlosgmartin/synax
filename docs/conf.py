@@ -90,3 +90,6 @@ html_theme_options = {
         },
     ],
 }
+
+html_logo = "logo.svg"
+html_favicon = "logo.svg"

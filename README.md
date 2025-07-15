@@ -1,6 +1,10 @@
+<div align="center">
+<img src="https://raw.githubusercontent.com/carlosgmartin/synax/master/docs/logo.svg" alt="logo"></img>
+</div>
+
 # Synax
 
-A magic-free neural network library for [JAX](https://github.com/jax-ml/jax).
+A magic-free, purely-functional neural network library for [JAX](https://github.com/jax-ml/jax).
 
 No tracing. No transforms. Just purely-functional JAX.
 

@@ -85,6 +85,8 @@ html_theme_options = {
         },
     ],
 }
+html_show_sphinx = False
+html_show_sourcelink = False
 
 html_logo = "logo.svg"
 html_favicon = "logo.svg"

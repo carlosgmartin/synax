@@ -20,6 +20,8 @@ dev = [
     "ruff",
     "pyright",
     "pytest",
+]
+docs = [
     "sphinx",
     "furo",
     "sphinx-autoapi",

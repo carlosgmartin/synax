@@ -29,7 +29,7 @@ Instructions:
     git checkout -b name-of-change
     ```
 
-1. Implement your changes.
+1. Implement your change.
 
 1. Lint, typecheck, and run tests:
 
@@ -37,7 +37,7 @@ Instructions:
     ruff check && ruff format && pyright && pytest
     ```
 
-1. Add files and create a commit:
+1. Add the files you have modified and create a commit:
 
     ```shell
     git add file1.py file2.py ...

@@ -1,4 +1,10 @@
-# Development
+# Building
+
+Build package:
+
+```shell
+python3 -m build
+```
 
 Build documentation:
 

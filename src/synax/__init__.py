@@ -1,5 +1,5 @@
 """
-This is the top-level package.
+This is the public API.
 """
 
 from ._attention import Attention as Attention

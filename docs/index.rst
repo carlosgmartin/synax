@@ -6,6 +6,6 @@ Documentation
     :caption: Contents:
 
     installation
-    gettingstarted
+    usage
     contributing
-    development
+    building

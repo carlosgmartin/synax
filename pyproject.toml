@@ -29,9 +29,6 @@ docs = [
 ]
 
 [tool.pyright]
-useLibraryCodeForTypes = false
-reportPrivateImportUsage = false
-reportIncompatibleMethodOverride = false
 
 [tool.ruff]
 fix = true

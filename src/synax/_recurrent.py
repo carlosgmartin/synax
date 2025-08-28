@@ -21,7 +21,7 @@ class RecurrentNetwork(BaseModule):
         h = self.unit.init_state(keys[1])
         return {"unit_param": w, "init_state": h}
 
-    def apply(self, params: dict[str, Any], xs: Any) -> Any:
+    def apply(self, params: dict[str, Any], inputs: Any) -> Any:
         w = params["unit_param"]
         h = params["init_state"]
 
@@ -29,7 +29,7 @@ class RecurrentNetwork(BaseModule):
             h_new = self.unit.apply(w, h, x)
             return h_new, h
 
-        return lax.scan(f, h, xs)
+        return lax.scan(f, h, inputs)
 
     def parameter_loss(self, params: dict[str, Any]) -> Array | float:
         return self.unit.parameter_loss(params)
@@ -362,14 +362,14 @@ class LSTM:
         }
 
     def apply(
-        self, params: dict[str, Array], state: tuple[Array, Array], x: Array
+        self, params: dict[str, Array], state: tuple[Array, Array], input: Array
     ) -> tuple[Array, Array]:
         h, c = state
 
-        f = nn.sigmoid(params["bf"] + x @ params["Wf"] + h @ params["Uf"])
-        i = nn.sigmoid(params["bi"] + x @ params["Wi"] + h @ params["Ui"])
-        g = nn.tanh(params["bg"] + x @ params["Wg"] + h @ params["Ug"])
-        o = nn.sigmoid(params["bo"] + x @ params["Wo"] + h @ params["Uo"])
+        f = nn.sigmoid(params["bf"] + input @ params["Wf"] + h @ params["Uf"])
+        i = nn.sigmoid(params["bi"] + input @ params["Wi"] + h @ params["Ui"])
+        g = nn.tanh(params["bg"] + input @ params["Wg"] + h @ params["Ug"])
+        o = nn.sigmoid(params["bo"] + input @ params["Wo"] + h @ params["Uo"])
 
         new_c = f * c + i * g
         new_h = o * nn.tanh(new_c)
@@ -430,9 +430,9 @@ class FastGRNN:
             "zeta": jnp.array(0.0),
         }
 
-    def apply(self, params: dict[str, Array], state: Array, x: Array) -> Array:
-        z = nn.sigmoid(params["bz"] + state @ params["U"] + x @ params["W"])
-        y = nn.tanh(params["by"] + state @ params["U"] + x @ params["W"])
+    def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
+        z = nn.sigmoid(params["bz"] + state @ params["U"] + input @ params["W"])
+        y = nn.tanh(params["by"] + state @ params["U"] + input @ params["W"])
         zeta = nn.sigmoid(params["zeta"])
         nu = nn.sigmoid(params["nu"])
         return (zeta * (1 - z) + nu) * y + z * state
@@ -482,9 +482,9 @@ class UpdateGateRNN:
             "bg": self.bias_initializer(keys[5], (self.state_dim,)),
         }
 
-    def apply(self, params: dict[str, Array], state: Array, x: Array) -> Array:
-        c = self.activation(params["bc"] + x @ params["Wc"] + state @ params["Uc"])
-        g = nn.sigmoid(params["bg"] + x @ params["Wg"] + state @ params["Ug"])
+    def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
+        c = self.activation(params["bc"] + input @ params["Wc"] + state @ params["Uc"])
+        g = nn.sigmoid(params["bg"] + input @ params["Wg"] + state @ params["Ug"])
         return g * state + (1 - g) * c
 
 

@@ -65,7 +65,7 @@ class SimpleRNN(BaseModule):
         self.bias_initializer = bias_initializer
         self.recurrent_regularizer = recurrent_regularizer
         self.linear_regularizer = linear_regularizer
-        self.bias_regularizer = self.bias_regularizer
+        self.bias_regularizer = bias_regularizer
         self.activation = activation
         self.state_initializer = state_initializer
 

@@ -11,6 +11,14 @@ Key = Array
 
 
 class Constant:
+    r"""
+    Constant.
+
+    :param dim: Dimension.
+    :param initializer: Initializer.
+    :param regularizer: Regularizer.
+    """
+
     def __init__(
         self,
         dim: int,
@@ -132,6 +140,17 @@ def vector_to_anti_symmetric_matrix(vector: Array, dim: int) -> Array:
 
 
 class SymmetricMatrix:
+    r"""
+    Symmetric matrix.
+
+    .. math::
+        A^\top = A
+
+    :param dim: Dimension.
+    :param initializer: Initializer.
+    :param regularizer: Regularizer.
+    """
+
     def __init__(
         self,
         dim: int,
@@ -168,6 +187,17 @@ class SymmetricMatrix:
 
 
 class AntiSymmetricMatrix:
+    r"""
+    Symmetric matrix.
+
+    .. math::
+        A^\top = -A
+
+    :param dim: Dimension.
+    :param initializer: Initializer.
+    :param regularizer: Regularizer.
+    """
+
     def __init__(
         self,
         dim: int,
@@ -204,6 +234,17 @@ class AntiSymmetricMatrix:
 
 
 class SpecialOrthogonalMatrix:
+    r"""
+    Special orthogonal matrix
+
+    .. math::
+        A^\top = A^{-1}
+
+    :param dim: Dimension.
+    :param initializer: Initializer.
+    :param regularizer: Regularizer.
+    """
+
     def __init__(self, dim: int, transform: Literal["exp", "cayley"] = "exp"):
         self.anti_symmetric = AntiSymmetricMatrix(dim)
         self.transform = transform

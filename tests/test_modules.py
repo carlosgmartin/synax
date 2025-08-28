@@ -154,7 +154,7 @@ def test_attention(
 
 
 @pytest.mark.parametrize(
-    "cell_cls",
+    "cls",
     [
         synax.SimpleRNN,
         synax.GRU,
@@ -162,10 +162,10 @@ def test_attention(
         synax.LSTM,
     ],
 )
-def test_cell(cell_cls):
+def test_recurrent(cls):
     state_dim = 10
     input_dim = 2
-    model = cell_cls(state_dim, input_dim)
+    model = cls(state_dim, input_dim)
     param = model.init(key)
     state = model.init_state(key)
     input = jnp.zeros(input_dim)

@@ -34,6 +34,8 @@ def MLP(
     :param linear_regularizer: Regularizer for linear layers.
     :param bias_regularizer: Regularizer for bias layers.
 
+    :returns: Module.
+
     References:
 
     - *A logical calculus of the ideas immanent in nervous activity*. 1943.
@@ -285,6 +287,8 @@ def LeNet(input_channels: int = 1, outputs: int = 10) -> Module:
     :param input_channels: Number of input channels.
     :param outputs: Number of outputs.
 
+    :returns: Module.
+
     References:
 
     - *Gradient-based learning applied to document recognition*. 2002.
@@ -326,6 +330,8 @@ def AlexNet(input_channels: int = 3, outputs: int = 1000) -> Module:
 
     :param input_channels: Number of input channels.
     :param outputs: Number of outputs.
+
+    :returns: Module.
 
     References:
 

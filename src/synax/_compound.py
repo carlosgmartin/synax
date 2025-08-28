@@ -61,8 +61,8 @@ class Chain:
         :returns: Scalar.
         """
         return sum(
-            module.param_loss(param)
-            for module, param in zip(self.modules, params, strict=True)
+            module.param_loss(params)
+            for module, params in zip(self.modules, params, strict=True)
         )
 
 
@@ -103,8 +103,8 @@ class Parallel:
 
     def apply(self, params: tuple[Any, ...], input: Sequence[Any]) -> tuple[Any, ...]:
         return tuple(
-            module.apply(param, input)
-            for module, param, input in zip(self.modules, params, input, strict=True)
+            module.apply(params, input)
+            for module, params, input in zip(self.modules, params, input, strict=True)
         )
 
     def param_loss(self, params: tuple[Any, ...]) -> Array | float:
@@ -116,8 +116,8 @@ class Parallel:
         :returns: Scalar.
         """
         return sum(
-            module.param_loss(param)
-            for module, param in zip(self.modules, params, strict=True)
+            module.param_loss(params)
+            for module, params in zip(self.modules, params, strict=True)
         )
 
 

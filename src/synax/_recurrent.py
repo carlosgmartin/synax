@@ -98,6 +98,13 @@ class SimpleRNN(BaseModule):
         return self.activation(y)
 
     def init_state(self, key: Key) -> Array:
+        """
+        Sample initial state.
+
+        :param key: PRNG key.
+
+        :returns: State.
+        """
         return self.state_initializer(key, (self.state_dim,))
 
     def parameter_loss(self, parameters: dict[str, Array]) -> Array | float:
@@ -173,6 +180,13 @@ class GRU:
         return (1 - z) * state + z * y
 
     def init_state(self, key: Key) -> Array:
+        """
+        Sample initial state.
+
+        :param key: PRNG key.
+
+        :returns: State.
+        """
         return self.state_initializer(key, (self.state_dim,))
 
 
@@ -241,6 +255,13 @@ class MGU:
         return (1 - z) * state + z * y
 
     def init_state(self, key: Key) -> Array:
+        """
+        Sample initial state.
+
+        :param key: PRNG key.
+
+        :returns: State.
+        """
         return self.state_initializer(key, (self.state_dim,))
 
 

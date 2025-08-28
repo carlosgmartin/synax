@@ -1,0 +1,11 @@
+synax.GLU.init_params
+=====================
+
+.. py:method:: synax.GLU.init_params(key: Key) -> dict[str, jax.Array]
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

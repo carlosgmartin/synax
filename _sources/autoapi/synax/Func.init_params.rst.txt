@@ -1,0 +1,11 @@
+synax.Func.init_params
+======================
+
+.. py:method:: synax.Func.init_params(key: Key) -> None
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

@@ -1,0 +1,12 @@
+synax.Scale.apply
+=================
+
+.. py:method:: synax.Scale.apply(params: jax.Array, input: jax.Array) -> jax.Array
+
+   Apply module.
+
+   :param params: Parameters.
+   :param input: Array of shape ``(..., dim)``.
+
+   :returns: Array of shape ``(..., dim)``.
+

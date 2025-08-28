@@ -1,0 +1,12 @@
+synax.Linear.apply
+==================
+
+.. py:method:: synax.Linear.apply(params: jax.Array, input: jax.Array) -> jax.Array
+
+   Apply module.
+
+   :param params: Parameters.
+   :param input: Array of shape ``(..., input_dim)``.
+
+   :returns: Array of shape ``(..., output_dim)``.
+

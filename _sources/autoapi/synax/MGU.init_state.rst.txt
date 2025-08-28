@@ -1,0 +1,11 @@
+synax.MGU.init_state
+====================
+
+.. py:method:: synax.MGU.init_state(key: Key) -> jax.Array
+
+   Sample initial state.
+
+   :param key: PRNG key.
+
+   :returns: State.
+

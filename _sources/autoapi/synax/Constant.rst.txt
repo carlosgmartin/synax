@@ -1,0 +1,26 @@
+synax.Constant
+==============
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Constant.init_params
+   /autoapi/synax/Constant.param_loss
+
+.. py:class:: synax.Constant(dim: int, initializer: jax.nn.initializers.Initializer = nn.initializers.zeros, regularizer: synax._regularizers.Regularizer = zero)
+
+   Constant.
+
+   :param dim: Dimension.
+   :param initializer: Initializer.
+   :param regularizer: Regularizer.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Constant.init_params
+   synax.Constant.param_loss
+
+

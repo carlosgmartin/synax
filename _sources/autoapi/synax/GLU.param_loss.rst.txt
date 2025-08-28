@@ -1,0 +1,11 @@
+synax.GLU.param_loss
+====================
+
+.. py:method:: synax.GLU.param_loss(params: dict[str, Any]) -> jax.Array | float
+
+   Parameter loss.
+
+   :param params: Parameters.
+
+   :returns: Scalar.
+

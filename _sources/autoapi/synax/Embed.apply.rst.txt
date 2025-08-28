@@ -1,0 +1,12 @@
+synax.Embed.apply
+=================
+
+.. py:method:: synax.Embed.apply(params: jax.Array, input: jax.Array) -> jax.Array
+
+   Apply module.
+
+   :param params: Parameters.
+   :param input: Array of shape ``(...)``.
+
+   :returns: Array of shape ``(..., dim)``.
+

@@ -1,0 +1,12 @@
+synax.SimpleRNN.apply
+=====================
+
+.. py:method:: synax.SimpleRNN.apply(params: dict[str, jax.Array], state: jax.Array, input: jax.Array) -> jax.Array
+
+   Apply module.
+
+   :param params: Parameters.
+   :param state: Array of shape ``(..., state_dim)``.
+   :param input: Array of shape ``(..., input_dim)``.
+   :returns: Array of shape ``(..., output_dim)``.
+

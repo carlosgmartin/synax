@@ -20,6 +20,7 @@ dev = [
     "ruff",
     "pyright",
     "pytest",
+    "pre-commit",
 ]
 docs = [
     "sphinx",

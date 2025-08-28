@@ -291,7 +291,7 @@ class BistableRecurrentCell:
         self.input_dim = input_dim
         self.linear_initializer = linear_initializer
 
-    def init(self, key: Key) -> tuple[Array, ...]:
+    def init(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -300,21 +300,18 @@ class BistableRecurrentCell:
         :returns: Parameters.
         """
         keys = random.split(key, 3)
+        return {
+            "ua": jnp.eye(self.state_dim),
+            "uc": jnp.eye(self.state_dim),
+            "wa": self.linear_initializer(keys[0], (self.input_dim, self.state_dim)),
+            "wc": self.linear_initializer(keys[1], (self.input_dim, self.state_dim)),
+            "wy": self.linear_initializer(keys[2], (self.input_dim, self.state_dim)),
+        }
 
-        ua = jnp.eye(self.state_dim)
-        uc = jnp.eye(self.state_dim)
-
-        wa = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
-        wc = self.linear_initializer(keys[1], (self.input_dim, self.state_dim))
-        wy = self.linear_initializer(keys[2], (self.input_dim, self.state_dim))
-
-        return ua, uc, wa, wc, wy
-
-    def apply(self, parameters: tuple[Array, ...], state: Array, input: Array) -> Array:
-        ua, uc, wa, wc, wy = parameters
-        a = 1 + nn.tanh(input @ wa + state @ ua)
-        c = nn.sigmoid(input @ wc + state @ uc)
-        y = nn.tanh(input @ wy + state * a)
+    def apply(self, parameters: dict[str, Array], state: Array, input: Array) -> Array:
+        a = 1 + nn.tanh(input @ parameters["wa"] + state @ parameters["ua"])
+        c = nn.sigmoid(input @ parameters["wc"] + state @ parameters["uc"])
+        y = nn.tanh(input @ parameters["wy"] + state * a)
         return c * state + (1 - c) * y
 
 

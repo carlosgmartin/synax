@@ -132,11 +132,17 @@ def get_model(args, info):
 
 
 def plot_metrics(metrics):
-    for metric_name in ["loss", "error"]:
-        fig, ax = plt.subplots()
-        ax.set(xlabel="epoch", ylabel=metric_name)
-        for split in metrics.keys():
+    axes = {}
+
+    for split in metrics.keys():
+        for metric_name in metrics[split].keys():
+            if metric_name not in axes:
+                fig, ax = plt.subplots()
+                axes[metric_name] = ax
+            ax = axes[metric_name]
             ax.plot(metrics[split][metric_name], label=split)
+
+    for ax in axes.values():
         ax.legend()
 
 

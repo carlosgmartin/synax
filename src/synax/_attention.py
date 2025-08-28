@@ -93,17 +93,33 @@ class Attention(BaseModule):
         """
         Apply module.
 
+        Let
+
+        - ``T`` be the target sequence length
+
+        - ``S`` be the source sequence length
+
+        - ``N`` be the number of heads
+
+        - ``H`` be the hidden dimension
+
+        - ``Dq`` be the query input dimension
+
+        - ``Dk`` be the query input dimension
+
+        - ``Dv`` be the value input dimension
+
         :param parameters: Parameters.
-        :param query_input: Input used to compute queries.
-        :param key_input: Input used to compute keys.
-        :param value_input: Input used to compute values.
-        :param mask: Boolean mask used to filter out logits.
-        :param bias: Bias array to be added to logits.
+        :param query_input: Array of shape ``(..., T, Dq)``. Input used to compute queries.
+        :param key_input: Array of shape ``(..., S, Dk)``. Input used to compute keys. If ``None``, uses ``query_input``.
+        :param value_input: Array of shape ``(..., S, Dv)``. Input used to compute values. If ``None``, uses ``key_input``.
+        :param mask: Array of shape ``(..., N, T, S)``. Boolean mask used to filter out logits.
+        :param bias: Array of shape ``(..., N, T, S)``. Bias array to be added to logits.
         :param is_causal: Apply causal attention.
         :param scale: Scale for the logits. If ``None``, set to 1 divided by the
-            square root of the query's head dimension.
+            square root of the hidden dimension.
 
-        :returns: The output array.
+        :returns: Array of shape ``(..., T, N * H)``. The output array.
         """
         if key_input is None:
             key_input = query_input

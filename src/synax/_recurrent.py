@@ -343,7 +343,7 @@ class LSTM:
         self.forget_bias = forget_bias
         self.state_initializer = state_initializer
 
-    def init(self, key: Key) -> tuple[Array, ...]:
+    def init(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -352,34 +352,30 @@ class LSTM:
         :returns: Parameters.
         """
         keys = random.split(key, 12)
-
-        Uf = self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim))
-        Ui = self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim))
-        Ug = self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim))
-        Uo = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
-
-        Wf = self.linear_initializer(keys[4], (self.input_dim, self.state_dim))
-        Wi = self.linear_initializer(keys[5], (self.input_dim, self.state_dim))
-        Wg = self.linear_initializer(keys[6], (self.input_dim, self.state_dim))
-        Wo = self.linear_initializer(keys[7], (self.input_dim, self.state_dim))
-
-        bf = self.bias_initializer(keys[8], (self.state_dim,)) + self.forget_bias
-        bi = self.bias_initializer(keys[9], (self.state_dim,))
-        bg = self.bias_initializer(keys[10], (self.state_dim,))
-        bo = self.bias_initializer(keys[11], (self.state_dim,))
-
-        return bf, bi, bg, bo, Wf, Wi, Wg, Wo, Uf, Ui, Ug, Uo
+        return {
+            "Uf": self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim)),
+            "Ui": self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim)),
+            "Ug": self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim)),
+            "Uo": self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim)),
+            "Wf": self.linear_initializer(keys[4], (self.input_dim, self.state_dim)),
+            "Wi": self.linear_initializer(keys[5], (self.input_dim, self.state_dim)),
+            "Wg": self.linear_initializer(keys[6], (self.input_dim, self.state_dim)),
+            "Wo": self.linear_initializer(keys[7], (self.input_dim, self.state_dim)),
+            "bf": self.bias_initializer(keys[8], (self.state_dim,)) + self.forget_bias,
+            "bi": self.bias_initializer(keys[9], (self.state_dim,)),
+            "bg": self.bias_initializer(keys[10], (self.state_dim,)),
+            "bo": self.bias_initializer(keys[11], (self.state_dim,)),
+        }
 
     def apply(
-        self, w: tuple[Array, ...], h_c: tuple[Array, Array], x: Array
+        self, w: dict[str, Array], h_c: tuple[Array, Array], x: Array
     ) -> tuple[Array, Array]:
-        bf, bi, bg, bo, Wf, Wi, Wg, Wo, Uf, Ui, Ug, Uo = w
         h, c = h_c
 
-        f = nn.sigmoid(bf + x @ Wf + h @ Uf)
-        i = nn.sigmoid(bi + x @ Wi + h @ Ui)
-        g = nn.tanh(bg + x @ Wg + h @ Ug)
-        o = nn.sigmoid(bo + x @ Wo + h @ Uo)
+        f = nn.sigmoid(w["bf"] + x @ w["Wf"] + h @ w["Uf"])
+        i = nn.sigmoid(w["bi"] + x @ w["Wi"] + h @ w["Ui"])
+        g = nn.tanh(w["bg"] + x @ w["Wg"] + h @ w["Ug"])
+        o = nn.sigmoid(w["bo"] + x @ w["Wo"] + h @ w["Uo"])
 
         new_c = f * c + i * g
         new_h = o * nn.tanh(new_c)

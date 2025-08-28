@@ -27,6 +27,11 @@ docs = [
     "sphinx-autoapi",
     "myst-parser",
 ]
+examples = [
+    "optax",
+    "matplotlib",
+    "tensorflow-datasets",
+]
 
 [tool.ruff]
 fix = true

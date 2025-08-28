@@ -362,14 +362,14 @@ class LSTM:
         }
 
     def apply(
-        self, w: dict[str, Array], h_c: tuple[Array, Array], x: Array
+        self, params: dict[str, Array], h_c: tuple[Array, Array], x: Array
     ) -> tuple[Array, Array]:
         h, c = h_c
 
-        f = nn.sigmoid(w["bf"] + x @ w["Wf"] + h @ w["Uf"])
-        i = nn.sigmoid(w["bi"] + x @ w["Wi"] + h @ w["Ui"])
-        g = nn.tanh(w["bg"] + x @ w["Wg"] + h @ w["Ug"])
-        o = nn.sigmoid(w["bo"] + x @ w["Wo"] + h @ w["Uo"])
+        f = nn.sigmoid(params["bf"] + x @ params["Wf"] + h @ params["Uf"])
+        i = nn.sigmoid(params["bi"] + x @ params["Wi"] + h @ params["Ui"])
+        g = nn.tanh(params["bg"] + x @ params["Wg"] + h @ params["Ug"])
+        o = nn.sigmoid(params["bo"] + x @ params["Wo"] + h @ params["Uo"])
 
         new_c = f * c + i * g
         new_h = o * nn.tanh(new_c)

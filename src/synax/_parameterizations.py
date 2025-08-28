@@ -241,8 +241,9 @@ class SpecialOrthogonalMatrix:
         A^\top = A^{-1}
 
     :param dim: Dimension.
-    :param initializer: Initializer.
-    :param regularizer: Regularizer.
+    :param transform: Transform used for parameterization.
+        ``"exp"`` uses the matrix exponential :math:`\exp A`.
+        ``"cayley"`` uses the Cayley transform :math:`(I - A) (I + A)^{-1}`.
     """
 
     def __init__(self, dim: int, transform: Literal["exp", "cayley"] = "exp"):

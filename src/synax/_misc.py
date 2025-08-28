@@ -5,7 +5,7 @@ from jax import Array, nn, random
 from jax import numpy as jnp
 from jax.nn.initializers import Initializer
 
-from ._basic import Bias, Conv, Func, Linear, BaseModule
+from ._basic import Bias, Conv, Func, Linear
 from ._compound import Chain
 from ._recurrent import MGU
 from ._regularizers import Regularizer, zero
@@ -65,7 +65,7 @@ def MLP(
     return Chain(modules[:-1])
 
 
-class AutoEncoder(BaseModule):
+class AutoEncoder:
     r"""
     Auto-encoder.
 
@@ -143,7 +143,7 @@ def get_von_neumann_neighbors(
     return neighbors
 
 
-class NeuralGPU(BaseModule):
+class NeuralGPU:
     """
     Neural GPU.
 
@@ -201,7 +201,7 @@ class NeuralGPU(BaseModule):
         return new_state
 
 
-class GLU(BaseModule):
+class GLU:
     r"""
     Gated linear unit.
 
@@ -263,7 +263,7 @@ class GLU(BaseModule):
         return y * self.sigmoid_fn(z)
 
 
-class PReLU(BaseModule):
+class PReLU:
     r"""
     Parametric ReLU.
 

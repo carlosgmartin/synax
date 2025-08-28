@@ -1,6 +1,5 @@
 import math
 from typing import Any, Callable, Sequence
-import abc
 
 from jax import Array, lax, nn
 from jax import numpy as jnp
@@ -13,11 +12,7 @@ from ._utils import Padding
 Key = Array
 
 
-class BaseModule(abc.ABC):
-    pass
-
-
-class Bias(BaseModule):
+class Bias:
     r"""
     Bias (translation).
 
@@ -75,7 +70,7 @@ class Bias(BaseModule):
         return self.regularizer(params)
 
 
-class Scale(BaseModule):
+class Scale:
     r"""
     Elementwise scaling.
 
@@ -133,7 +128,7 @@ class Scale(BaseModule):
         return self.regularizer(params)
 
 
-class Linear(BaseModule):
+class Linear:
     r"""
     Linear map.
 
@@ -196,7 +191,7 @@ class Linear(BaseModule):
         return self.regularizer(params)
 
 
-class Func(BaseModule):
+class Func:
     r"""
     Function application.
 
@@ -245,7 +240,7 @@ class Func(BaseModule):
         return 0.0
 
 
-class Conv(BaseModule):
+class Conv:
     """
     Convolution.
 
@@ -355,7 +350,7 @@ class Conv(BaseModule):
         return 0.0
 
 
-class Embed(BaseModule):
+class Embed:
     """
     Embedding.
 

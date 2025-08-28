@@ -4,14 +4,14 @@ from jax import Array, lax, nn, random
 from jax import numpy as jnp
 from jax.nn.initializers import Initializer
 
-from ._basic import Bias, Conv, BaseModule
+from ._basic import Bias, Conv
 from ._regularizers import Regularizer, zero
 
 Key = Array
 Module = Any
 
 
-class RecurrentNetwork(BaseModule):
+class RecurrentNetwork:
     def __init__(self, unit: Module):
         self.unit = unit
 
@@ -49,7 +49,7 @@ class RecurrentNetwork(BaseModule):
         return self.unit.param_loss(params)
 
 
-class SimpleRNN(BaseModule):
+class SimpleRNN:
     """
     Simple recurrent unit.
 

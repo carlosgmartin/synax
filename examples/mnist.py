@@ -35,7 +35,12 @@ def sample_batch_indices(key, num_examples, batch_size):
     return batch_indices, remainder
 
 
-def train(ds, info, model, optimizer, key, epochs, batch_size, epoch_callback):
+def get_dataset_size(ds):
+    leaves = jax.tree.leaves(ds)
+    return leaves[0].shape[0]
+
+
+def train(ds, model, optimizer, key, epochs, batch_size, epoch_callback):
     def get_example_loss(params, instance):
         image = instance["image"]
         label = instance["label"]
@@ -70,7 +75,7 @@ def train(ds, info, model, optimizer, key, epochs, batch_size, epoch_callback):
             batch = jax.tree.map(lambda x: x[batch_indices], ds["train"])
             return run_batch(state, batch)
 
-        num_examples = info.splits["train"].num_examples
+        num_examples = get_dataset_size(ds["train"])
         batch_indices, _ = sample_batch_indices(key, num_examples, batch_size)
         state, train_metrics = lax.scan(f, state, batch_indices)
         state |= {"epochs": state["epochs"] + 1}
@@ -145,7 +150,6 @@ def main(args):
 
     state, metrics = train(
         ds=ds,
-        info=info,
         model=model,
         optimizer=optimizer,
         key=key,

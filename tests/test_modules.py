@@ -153,7 +153,14 @@ def test_attention(
     assert output.shape == (target_len, heads * hidden_dim)
 
 
-@pytest.mark.parametrize("cell_cls", [synax.SimpleRNN, synax.GRU, synax.MGU])
+@pytest.mark.parametrize(
+    "cell_cls",
+    [
+        synax.SimpleRNN,
+        synax.GRU,
+        synax.MGU,
+    ],
+)
 def test_cell(cell_cls):
     state_dim = 10
     input_dim = 2

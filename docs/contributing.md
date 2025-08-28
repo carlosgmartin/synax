@@ -31,10 +31,16 @@ Instructions:
 
 1. Implement your change.
 
-1. Lint, typecheck, and run tests:
+1. Run pre-commit hook:
 
     ```shell
-    ruff check && ruff format && pyright && pytest
+    pre-commit run --all
+    ```
+
+1. Run tests:
+
+    ```shell
+    pytest
     ```
 
 1. If you have edited the documentation, build and preview it:

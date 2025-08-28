@@ -25,11 +25,11 @@ class Constant(BaseModule):
     def init(self, key: Key) -> Array:
         return self.initializer(key, (self.dim,))
 
-    def apply(self, parameters: Array) -> Array:
-        return parameters
+    def apply(self, params: Array) -> Array:
+        return params
 
-    def parameter_loss(self, parameters: Array) -> Array | float:
-        return self.regularizer(parameters)
+    def parameter_loss(self, params: Array) -> Array | float:
+        return self.regularizer(params)
 
 
 class Ball(BaseModule):
@@ -46,11 +46,11 @@ class Ball(BaseModule):
     def init(self, key: Key) -> Array:
         return self.initializer(key, (self.dim,))
 
-    def apply(self, parameters: Array) -> Array:
-        return parameters / jnp.sqrt(1 + parameters * jnp.conj(parameters))
+    def apply(self, params: Array) -> Array:
+        return params / jnp.sqrt(1 + params * jnp.conj(params))
 
-    def parameter_loss(self, parameters: Array) -> Array | float:
-        return self.regularizer(parameters)
+    def parameter_loss(self, params: Array) -> Array | float:
+        return self.regularizer(params)
 
 
 class Simplex(BaseModule):
@@ -67,11 +67,11 @@ class Simplex(BaseModule):
     def init(self, key: Key) -> Array:
         return self.initializer(key, (self.dim,))
 
-    def apply(self, parameters: Array) -> Array:
-        return nn.softmax(parameters)
+    def apply(self, params: Array) -> Array:
+        return nn.softmax(params)
 
-    def parameter_loss(self, parameters: Array) -> Array | float:
-        return self.regularizer(parameters)
+    def parameter_loss(self, params: Array) -> Array | float:
+        return self.regularizer(params)
 
 
 def vector_to_symmetric_matrix(vector: Array, dim: int) -> Array:
@@ -105,11 +105,11 @@ class SymmetricMatrix(BaseModule):
         n = self.dim * (self.dim + 1) // 2
         return self.initializer(key, (n,))
 
-    def apply(self, parameters: Array) -> Array:
-        return vector_to_symmetric_matrix(parameters, self.dim)
+    def apply(self, params: Array) -> Array:
+        return vector_to_symmetric_matrix(params, self.dim)
 
-    def parameter_loss(self, parameters: Array) -> Array | float:
-        return self.regularizer(parameters)
+    def parameter_loss(self, params: Array) -> Array | float:
+        return self.regularizer(params)
 
 
 class AntisymmetricMatrix(BaseModule):
@@ -127,11 +127,11 @@ class AntisymmetricMatrix(BaseModule):
         n = self.dim * (self.dim - 1) // 2
         return self.initializer(key, (n,))
 
-    def apply(self, parameters: Array) -> Array:
-        return vector_to_antisymmetric_matrix(parameters, self.dim)
+    def apply(self, params: Array) -> Array:
+        return vector_to_antisymmetric_matrix(params, self.dim)
 
-    def parameter_loss(self, parameters: Array) -> Array | float:
-        return self.regularizer(parameters)
+    def parameter_loss(self, params: Array) -> Array | float:
+        return self.regularizer(params)
 
 
 class SpecialOrthogonalMatrix:
@@ -149,8 +149,8 @@ class SpecialOrthogonalMatrix:
         """
         return self.antisymmetric.init(key)
 
-    def apply(self, parameters: Array) -> Array:
-        m = self.antisymmetric.apply(parameters)
+    def apply(self, params: Array) -> Array:
+        m = self.antisymmetric.apply(params)
         match self.transform:
             case "exp":
                 return jax.scipy.linalg.expm(m)

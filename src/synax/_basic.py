@@ -26,11 +26,11 @@ class BaseModule(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def parameter_loss(self, parameters: Any) -> Array | float:
+    def parameter_loss(self, params: Any) -> Array | float:
         """
         Parameter loss.
 
-        :param parameters: Parameters.
+        :param params: Parameters.
 
         :returns: Scalar.
         """
@@ -66,19 +66,19 @@ class Bias(BaseModule):
     def init(self, key: Key) -> Array:
         return self.initializer(key, (self.dimension,))
 
-    def apply(self, parameters: Array, input: Array) -> Array:
+    def apply(self, params: Array, input: Array) -> Array:
         """
         Apply module.
 
-        :param parameters: Parameters.
+        :param params: Parameters.
         :param input: Array of shape ``(..., dimension)``.
 
         :returns: Array of shape ``(..., dimension)``.
         """
-        return input + parameters
+        return input + params
 
-    def parameter_loss(self, parameters: Array) -> Array | float:
-        return self.regularizer(parameters)
+    def parameter_loss(self, params: Array) -> Array | float:
+        return self.regularizer(params)
 
 
 class Scale(BaseModule):
@@ -110,19 +110,19 @@ class Scale(BaseModule):
     def init(self, key: Key) -> Array:
         return self.initializer(key, (self.dimension,))
 
-    def apply(self, parameters: Array, input: Array) -> Array:
+    def apply(self, params: Array, input: Array) -> Array:
         """
         Apply module.
 
-        :param parameters: Parameters.
+        :param params: Parameters.
         :param input: Array of shape ``(..., dimension)``.
 
         :returns: Array of shape ``(..., dimension)``.
         """
-        return input * parameters
+        return input * params
 
-    def parameter_loss(self, parameters: Array) -> Array | float:
-        return self.regularizer(parameters)
+    def parameter_loss(self, params: Array) -> Array | float:
+        return self.regularizer(params)
 
 
 class Linear(BaseModule):
@@ -159,19 +159,19 @@ class Linear(BaseModule):
     def init(self, key: Key) -> Array:
         return self.initializer(key, (self.input_dim, self.output_dim))
 
-    def apply(self, parameters: Array, input: Array) -> Array:
+    def apply(self, params: Array, input: Array) -> Array:
         """
         Apply module.
 
-        :param parameters: Parameters.
+        :param params: Parameters.
         :param input: Array of shape ``(..., input_dim)``.
 
         :returns: Array of shape ``(..., output_dim)``.
         """
-        return input @ parameters
+        return input @ params
 
-    def parameter_loss(self, parameters: Array) -> Array | float:
-        return self.regularizer(parameters)
+    def parameter_loss(self, params: Array) -> Array | float:
+        return self.regularizer(params)
 
 
 class Func(BaseModule):
@@ -194,18 +194,18 @@ class Func(BaseModule):
     def init(self, key: Key) -> None:
         return None
 
-    def apply(self, parameters: None, input: Any) -> Any:
+    def apply(self, params: None, input: Any) -> Any:
         """
         Apply module.
 
-        :param parameters: Parameters.
+        :param params: Parameters.
         :param input: Input.
 
         :returns: The output.
         """
         return self.function(input)
 
-    def parameter_loss(self, parameters: None) -> float:
+    def parameter_loss(self, params: None) -> float:
         return 0.0
 
 
@@ -262,11 +262,11 @@ class Conv(BaseModule):
         kernel = kernel.reshape((self.output_dim, self.input_dim, *self.shape))
         return kernel
 
-    def apply(self, parameters: Array, input: Array) -> Array:
+    def apply(self, params: Array, input: Array) -> Array:
         """
         Apply module.
 
-        :param parameters: Parameters.
+        :param params: Parameters.
         :param input: Array of shape ``(..., input_dim)``.
 
         :returns: Array of shape ``(..., output_dim)``.
@@ -290,7 +290,7 @@ class Conv(BaseModule):
         x = x[None]
         x = lax.conv_general_dilated(
             lhs=x,
-            rhs=parameters,
+            rhs=params,
             window_strides=stride,
             padding=self.padding,
             rhs_dilation=dilation,
@@ -301,7 +301,7 @@ class Conv(BaseModule):
         x = jnp.moveaxis(x, -num_spatial_axes - 1, -1)
         return x
 
-    def parameter_loss(self, parameters: Array) -> float:
+    def parameter_loss(self, params: Array) -> float:
         return 0.0
 
 
@@ -330,16 +330,16 @@ class Embed(BaseModule):
     def init(self, key: Key) -> Array:
         return self.initializer(key, (self.number, self.dimension))
 
-    def apply(self, parameters: Array, input: Array) -> Array:
+    def apply(self, params: Array, input: Array) -> Array:
         """
         Apply module.
 
-        :param parameters: Parameters.
+        :param params: Parameters.
         :param input: Array of shape ``(...)``.
 
         :returns: Array of shape ``(..., dimension)``.
         """
-        return parameters[input]
+        return params[input]
 
-    def parameter_loss(self, parameters: Array) -> Array | float:
-        return self.regularizer(parameters)
+    def parameter_loss(self, params: Array) -> Array | float:
+        return self.regularizer(params)

@@ -79,7 +79,7 @@ class Attention(BaseModule):
 
     def apply(
         self,
-        parameters: dict[str, Array],
+        params: dict[str, Array],
         query_input: Array,
         key_input: Array | None = None,
         value_input: Array | None = None,
@@ -107,7 +107,7 @@ class Attention(BaseModule):
 
         - ``Dv`` be the value input dimension
 
-        :param parameters: Parameters.
+        :param params: Parameters.
         :param query_input: Array of shape ``(..., T, Dq)``. Input used to compute queries.
         :param key_input: Array of shape ``(..., S, Dk)``. Input used to compute keys. If ``None``, uses ``query_input``.
         :param value_input: Array of shape ``(..., S, Dv)``. Input used to compute values. If ``None``, uses ``key_input``.
@@ -124,13 +124,13 @@ class Attention(BaseModule):
         if value_input is None:
             value_input = key_input
 
-        query = jnp.tensordot(query_input, parameters["query_kernel"], (-1, -2))
-        key = jnp.tensordot(key_input, parameters["key_kernel"], (-1, -2))
-        value = jnp.tensordot(value_input, parameters["value_kernel"], (-1, -2))
+        query = jnp.tensordot(query_input, params["query_kernel"], (-1, -2))
+        key = jnp.tensordot(key_input, params["key_kernel"], (-1, -2))
+        value = jnp.tensordot(value_input, params["value_kernel"], (-1, -2))
 
-        query += parameters["query_bias"]
-        key += parameters["key_bias"]
-        value += parameters["value_bias"]
+        query += params["query_bias"]
+        key += params["key_bias"]
+        value += params["value_bias"]
 
         if self.normalize_qk:
             query = layer_norm()(query)
@@ -147,5 +147,5 @@ class Attention(BaseModule):
         )
         return lax.collapse(hidden, -2)
 
-    def parameter_loss(self, parameters: dict[str, Array]) -> float:
+    def parameter_loss(self, params: dict[str, Array]) -> float:
         return 0.0

@@ -47,22 +47,22 @@ class Chain:
         keys = random.split(key, len(self.modules))
         return tuple(module.init(key) for module, key in zip(self.modules, keys))
 
-    def apply(self, parameters: tuple[Any, ...], input: Any) -> Any:
-        for module, param in zip(self.modules, parameters, strict=True):
+    def apply(self, params: tuple[Any, ...], input: Any) -> Any:
+        for module, param in zip(self.modules, params, strict=True):
             input = module.apply(param, input)
         return input
 
-    def parameter_loss(self, parameters: tuple[Any, ...]) -> Array | float:
+    def parameter_loss(self, params: tuple[Any, ...]) -> Array | float:
         """
         Parameter loss.
 
-        :param parameters: Parameters.
+        :param params: Parameters.
 
         :returns: Scalar.
         """
         return sum(
             module.parameter_loss(param)
-            for module, param in zip(self.modules, parameters, strict=True)
+            for module, param in zip(self.modules, params, strict=True)
         )
 
 
@@ -101,27 +101,23 @@ class Parallel:
         keys = random.split(key, len(self.modules))
         return tuple(module.init(key) for module, key in zip(self.modules, keys))
 
-    def apply(
-        self, parameters: tuple[Any, ...], input: Sequence[Any]
-    ) -> tuple[Any, ...]:
+    def apply(self, params: tuple[Any, ...], input: Sequence[Any]) -> tuple[Any, ...]:
         return tuple(
             module.apply(param, input)
-            for module, param, input in zip(
-                self.modules, parameters, input, strict=True
-            )
+            for module, param, input in zip(self.modules, params, input, strict=True)
         )
 
-    def parameter_loss(self, parameters: tuple[Any, ...]) -> Array | float:
+    def parameter_loss(self, params: tuple[Any, ...]) -> Array | float:
         """
         Parameter loss.
 
-        :param parameters: Parameters.
+        :param params: Parameters.
 
         :returns: Scalar.
         """
         return sum(
             module.parameter_loss(param)
-            for module, param in zip(self.modules, parameters, strict=True)
+            for module, param in zip(self.modules, params, strict=True)
         )
 
 
@@ -139,22 +135,22 @@ class Repeat:
         """
         return self.module.init(key)
 
-    def apply(self, parameters: Any, input: Any, steps: int, unroll: int = 1) -> Any:
+    def apply(self, params: Any, input: Any, steps: int, unroll: int = 1) -> Any:
         def f(x: Any, _: None) -> Any:
-            y = self.module.apply(parameters, x)
+            y = self.module.apply(params, x)
             return y, x
 
         return lax.scan(f, input, length=steps, unroll=unroll)
 
-    def parameter_loss(self, parameters: Any) -> Array:
+    def parameter_loss(self, params: Any) -> Array:
         """
         Parameter loss.
 
-        :param parameters: Parameters.
+        :param params: Parameters.
 
         :returns: Scalar.
         """
-        return self.module.parameter_loss(parameters)
+        return self.module.parameter_loss(params)
 
 
 class Residual:
@@ -189,11 +185,11 @@ class Residual:
         """
         return self.module.init(key)
 
-    def apply(self, parameters: Any, input: Array) -> Array:
-        output = self.module.apply(parameters, input)
+    def apply(self, params: Any, input: Array) -> Array:
+        output = self.module.apply(params, input)
         return input + output
 
-    def parameter_loss(self, parameters: Any) -> Array:
+    def parameter_loss(self, params: Any) -> Array:
         """
         Parameter loss.
 
@@ -201,7 +197,7 @@ class Residual:
 
         :returns: Scalar.
         """
-        return self.module.parameter_loss(parameters)
+        return self.module.parameter_loss(params)
 
 
 class Switch:
@@ -220,9 +216,9 @@ class Switch:
         keys = random.split(key, self.branches)
         return jax.vmap(self.module.init)(keys)
 
-    def apply(self, parameters: Any, branch: Array, input: Any) -> Any:
+    def apply(self, params: Any, branch: Array, input: Any) -> Any:
         def f(x: Array) -> Array:
             return x[branch]
 
-        parameters = jax.tree.map(f, parameters)
-        return self.module.apply(parameters, input)
+        params = jax.tree.map(f, params)
+        return self.module.apply(params, input)

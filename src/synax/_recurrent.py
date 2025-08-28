@@ -21,9 +21,9 @@ class RecurrentNetwork(BaseModule):
         h = self.unit.init_state(keys[1])
         return {"unit_param": w, "init_state": h}
 
-    def apply(self, parameters: dict[str, Any], xs: Any) -> Any:
-        w = parameters["unit_param"]
-        h = parameters["init_state"]
+    def apply(self, params: dict[str, Any], xs: Any) -> Any:
+        w = params["unit_param"]
+        h = params["init_state"]
 
         def f(h: Any, x: Any) -> Any:
             h_new = self.unit.apply(w, h, x)
@@ -31,8 +31,8 @@ class RecurrentNetwork(BaseModule):
 
         return lax.scan(f, h, xs)
 
-    def parameter_loss(self, parameters: dict[str, Any]) -> Array | float:
-        return self.unit.parameter_loss(parameters)
+    def parameter_loss(self, params: dict[str, Any]) -> Array | float:
+        return self.unit.parameter_loss(params)
 
 
 class SimpleRNN(BaseModule):
@@ -81,20 +81,16 @@ class SimpleRNN(BaseModule):
             "bias": self.bias_initializer(keys[2], (self.state_dim,)),
         }
 
-    def apply(self, parameters: dict[str, Array], state: Array, input: Array) -> Array:
+    def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
         """
         Apply module.
 
-        :param parameters: Parameters.
+        :param params: Parameters.
         :param state: Array of shape ``(..., state_dim)``.
         :param input: Array of shape ``(..., input_dim)``.
         :returns: Array of shape ``(..., output_dim)``.
         """
-        y = (
-            input @ parameters["linear"]
-            + state @ parameters["recurrent"]
-            + parameters["bias"]
-        )
+        y = input @ params["linear"] + state @ params["recurrent"] + params["bias"]
         return self.activation(y)
 
     def init_state(self, key: Key) -> Array:
@@ -107,10 +103,10 @@ class SimpleRNN(BaseModule):
         """
         return self.state_initializer(key, (self.state_dim,))
 
-    def parameter_loss(self, parameters: dict[str, Array]) -> Array | float:
-        loss = self.linear_regularizer(parameters["linear"])
-        loss += self.recurrent_regularizer(parameters["recurrent"])
-        loss += self.bias_regularizer(parameters["recurrent"])
+    def parameter_loss(self, params: dict[str, Array]) -> Array | float:
+        loss = self.linear_regularizer(params["linear"])
+        loss += self.recurrent_regularizer(params["recurrent"])
+        loss += self.bias_regularizer(params["recurrent"])
         return loss
 
 
@@ -169,15 +165,15 @@ class GRU:
             "by": self.bias_initializer(keys[8], (self.state_dim,)),
         }
 
-    def apply(self, parameters: dict[str, Array], state: Array, input: Array) -> Array:
+    def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
         z = self.update_activation(
-            input @ parameters["wz"] + state @ parameters["uz"] + parameters["bz"]
+            input @ params["wz"] + state @ params["uz"] + params["bz"]
         )
         r = self.reset_activation(
-            input @ parameters["wr"] + state @ parameters["ur"] + parameters["br"]
+            input @ params["wr"] + state @ params["ur"] + params["br"]
         )
         y = self.candidate_activation(
-            input @ parameters["wy"] + (r * state) @ parameters["uy"] + parameters["by"]
+            input @ params["wy"] + (r * state) @ params["uy"] + params["by"]
         )
         return (1 - z) * state + z * y
 
@@ -244,19 +240,17 @@ class MGU:
             "by": self.bias_initializer(keys[5], (self.state_dim,)),
         }
 
-    def apply(self, parameters: dict[str, Array], state: Array, input: Array) -> Array:
+    def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
         z = self.update_activation(
-            input @ parameters["wz"] + state @ parameters["uz"] + parameters["bz"]
+            input @ params["wz"] + state @ params["uz"] + params["bz"]
         )
         if self.reset_gate:
             y = self.candidate_activation(
-                input @ parameters["wy"]
-                + (state * z) @ parameters["uy"]
-                + parameters["by"]
+                input @ params["wy"] + (state * z) @ params["uy"] + params["by"]
             )
         else:
             y = self.candidate_activation(
-                input @ parameters["wy"] + state @ parameters["uy"] + parameters["by"]
+                input @ params["wy"] + state @ params["uy"] + params["by"]
             )
         return (1 - z) * state + z * y
 
@@ -308,10 +302,10 @@ class BistableRecurrentCell:
             "wy": self.linear_initializer(keys[2], (self.input_dim, self.state_dim)),
         }
 
-    def apply(self, parameters: dict[str, Array], state: Array, input: Array) -> Array:
-        a = 1 + nn.tanh(input @ parameters["wa"] + state @ parameters["ua"])
-        c = nn.sigmoid(input @ parameters["wc"] + state @ parameters["uc"])
-        y = nn.tanh(input @ parameters["wy"] + state * a)
+    def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
+        a = 1 + nn.tanh(input @ params["wa"] + state @ params["ua"])
+        c = nn.sigmoid(input @ params["wc"] + state @ params["uc"])
+        y = nn.tanh(input @ params["wy"] + state * a)
         return c * state + (1 - c) * y
 
 
@@ -562,19 +556,15 @@ class ConvGatedUnit:
             "update_bias": self.update_bias.init(keys[5]),
         }
 
-    def apply(self, parameters: dict[str, Any], state: Array, input: Array) -> Array:
-        new = self.new_linear_state.apply(parameters["new_linear_state"], state)
-        new += self.new_linear_state.apply(parameters["new_linear_input"], input)
-        new += self.new_bias.apply(parameters["new_bias"], new)
+    def apply(self, params: dict[str, Any], state: Array, input: Array) -> Array:
+        new = self.new_linear_state.apply(params["new_linear_state"], state)
+        new += self.new_linear_state.apply(params["new_linear_input"], input)
+        new += self.new_bias.apply(params["new_bias"], new)
         new = self.new_activation(new)
 
-        update = self.update_linear_state.apply(
-            parameters["update_linear_state"], state
-        )
-        update += self.update_linear_input.apply(
-            parameters["update_linear_input"], input
-        )
-        update += self.update_bias.apply(parameters["update_bias"], update)
+        update = self.update_linear_state.apply(params["update_linear_state"], state)
+        update += self.update_linear_input.apply(params["update_linear_input"], input)
+        update += self.update_bias.apply(params["update_bias"], update)
         update = self.update_activation(update)
 
         return state + update * (new - state)

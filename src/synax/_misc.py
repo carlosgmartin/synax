@@ -91,23 +91,23 @@ class AutoEncoder(BaseModule):
             "decoder": self.decoder.init(keys[1]),
         }
 
-    def encode(self, parameters: dict[str, Any], input: Any) -> Any:
-        return self.encoder.apply(parameters["encoder"], input)
+    def encode(self, params: dict[str, Any], input: Any) -> Any:
+        return self.encoder.apply(params["encoder"], input)
 
-    def decode(self, parameters: dict[str, Any], input: Any) -> Any:
-        return self.decoder.apply(parameters["decoder"], input)
+    def decode(self, params: dict[str, Any], input: Any) -> Any:
+        return self.decoder.apply(params["decoder"], input)
 
-    def apply(self, parameters: dict[str, Any], input: Any) -> Any:
-        return self.decode(parameters, self.encode(parameters, input))
+    def apply(self, params: dict[str, Any], input: Any) -> Any:
+        return self.decode(params, self.encode(params, input))
 
-    def reconstruction_loss(self, parameters: dict[str, Any], input: Any) -> Array:
-        output = self.apply(parameters, input)
+    def reconstruction_loss(self, params: dict[str, Any], input: Any) -> Array:
+        output = self.apply(params, input)
         diff = input - output
         return (diff * jnp.conj(diff)).sum()
 
-    def parameter_loss(self, parameters: dict[str, Any]) -> Array:
-        encoder_loss = self.encoder.parameter_loss(parameters["encoder"])
-        decoder_loss = self.decoder.parameter_loss(parameters["decoder"])
+    def parameter_loss(self, params: dict[str, Any]) -> Array:
+        encoder_loss = self.encoder.parameter_loss(params["encoder"])
+        decoder_loss = self.decoder.parameter_loss(params["decoder"])
         return encoder_loss + decoder_loss
 
 
@@ -156,7 +156,7 @@ class NeuralGPU(BaseModule):
     def init(self, key: Key) -> Any:
         return self.cell.init(key)
 
-    def apply(self, parameters: Any, state: Array) -> Array:
+    def apply(self, params: Any, state: Array) -> Array:
         inputs = []
 
         neighbors = get_von_neumann_neighbors(state)
@@ -176,7 +176,7 @@ class NeuralGPU(BaseModule):
             inputs.append(x)
 
         inputs = jnp.concatenate(inputs, -1)
-        new_state = self.cell.apply(parameters, state, inputs)
+        new_state = self.cell.apply(params, state, inputs)
         return new_state
 
 
@@ -229,8 +229,8 @@ class GLU(BaseModule):
             "bias": jnp.concatenate([b, c], 1),
         }
 
-    def apply(self, parameters: dict[str, Array], input: Array) -> Array:
-        x = input @ parameters["linear"] + parameters["bias"]
+    def apply(self, params: dict[str, Array], input: Array) -> Array:
+        x = input @ params["linear"] + params["bias"]
         y, z = jnp.split(x, [self.output_dim])
         return y * self.sigmoid_fn(z)
 
@@ -269,11 +269,11 @@ class PReLU(BaseModule):
     def init(self, key: Key) -> Array:
         return self.initializer(key, ())
 
-    def apply(self, parameters: Array, input: Array) -> Array:
-        return jnp.where(input > 0, input, input * parameters)
+    def apply(self, params: Array, input: Array) -> Array:
+        return jnp.where(input > 0, input, input * params)
 
-    def parameter_loss(self, parameters: Array) -> Array | float:
-        return self.regularizer(parameters)
+    def parameter_loss(self, params: Array) -> Array | float:
+        return self.regularizer(params)
 
 
 def LeNet(input_channels: int = 1, outputs: int = 10) -> Module:

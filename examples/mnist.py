@@ -161,10 +161,10 @@ def main(args):
     def epoch_callback(metrics, state):
         print(f"epochs: {state['epochs']}")
         print(f"batches: {state['batches']}")
-        print(f"train loss: {metrics['train']['loss']:g}")
-        print(f"test loss: {metrics['test']['loss']:g}")
-        print(f"train error: {metrics['train']['error']:g}")
-        print(f"test error: {metrics['test']['error']:g}")
+        for split in info.splits.keys():
+            for metric_name in metrics[split].keys():
+                value = metrics[split][metric_name]
+                print(f"{split} {metric_name}: {value:g}")
         print()
 
     state, metrics = train(

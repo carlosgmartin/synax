@@ -148,7 +148,7 @@ class GRU:
 
         self.state_initializer = state_initializer
 
-    def init(self, key: Key) -> tuple[Array, ...]:
+    def init(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -157,26 +157,28 @@ class GRU:
         :returns: Parameters.
         """
         keys = random.split(key, 9)
+        return {
+            "wz": self.linear_initializer(keys[0], (self.input_dim, self.state_dim)),
+            "wr": self.linear_initializer(keys[1], (self.input_dim, self.state_dim)),
+            "wy": self.linear_initializer(keys[2], (self.input_dim, self.state_dim)),
+            "uz": self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim)),
+            "ur": self.recurrent_initializer(keys[4], (self.state_dim, self.state_dim)),
+            "uy": self.recurrent_initializer(keys[5], (self.state_dim, self.state_dim)),
+            "bz": self.bias_initializer(keys[6], (self.state_dim,)),
+            "br": self.bias_initializer(keys[7], (self.state_dim,)),
+            "by": self.bias_initializer(keys[8], (self.state_dim,)),
+        }
 
-        wz = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
-        wr = self.linear_initializer(keys[1], (self.input_dim, self.state_dim))
-        wy = self.linear_initializer(keys[2], (self.input_dim, self.state_dim))
-
-        uz = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
-        ur = self.recurrent_initializer(keys[4], (self.state_dim, self.state_dim))
-        uy = self.recurrent_initializer(keys[5], (self.state_dim, self.state_dim))
-
-        bz = self.bias_initializer(keys[6], (self.state_dim,))
-        br = self.bias_initializer(keys[7], (self.state_dim,))
-        by = self.bias_initializer(keys[8], (self.state_dim,))
-
-        return bz, br, by, wz, wr, wy, uz, ur, uy
-
-    def apply(self, parameters: tuple[Array, ...], state: Array, input: Array) -> Array:
-        bz, br, by, wz, wr, wy, uz, ur, uy = parameters
-        z = self.update_activation(input @ wz + state @ uz + bz)
-        r = self.reset_activation(input @ wr + state @ ur + br)
-        y = self.candidate_activation(input @ wy + (r * state) @ uy + by)
+    def apply(self, parameters: dict[str, Array], state: Array, input: Array) -> Array:
+        z = self.update_activation(
+            input @ parameters["wz"] + state @ parameters["uz"] + parameters["bz"]
+        )
+        r = self.reset_activation(
+            input @ parameters["wr"] + state @ parameters["ur"] + parameters["br"]
+        )
+        y = self.candidate_activation(
+            input @ parameters["wy"] + (r * state) @ parameters["uy"] + parameters["by"]
+        )
         return (1 - z) * state + z * y
 
     def init_state(self, key: Key) -> Array:

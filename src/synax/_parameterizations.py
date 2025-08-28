@@ -1,14 +1,14 @@
-from typing import Callable, Literal
+from typing import Literal
 
 import jax
 from jax import Array, nn
 from jax import numpy as jnp
+from jax.nn.initializers import Initializer
 
 from ._regularizers import Regularizer, zero
 from ._basic import BaseModule
 
 Key = Array
-Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
 class Constant(BaseModule):

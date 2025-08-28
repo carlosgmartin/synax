@@ -2,12 +2,12 @@ from typing import Any, Callable, Sequence
 
 from jax import Array, lax, nn, random
 from jax import numpy as jnp
+from jax.nn.initializers import Initializer
 
 from ._basic import Bias, Conv, BaseModule
 from ._regularizers import Regularizer, zero
 
 Key = Array
-Initializer = Callable[[Key, tuple[int, ...]], Array]
 Module = Any
 
 

@@ -4,12 +4,13 @@ import abc
 
 from jax import Array, lax, nn
 from jax import numpy as jnp
+from jax.nn.initializers import Initializer
+
 
 from ._regularizers import Regularizer, zero
 from ._utils import Padding
 
 Key = Array
-Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
 class BaseModule(abc.ABC):

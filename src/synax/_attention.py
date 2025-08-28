@@ -1,14 +1,12 @@
-from typing import Callable
-
 from jax import Array, lax, nn, random
 from jax import numpy as jnp
+from jax.nn.initializers import Initializer
 
 from ._utils import layer_norm
 
 from ._basic import BaseModule
 
 Key = Array
-Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
 class Attention(BaseModule):

@@ -3,6 +3,7 @@ from typing import Any, Callable, Sequence
 
 from jax import Array, nn, random
 from jax import numpy as jnp
+from jax.nn.initializers import Initializer
 
 from ._basic import Bias, Conv, Func, Linear, BaseModule
 from ._compound import Chain
@@ -12,7 +13,6 @@ from ._utils import max_pool, mean_pool
 
 Module = Any
 Key = Array
-Initializer = Callable[[Key, tuple[int, ...]], Array]
 
 
 def MLP(

@@ -138,15 +138,15 @@ class NeuralGPU(BaseModule):
 
     def __init__(
         self,
-        state_dimension: int,
+        state_dim: int,
         space_dim: int = 1,
         cell_cls: Callable[[int, int], Module] = partial(MGU, reset_gate=False),
         global_mean: bool = False,
         global_max: bool = False,
     ):
         self.cell = cell_cls(
-            state_dimension,
-            state_dimension * (2 * space_dim + global_mean + global_max),
+            state_dim,
+            state_dim * (2 * space_dim + global_mean + global_max),
         )
         self.global_mean = global_mean
         self.global_max = global_max

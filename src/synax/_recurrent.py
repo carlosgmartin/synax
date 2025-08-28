@@ -330,6 +330,7 @@ class LSTM:
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         bias_initializer: Initializer = nn.initializers.zeros,
         forget_bias: float = 1.0,
+        state_initializer: Initializer = nn.initializers.zeros,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
@@ -337,6 +338,7 @@ class LSTM:
         self.recurrent_initializer = recurrent_initializer
         self.bias_initializer = bias_initializer
         self.forget_bias = forget_bias
+        self.state_initializer = state_initializer
 
     def init(self, key: Key) -> tuple[Array, ...]:
         """
@@ -380,6 +382,19 @@ class LSTM:
         new_h = o * nn.tanh(new_c)
 
         return new_h, new_c
+
+    def init_state(self, key: Key) -> tuple[Array, Array]:
+        """
+        Sample initial state.
+
+        :param key: PRNG key.
+
+        :returns: State.
+        """
+        keys = random.split(key)
+        h = self.state_initializer(keys[0], (self.state_dim,))
+        c = self.state_initializer(keys[1], (self.state_dim,))
+        return (h, c)
 
 
 class FastGRNN:

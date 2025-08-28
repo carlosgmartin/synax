@@ -222,3 +222,14 @@ class Switch:
 
         params = jax.tree.map(f, params)
         return self.module.apply(params, input)
+
+    def param_loss(self, params: Any) -> Array:
+        """
+        Parameter loss.
+
+        :param parameters: Parameters.
+
+        :returns: Scalar.
+        """
+        losses = jax.vmap(self.module.param_loss)(params)
+        return losses.mean(0)

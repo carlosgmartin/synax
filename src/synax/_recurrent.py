@@ -422,7 +422,7 @@ class FastGRNN:
         self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
 
-    def init(self, key: Key) -> tuple[Array, ...]:
+    def init(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -430,26 +430,21 @@ class FastGRNN:
 
         :returns: Parameters.
         """
-        U = jnp.eye(self.state_dim)
-
         keys = random.split(key, 3)
+        return {
+            "U": jnp.eye(self.state_dim),
+            "W": self.linear_initializer(keys[0], (self.input_dim, self.state_dim)),
+            "bz": self.bias_initializer(keys[1], (self.state_dim,)),
+            "by": self.bias_initializer(keys[2], (self.state_dim,)),
+            "nu": jnp.array(0.0),
+            "zeta": jnp.array(0.0),
+        }
 
-        W = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
-
-        bz = self.bias_initializer(keys[1], (self.state_dim,))
-        by = self.bias_initializer(keys[2], (self.state_dim,))
-
-        nu = jnp.array(0.0)
-        zeta = jnp.array(0.0)
-
-        return U, W, bz, by, zeta, nu
-
-    def apply(self, w: tuple[Array, ...], h: Array, x: Array) -> Array:
-        U, W, bz, by, zeta, nu = w
-        z = nn.sigmoid(bz + h @ U + x @ W)
-        y = nn.tanh(by + h @ U + x @ W)
-        zeta = nn.sigmoid(zeta)
-        nu = nn.sigmoid(nu)
+    def apply(self, w: dict[str, Array], h: Array, x: Array) -> Array:
+        z = nn.sigmoid(w["bz"] + h @ w["U"] + x @ w["W"])
+        y = nn.tanh(w["by"] + h @ w["U"] + x @ w["W"])
+        zeta = nn.sigmoid(w["zeta"])
+        nu = nn.sigmoid(w["nu"])
         return (zeta * (1 - z) + nu) * y + z * h
 
 

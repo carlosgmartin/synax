@@ -218,6 +218,8 @@ class GLU:
     :param linear_initializer: Initializer for linear layers.
     :param bias_initializer: Initializer for bias layers.
     :param sigmoid_fn: Sigmoid function to use. Defaults to the logistic function.
+    :param linear_regularizer: Regularizer for linear layers.
+    :param bias_regularizer: Regularizer for bias layers.
 
     References:
 

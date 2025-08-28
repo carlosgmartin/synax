@@ -430,11 +430,11 @@ class FastGRNN:
             "zeta": jnp.array(0.0),
         }
 
-    def apply(self, w: dict[str, Array], h: Array, x: Array) -> Array:
-        z = nn.sigmoid(w["bz"] + h @ w["U"] + x @ w["W"])
-        y = nn.tanh(w["by"] + h @ w["U"] + x @ w["W"])
-        zeta = nn.sigmoid(w["zeta"])
-        nu = nn.sigmoid(w["nu"])
+    def apply(self, params: dict[str, Array], h: Array, x: Array) -> Array:
+        z = nn.sigmoid(params["bz"] + h @ params["U"] + x @ params["W"])
+        y = nn.tanh(params["by"] + h @ params["U"] + x @ params["W"])
+        zeta = nn.sigmoid(params["zeta"])
+        nu = nn.sigmoid(params["nu"])
         return (zeta * (1 - z) + nu) * y + z * h
 
 

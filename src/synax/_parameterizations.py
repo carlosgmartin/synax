@@ -123,7 +123,7 @@ def vector_to_symmetric_matrix(vector: Array, dim: int) -> Array:
     return a
 
 
-def vector_to_antisymmetric_matrix(vector: Array, dim: int) -> Array:
+def vector_to_anti_symmetric_matrix(vector: Array, dim: int) -> Array:
     i = jnp.triu_indices(dim, 1)
     a = jnp.zeros([dim, dim], vector.dtype)
     a = a.at[i].set(vector)
@@ -167,7 +167,7 @@ class SymmetricMatrix:
         return self.regularizer(params)
 
 
-class AntisymmetricMatrix:
+class AntiSymmetricMatrix:
     def __init__(
         self,
         dim: int,
@@ -190,7 +190,7 @@ class AntisymmetricMatrix:
         return self.initializer(key, (n,))
 
     def apply(self, params: Array) -> Array:
-        return vector_to_antisymmetric_matrix(params, self.dim)
+        return vector_to_anti_symmetric_matrix(params, self.dim)
 
     def param_loss(self, params: Array) -> Array | float:
         """
@@ -205,7 +205,7 @@ class AntisymmetricMatrix:
 
 class SpecialOrthogonalMatrix:
     def __init__(self, dim: int, transform: Literal["exp", "cayley"] = "exp"):
-        self.antisymmetric = AntisymmetricMatrix(dim)
+        self.anti_symmetric = AntiSymmetricMatrix(dim)
         self.transform = transform
 
     def init_params(self, key: Key) -> Array:
@@ -216,10 +216,10 @@ class SpecialOrthogonalMatrix:
 
         :returns: Parameters.
         """
-        return self.antisymmetric.init_params(key)
+        return self.anti_symmetric.init_params(key)
 
     def apply(self, params: Array) -> Array:
-        m = self.antisymmetric.apply(params)
+        m = self.anti_symmetric.apply(params)
         match self.transform:
             case "exp":
                 return jax.scipy.linalg.expm(m)

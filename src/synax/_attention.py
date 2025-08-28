@@ -3,6 +3,7 @@ from jax import numpy as jnp
 from jax.nn.initializers import Initializer
 
 from ._utils import layer_norm
+from ._regularizers import Regularizer, zero
 
 Key = Array
 
@@ -23,6 +24,8 @@ class Attention:
     :param bias_initializer: Initializer for bias layers.
     :param normalize_qk: Apply layer norm to queries and keys before computing
         dot products.
+    :param linear_regularizer: Regularizer for linear layers.
+    :param bias_regularizer: Regularizer for bias layers.
 
     References:
 
@@ -41,6 +44,8 @@ class Attention:
         linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,
         normalize_qk: bool = False,
+        linear_regularizer: Regularizer = zero,
+        bias_regularizer: Regularizer = zero,
     ):
         if key_input_dim is None:
             key_input_dim = query_input_dim
@@ -57,6 +62,8 @@ class Attention:
         self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
         self.normalize_qk = normalize_qk
+        self.linear_regularizer = linear_regularizer
+        self.bias_regularizer = bias_regularizer
 
     def init_params(self, key: Array) -> dict[str, Array]:
         """
@@ -152,7 +159,7 @@ class Attention:
         )
         return lax.collapse(hidden, -2)
 
-    def param_loss(self, params: dict[str, Array]) -> float:
+    def param_loss(self, params: dict[str, Array]) -> Array | float:
         """
         Parameter loss.
 
@@ -160,4 +167,11 @@ class Attention:
 
         :returns: Scalar.
         """
-        return 0.0
+        return (
+            self.linear_regularizer(params["query_kernel"])
+            + self.linear_regularizer(params["key_kernel"])
+            + self.linear_regularizer(params["value_kernel"])
+            + self.bias_regularizer(params["query_bias"])
+            + self.bias_regularizer(params["key_bias"])
+            + self.bias_regularizer(params["value_bias"])
+        )

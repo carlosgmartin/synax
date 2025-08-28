@@ -37,7 +37,9 @@ def sample_batch_indices(key, num_examples, batch_size):
 
 def get_dataset_size(ds):
     leaves = jax.tree.leaves(ds)
-    return leaves[0].shape[0]
+    size = leaves[0].shape[0]
+    assert all(leaf.shape[0] == size for leaf in leaves[1:])
+    return size
 
 
 def train(ds, model, optimizer, key, epochs, batch_size, epoch_callback):

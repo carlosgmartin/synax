@@ -131,6 +131,15 @@ def get_model(args, info):
             raise NotImplementedError(other)
 
 
+def plot_metrics(metrics):
+    for metric_name in ["loss", "error"]:
+        fig, ax = plt.subplots()
+        ax.set(xlabel="epoch", ylabel=metric_name)
+        for split in metrics.keys():
+            ax.plot(metrics[split][metric_name], label=split)
+        ax.legend()
+
+
 def main(args):
     ds, info = tfds.load(args.dataset, batch_size=-1, with_info=True)  # type: ignore
     print(f"Dataset: {info.description}\n")
@@ -161,12 +170,7 @@ def main(args):
         loss_fn=optax.softmax_cross_entropy_with_integer_labels,
     )
 
-    for metric_name in ["loss", "error"]:
-        fig, ax = plt.subplots()
-        ax.set(xlabel="epoch", ylabel=metric_name)
-        for split in metrics.keys():
-            ax.plot(metrics[split][metric_name], label=split)
-        ax.legend()
+    plot_metrics(metrics)
 
     plt.show()
 

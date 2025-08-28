@@ -126,7 +126,7 @@ def get_model(args, info):
 
 def main(args):
     ds, info = tfds.load(args.dataset, batch_size=-1, with_info=True)  # type: ignore
-    print(info.description)
+    print(f"Dataset: {info.description}\n")
     ds = tfds.as_numpy(ds)
     ds = jax.tree.map(jnp.asarray, ds)
 

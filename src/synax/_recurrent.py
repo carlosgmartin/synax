@@ -482,9 +482,9 @@ class UpdateGateRNN:
             "bg": self.bias_initializer(keys[5], (self.state_dim,)),
         }
 
-    def apply(self, w: dict[str, Array], h: Array, x: Array) -> Array:
-        c = self.activation(w["bc"] + x @ w["Wc"] + h @ w["Uc"])
-        g = nn.sigmoid(w["bg"] + x @ w["Wg"] + h @ w["Ug"])
+    def apply(self, params: dict[str, Array], h: Array, x: Array) -> Array:
+        c = self.activation(params["bc"] + x @ params["Wc"] + h @ params["Uc"])
+        g = nn.sigmoid(params["bg"] + x @ params["Wg"] + h @ params["Ug"])
         return g * h + (1 - g) * c
 
 

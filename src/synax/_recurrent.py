@@ -47,7 +47,7 @@ class SimpleRNN(BaseModule):
 
     def __init__(
         self,
-        state_dim: int,
+        state_dimension: int,
         input_dimension: int,
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         linear_initializer: Initializer = nn.initializers.glorot_uniform(),
@@ -59,7 +59,7 @@ class SimpleRNN(BaseModule):
         state_initializer: Initializer = nn.initializers.zeros,
     ):
         self.input_dimension = input_dimension
-        self.state_dim = state_dim
+        self.state_dimension = state_dimension
         self.recurrent_initializer = recurrent_initializer
         self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
@@ -73,12 +73,12 @@ class SimpleRNN(BaseModule):
         keys = random.split(key, 3)
         return {
             "linear": self.linear_initializer(
-                keys[0], (self.input_dimension, self.state_dim)
+                keys[0], (self.input_dimension, self.state_dimension)
             ),
             "recurrent": self.recurrent_initializer(
-                keys[1], (self.state_dim, self.state_dim)
+                keys[1], (self.state_dimension, self.state_dimension)
             ),
-            "bias": self.bias_initializer(keys[2], (self.state_dim,)),
+            "bias": self.bias_initializer(keys[2], (self.state_dimension,)),
         }
 
     def apply(self, parameters: dict[str, Array], state: Array, input: Array) -> Array:
@@ -86,7 +86,7 @@ class SimpleRNN(BaseModule):
         Apply module.
 
         :param parameters: Parameters.
-        :param state: Array of shape ``(..., state_dim)``.
+        :param state: Array of shape ``(..., state_dimension)``.
         :param input: Array of shape ``(..., input_dimension)``.
         :returns: Array of shape ``(..., output_dim)``.
         """
@@ -98,7 +98,7 @@ class SimpleRNN(BaseModule):
         return self.activation(y)
 
     def init_state(self, key: Key) -> Array:
-        return self.state_initializer(key, (self.state_dim,))
+        return self.state_initializer(key, (self.state_dimension,))
 
     def parameter_loss(self, parameters: dict[str, Array]) -> Array | float:
         loss = self.linear_regularizer(parameters["linear"])
@@ -119,7 +119,7 @@ class GRU:
 
     def __init__(
         self,
-        state_dim: int,
+        state_dimension: int,
         input_dimension: int,
         linear_initializer: Initializer = nn.initializers.glorot_uniform(),
         bias_initializer: Initializer = nn.initializers.zeros,
@@ -130,7 +130,7 @@ class GRU:
         state_initializer: Initializer = nn.initializers.zeros,
     ):
         self.input_dimension = input_dimension
-        self.state_dim = state_dim
+        self.state_dimension = state_dimension
         self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
         self.recurrent_initializer = recurrent_initializer
@@ -151,17 +151,29 @@ class GRU:
         """
         keys = random.split(key, 9)
 
-        wz = self.linear_initializer(keys[0], (self.input_dimension, self.state_dim))
-        wr = self.linear_initializer(keys[1], (self.input_dimension, self.state_dim))
-        wy = self.linear_initializer(keys[2], (self.input_dimension, self.state_dim))
+        wz = self.linear_initializer(
+            keys[0], (self.input_dimension, self.state_dimension)
+        )
+        wr = self.linear_initializer(
+            keys[1], (self.input_dimension, self.state_dimension)
+        )
+        wy = self.linear_initializer(
+            keys[2], (self.input_dimension, self.state_dimension)
+        )
 
-        uz = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
-        ur = self.recurrent_initializer(keys[4], (self.state_dim, self.state_dim))
-        uy = self.recurrent_initializer(keys[5], (self.state_dim, self.state_dim))
+        uz = self.recurrent_initializer(
+            keys[3], (self.state_dimension, self.state_dimension)
+        )
+        ur = self.recurrent_initializer(
+            keys[4], (self.state_dimension, self.state_dimension)
+        )
+        uy = self.recurrent_initializer(
+            keys[5], (self.state_dimension, self.state_dimension)
+        )
 
-        bz = self.bias_initializer(keys[6], (self.state_dim,))
-        br = self.bias_initializer(keys[7], (self.state_dim,))
-        by = self.bias_initializer(keys[8], (self.state_dim,))
+        bz = self.bias_initializer(keys[6], (self.state_dimension,))
+        br = self.bias_initializer(keys[7], (self.state_dimension,))
+        by = self.bias_initializer(keys[8], (self.state_dimension,))
 
         return bz, br, by, wz, wr, wy, uz, ur, uy
 
@@ -173,7 +185,7 @@ class GRU:
         return (1 - z) * state + z * y
 
     def init_state(self, key: Key) -> Array:
-        return self.state_initializer(key, (self.state_dim,))
+        return self.state_initializer(key, (self.state_dimension,))
 
 
 class MGU:
@@ -188,7 +200,7 @@ class MGU:
 
     def __init__(
         self,
-        state_dim: int,
+        state_dimension: int,
         input_dimension: int,
         linear_initializer: Initializer = nn.initializers.glorot_uniform(),
         bias_initializer: Initializer = nn.initializers.zeros,
@@ -199,7 +211,7 @@ class MGU:
         reset_gate: bool = True,
     ):
         self.input_dimension = input_dimension
-        self.state_dim = state_dim
+        self.state_dimension = state_dimension
         self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
         self.recurrent_initializer = recurrent_initializer
@@ -220,14 +232,22 @@ class MGU:
         """
         keys = random.split(key, 6)
 
-        wz = self.linear_initializer(keys[0], (self.input_dimension, self.state_dim))
-        wy = self.linear_initializer(keys[1], (self.input_dimension, self.state_dim))
+        wz = self.linear_initializer(
+            keys[0], (self.input_dimension, self.state_dimension)
+        )
+        wy = self.linear_initializer(
+            keys[1], (self.input_dimension, self.state_dimension)
+        )
 
-        uz = self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim))
-        uy = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
+        uz = self.recurrent_initializer(
+            keys[2], (self.state_dimension, self.state_dimension)
+        )
+        uy = self.recurrent_initializer(
+            keys[3], (self.state_dimension, self.state_dimension)
+        )
 
-        bz = self.bias_initializer(keys[4], (self.state_dim,))
-        by = self.bias_initializer(keys[5], (self.state_dim,))
+        bz = self.bias_initializer(keys[4], (self.state_dimension,))
+        by = self.bias_initializer(keys[5], (self.state_dimension,))
 
         return bz, by, wz, wy, uz, uy
 
@@ -241,7 +261,7 @@ class MGU:
         return (1 - z) * state + z * y
 
     def init_state(self, key: Key) -> Array:
-        return self.state_initializer(key, (self.state_dim,))
+        return self.state_initializer(key, (self.state_dimension,))
 
 
 class BistableRecurrentCell:
@@ -256,11 +276,11 @@ class BistableRecurrentCell:
 
     def __init__(
         self,
-        state_dim: int,
+        state_dimension: int,
         input_dimension: int,
         linear_initializer: Initializer = nn.initializers.he_normal(),
     ):
-        self.state_dim = state_dim
+        self.state_dimension = state_dimension
         self.input_dimension = input_dimension
         self.linear_initializer = linear_initializer
 
@@ -274,12 +294,18 @@ class BistableRecurrentCell:
         """
         keys = random.split(key, 3)
 
-        ua = jnp.eye(self.state_dim)
-        uc = jnp.eye(self.state_dim)
+        ua = jnp.eye(self.state_dimension)
+        uc = jnp.eye(self.state_dimension)
 
-        wa = self.linear_initializer(keys[0], (self.input_dimension, self.state_dim))
-        wc = self.linear_initializer(keys[1], (self.input_dimension, self.state_dim))
-        wy = self.linear_initializer(keys[2], (self.input_dimension, self.state_dim))
+        wa = self.linear_initializer(
+            keys[0], (self.input_dimension, self.state_dimension)
+        )
+        wc = self.linear_initializer(
+            keys[1], (self.input_dimension, self.state_dimension)
+        )
+        wy = self.linear_initializer(
+            keys[2], (self.input_dimension, self.state_dimension)
+        )
 
         return ua, uc, wa, wc, wy
 
@@ -303,14 +329,14 @@ class LSTM:
 
     def __init__(
         self,
-        state_dim: int,
+        state_dimension: int,
         input_dimension: int,
         linear_initializer: Initializer = nn.initializers.he_normal(),
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         bias_initializer: Initializer = nn.initializers.zeros,
         forget_bias: float = 1.0,
     ):
-        self.state_dim = state_dim
+        self.state_dimension = state_dimension
         self.input_dimension = input_dimension
         self.linear_initializer = linear_initializer
         self.recurrent_initializer = recurrent_initializer
@@ -327,20 +353,36 @@ class LSTM:
         """
         keys = random.split(key, 12)
 
-        Uf = self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim))
-        Ui = self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim))
-        Ug = self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim))
-        Uo = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
+        Uf = self.recurrent_initializer(
+            keys[0], (self.state_dimension, self.state_dimension)
+        )
+        Ui = self.recurrent_initializer(
+            keys[1], (self.state_dimension, self.state_dimension)
+        )
+        Ug = self.recurrent_initializer(
+            keys[2], (self.state_dimension, self.state_dimension)
+        )
+        Uo = self.recurrent_initializer(
+            keys[3], (self.state_dimension, self.state_dimension)
+        )
 
-        Wf = self.linear_initializer(keys[4], (self.input_dimension, self.state_dim))
-        Wi = self.linear_initializer(keys[5], (self.input_dimension, self.state_dim))
-        Wg = self.linear_initializer(keys[6], (self.input_dimension, self.state_dim))
-        Wo = self.linear_initializer(keys[7], (self.input_dimension, self.state_dim))
+        Wf = self.linear_initializer(
+            keys[4], (self.input_dimension, self.state_dimension)
+        )
+        Wi = self.linear_initializer(
+            keys[5], (self.input_dimension, self.state_dimension)
+        )
+        Wg = self.linear_initializer(
+            keys[6], (self.input_dimension, self.state_dimension)
+        )
+        Wo = self.linear_initializer(
+            keys[7], (self.input_dimension, self.state_dimension)
+        )
 
-        bf = self.bias_initializer(keys[8], (self.state_dim,)) + self.forget_bias
-        bi = self.bias_initializer(keys[9], (self.state_dim,))
-        bg = self.bias_initializer(keys[10], (self.state_dim,))
-        bo = self.bias_initializer(keys[11], (self.state_dim,))
+        bf = self.bias_initializer(keys[8], (self.state_dimension,)) + self.forget_bias
+        bi = self.bias_initializer(keys[9], (self.state_dimension,))
+        bg = self.bias_initializer(keys[10], (self.state_dimension,))
+        bo = self.bias_initializer(keys[11], (self.state_dimension,))
 
         return bf, bi, bg, bo, Wf, Wi, Wg, Wo, Uf, Ui, Ug, Uo
 
@@ -373,12 +415,12 @@ class FastGRNN:
 
     def __init__(
         self,
-        state_dim: int,
+        state_dimension: int,
         input_dimension: int,
         linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,
     ):
-        self.state_dim = state_dim
+        self.state_dimension = state_dimension
         self.input_dimension = input_dimension
         self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
@@ -391,14 +433,16 @@ class FastGRNN:
 
         :returns: Parameters.
         """
-        U = jnp.eye(self.state_dim)
+        U = jnp.eye(self.state_dimension)
 
         keys = random.split(key, 3)
 
-        W = self.linear_initializer(keys[0], (self.input_dimension, self.state_dim))
+        W = self.linear_initializer(
+            keys[0], (self.input_dimension, self.state_dimension)
+        )
 
-        bz = self.bias_initializer(keys[1], (self.state_dim,))
-        by = self.bias_initializer(keys[2], (self.state_dim,))
+        bz = self.bias_initializer(keys[1], (self.state_dimension,))
+        by = self.bias_initializer(keys[2], (self.state_dimension,))
 
         nu = jnp.array(0.0)
         zeta = jnp.array(0.0)
@@ -426,14 +470,14 @@ class UpdateGateRNN:
 
     def __init__(
         self,
-        state_dim: int,
+        state_dimension: int,
         input_dimension: int,
         activation: Callable[[Array], Array] = nn.tanh,
         linear_initializer: Initializer = nn.initializers.he_normal(),
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         bias_initializer: Initializer = nn.initializers.zeros,
     ):
-        self.state_dim = state_dim
+        self.state_dimension = state_dimension
         self.input_dimension = input_dimension
         self.activation = activation
         self.linear_initializer = linear_initializer
@@ -450,14 +494,22 @@ class UpdateGateRNN:
         """
         keys = random.split(key, 6)
 
-        Uc = self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim))
-        Ug = self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim))
+        Uc = self.recurrent_initializer(
+            keys[0], (self.state_dimension, self.state_dimension)
+        )
+        Ug = self.recurrent_initializer(
+            keys[1], (self.state_dimension, self.state_dimension)
+        )
 
-        Wc = self.linear_initializer(keys[2], (self.input_dimension, self.state_dim))
-        Wg = self.linear_initializer(keys[3], (self.input_dimension, self.state_dim))
+        Wc = self.linear_initializer(
+            keys[2], (self.input_dimension, self.state_dimension)
+        )
+        Wg = self.linear_initializer(
+            keys[3], (self.input_dimension, self.state_dimension)
+        )
 
-        bc = self.bias_initializer(keys[4], (self.state_dim,))
-        bg = self.bias_initializer(keys[5], (self.state_dim,))
+        bc = self.bias_initializer(keys[4], (self.state_dimension,))
+        bg = self.bias_initializer(keys[5], (self.state_dimension,))
 
         return bc, bg, Wc, Wg, Uc, Ug
 
@@ -471,7 +523,7 @@ class UpdateGateRNN:
 class ConvGatedUnit:
     def __init__(
         self,
-        state_dim: int,
+        state_dimension: int,
         input_dimension: int,
         shape: Sequence[int],
         new_activation: Callable[[Array], Array] = nn.tanh,
@@ -480,40 +532,40 @@ class ConvGatedUnit:
         bias_initializer: Initializer = nn.initializers.zeros,
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
     ):
-        self.state_dim = state_dim
+        self.state_dimension = state_dimension
         self.input_dimension = input_dimension
 
         self.new_linear_state = Conv(
-            self.state_dim,
-            self.state_dim,
+            self.state_dimension,
+            self.state_dimension,
             shape=shape,
             initializer=recurrent_initializer,
             padding="SAME",
         )
         self.new_linear_input = Conv(
             self.input_dimension,
-            self.state_dim,
+            self.state_dimension,
             shape=shape,
             initializer=linear_initializer,
             padding="SAME",
         )
-        self.new_bias = Bias(self.state_dim, initializer=bias_initializer)
+        self.new_bias = Bias(self.state_dimension, initializer=bias_initializer)
 
         self.update_linear_state = Conv(
-            self.state_dim,
-            self.state_dim,
+            self.state_dimension,
+            self.state_dimension,
             shape=shape,
             initializer=recurrent_initializer,
             padding="SAME",
         )
         self.update_linear_input = Conv(
             self.input_dimension,
-            self.state_dim,
+            self.state_dimension,
             shape=shape,
             initializer=linear_initializer,
             padding="SAME",
         )
-        self.update_bias = Bias(self.state_dim, initializer=bias_initializer)
+        self.update_bias = Bias(self.state_dimension, initializer=bias_initializer)
 
         self.new_activation = new_activation
         self.update_activation = update_activation

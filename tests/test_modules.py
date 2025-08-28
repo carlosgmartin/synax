@@ -1,5 +1,6 @@
 from typing import Callable
 
+import pytest
 from jax import Array, random
 from jax import numpy as jnp
 
@@ -150,3 +151,15 @@ def test_attention(
         value_input=value_input,
     )
     assert output.shape == (target_len, heads * hidden_dim)
+
+
+@pytest.mark.parametrize("cell_cls", [synax.SimpleRNN, synax.GRU, synax.MGU])
+def test_cell(cell_cls):
+    state_dim = 10
+    input_dim = 2
+    model = cell_cls(state_dim, input_dim)
+    param = model.init(key)
+    state = model.init_state(key)
+    input = jnp.zeros(input_dim)
+    new_state = model.apply(param, state, input)
+    assert new_state.shape == (state_dim,)

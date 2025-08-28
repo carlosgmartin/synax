@@ -138,7 +138,7 @@ class Linear(BaseModule):
     where :math:`A` is a learned matrix.
 
     :param input_dim: Input dimension.
-    :param output_dimension: Output dimension.
+    :param output_dim: Output dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
     """
@@ -146,17 +146,17 @@ class Linear(BaseModule):
     def __init__(
         self,
         input_dim: int,
-        output_dimension: int,
+        output_dim: int,
         initializer: Initializer = nn.initializers.he_normal(),
         regularizer: Regularizer = zero,
     ):
         self.input_dim = input_dim
-        self.output_dimension = output_dimension
+        self.output_dim = output_dim
         self.initializer = initializer
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        return self.initializer(key, (self.input_dim, self.output_dimension))
+        return self.initializer(key, (self.input_dim, self.output_dim))
 
     def apply(self, parameters: Array, input: Array) -> Array:
         """
@@ -165,7 +165,7 @@ class Linear(BaseModule):
         :param parameters: Parameters.
         :param input: Array of shape ``(..., input_dim)``.
 
-        :returns: Array of shape ``(..., output_dimension)``.
+        :returns: Array of shape ``(..., output_dim)``.
         """
         return input @ parameters
 
@@ -215,7 +215,7 @@ class Conv(BaseModule):
     Does not include bias.
 
     :param input_dim: Input dimension.
-    :param output_dimension: Output dimension.
+    :param output_dim: Output dimension.
     :param shape: Window shape.
     :param stride: Window stride.
     :param padding: Padding. Can be "VALID", "SAME", "SAME_LOWER", or a sequence
@@ -235,7 +235,7 @@ class Conv(BaseModule):
     def __init__(
         self,
         input_dim: int,
-        output_dimension: int,
+        output_dim: int,
         shape: Sequence[int],
         stride: int | Sequence[int] = 1,
         padding: Padding = "VALID",
@@ -245,7 +245,7 @@ class Conv(BaseModule):
         groups: int = 1,
     ):
         self.input_dim = input_dim
-        self.output_dimension = output_dimension
+        self.output_dim = output_dim
         self.shape = shape
         self.stride = stride
         self.padding = padding
@@ -256,9 +256,9 @@ class Conv(BaseModule):
 
     def init(self, key: Key) -> Array:
         kernel = self.initializer(
-            key, (self.output_dimension, self.input_dim * math.prod(self.shape))
+            key, (self.output_dim, self.input_dim * math.prod(self.shape))
         )
-        kernel = kernel.reshape((self.output_dimension, self.input_dim, *self.shape))
+        kernel = kernel.reshape((self.output_dim, self.input_dim, *self.shape))
         return kernel
 
     def apply(self, parameters: Array, input: Array) -> Array:
@@ -268,7 +268,7 @@ class Conv(BaseModule):
         :param parameters: Parameters.
         :param input: Array of shape ``(..., input_dim)``.
 
-        :returns: Array of shape ``(..., output_dimension)``.
+        :returns: Array of shape ``(..., output_dim)``.
         """
 
         stride = self.stride

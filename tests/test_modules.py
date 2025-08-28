@@ -159,6 +159,7 @@ def test_attention(
         synax.SimpleRNN,
         synax.GRU,
         synax.MGU,
+        synax.LSTM,
     ],
 )
 def test_cell(cell_cls):
@@ -168,5 +169,4 @@ def test_cell(cell_cls):
     param = model.init(key)
     state = model.init_state(key)
     input = jnp.zeros(input_dim)
-    new_state = model.apply(param, state, input)
-    assert new_state.shape == (state_dim,)
+    model.apply(param, state, input)

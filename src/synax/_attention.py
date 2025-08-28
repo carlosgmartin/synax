@@ -4,12 +4,10 @@ from jax.nn.initializers import Initializer
 
 from ._utils import layer_norm
 
-from ._basic import BaseModule
-
 Key = Array
 
 
-class Attention(BaseModule):
+class Attention:
     """
     Attention.
 
@@ -61,6 +59,13 @@ class Attention(BaseModule):
         self.normalize_qk = normalize_qk
 
     def init_params(self, key: Array) -> dict[str, Array]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, 6)
         return {
             "query_kernel": self.linear_initializer(

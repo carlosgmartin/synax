@@ -85,6 +85,13 @@ class AutoEncoder(BaseModule):
         self.decoder = decoder
 
     def init_params(self, key: Key) -> dict[str, Any]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key)
         return {
             "encoder": self.encoder.init_params(keys[0]),
@@ -154,6 +161,13 @@ class NeuralGPU(BaseModule):
         self.global_max = global_max
 
     def init_params(self, key: Key) -> Any:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.cell.init_params(key)
 
     def apply(self, params: Any, state: Array) -> Array:
@@ -219,6 +233,13 @@ class GLU(BaseModule):
         self.sigmoid_fn = sigmoid_fn
 
     def init_params(self, key: Key) -> dict[str, Array]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key, 4)
         w = self.linear_initializer(keys[0], (self.input_dim, self.output_dim))
         v = self.linear_initializer(keys[1], (self.input_dim, self.output_dim))

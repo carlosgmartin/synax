@@ -15,17 +15,6 @@ Key = Array
 
 class BaseModule(abc.ABC):
     @abc.abstractmethod
-    def init_params(self, key: Key) -> Any:
-        """
-        Sample initial parameters.
-
-        :param key: PRNG key.
-
-        :returns: Parameters.
-        """
-        raise NotImplementedError
-
-    @abc.abstractmethod
     def param_loss(self, params: Any) -> Array | float:
         """
         Parameter loss.
@@ -64,6 +53,13 @@ class Bias(BaseModule):
         self.regularizer = regularizer
 
     def init_params(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array, input: Array) -> Array:
@@ -108,6 +104,13 @@ class Scale(BaseModule):
         self.regularizer = regularizer
 
     def init_params(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array, input: Array) -> Array:
@@ -157,6 +160,13 @@ class Linear(BaseModule):
         self.regularizer = regularizer
 
     def init_params(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.initializer(key, (self.input_dim, self.output_dim))
 
     def apply(self, params: Array, input: Array) -> Array:
@@ -192,6 +202,13 @@ class Func(BaseModule):
         self.function = function
 
     def init_params(self, key: Key) -> None:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return None
 
     def apply(self, params: None, input: Any) -> Any:
@@ -256,6 +273,13 @@ class Conv(BaseModule):
         self.groups = groups
 
     def init_params(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         kernel = self.initializer(
             key, (self.output_dim, self.input_dim * math.prod(self.shape))
         )
@@ -328,6 +352,13 @@ class Embed(BaseModule):
         self.regularizer = regularizer
 
     def init_params(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.initializer(key, (self.number, self.dim))
 
     def apply(self, params: Array, input: Array) -> Array:

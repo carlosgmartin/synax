@@ -16,6 +16,13 @@ class RecurrentNetwork(BaseModule):
         self.unit = unit
 
     def init_params(self, key: Key) -> dict[str, Any]:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         keys = random.split(key)
         w = self.unit.init_params(keys[0])
         h = self.unit.init_state(keys[1])

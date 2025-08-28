@@ -23,6 +23,13 @@ class Constant(BaseModule):
         self.regularizer = regularizer
 
     def init_params(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array) -> Array:
@@ -44,6 +51,13 @@ class Ball(BaseModule):
         self.regularizer = regularizer
 
     def init_params(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array) -> Array:
@@ -65,6 +79,13 @@ class Simplex(BaseModule):
         self.regularizer = regularizer
 
     def init_params(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array) -> Array:
@@ -102,6 +123,13 @@ class SymmetricMatrix(BaseModule):
         self.regularizer = regularizer
 
     def init_params(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         n = self.dim * (self.dim + 1) // 2
         return self.initializer(key, (n,))
 
@@ -124,6 +152,13 @@ class AntisymmetricMatrix(BaseModule):
         self.regularizer = regularizer
 
     def init_params(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
         n = self.dim * (self.dim - 1) // 2
         return self.initializer(key, (n,))
 

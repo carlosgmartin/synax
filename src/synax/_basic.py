@@ -48,32 +48,32 @@ class Bias(BaseModule):
 
     where :math:`b` is a learned vector.
 
-    :param dimension: Input dimension.
+    :param dim: Input dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
     """
 
     def __init__(
         self,
-        dimension: int,
+        dim: int,
         initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
     ):
-        self.dimension = dimension
+        self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        return self.initializer(key, (self.dimension,))
+        return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array, input: Array) -> Array:
         """
         Apply module.
 
         :param params: Parameters.
-        :param input: Array of shape ``(..., dimension)``.
+        :param input: Array of shape ``(..., dim)``.
 
-        :returns: Array of shape ``(..., dimension)``.
+        :returns: Array of shape ``(..., dim)``.
         """
         return input + params
 
@@ -92,32 +92,32 @@ class Scale(BaseModule):
 
     where :math:`a` is a learned vector.
 
-    :param dimension: Input dimension.
+    :param dim: Input dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
     """
 
     def __init__(
         self,
-        dimension: int,
+        dim: int,
         initializer: Initializer = nn.initializers.ones,
         regularizer: Regularizer = zero,
     ):
-        self.dimension = dimension
+        self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        return self.initializer(key, (self.dimension,))
+        return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array, input: Array) -> Array:
         """
         Apply module.
 
         :param params: Parameters.
-        :param input: Array of shape ``(..., dimension)``.
+        :param input: Array of shape ``(..., dim)``.
 
-        :returns: Array of shape ``(..., dimension)``.
+        :returns: Array of shape ``(..., dim)``.
         """
         return input * params
 
@@ -310,7 +310,7 @@ class Embed(BaseModule):
     Embedding.
 
     :param number: Number of embeddings.
-    :param dimension: Dimension of each embedding.
+    :param dim: Dimension of each embedding.
     :param initializer: Initializer for embeddings.
     :param regularizer: Regularizer.
     """
@@ -318,17 +318,17 @@ class Embed(BaseModule):
     def __init__(
         self,
         number: int,
-        dimension: int,
+        dim: int,
         initializer: Initializer = nn.initializers.normal(),
         regularizer: Regularizer = zero,
     ):
         self.number = number
-        self.dimension = dimension
+        self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
 
     def init(self, key: Key) -> Array:
-        return self.initializer(key, (self.number, self.dimension))
+        return self.initializer(key, (self.number, self.dim))
 
     def apply(self, params: Array, input: Array) -> Array:
         """
@@ -337,7 +337,7 @@ class Embed(BaseModule):
         :param params: Parameters.
         :param input: Array of shape ``(...)``.
 
-        :returns: Array of shape ``(..., dimension)``.
+        :returns: Array of shape ``(..., dim)``.
         """
         return params[input]
 

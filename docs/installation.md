@@ -1,12 +1,12 @@
 # Installation
 
-You can install the latest development version as follows:
+To install the latest development version (recommended):
 
 ```shell
 pip install git+https://github.com/carlosgmartin/synax
 ```
 
-You can install the latest released version on PyPI as follows:
+To install the latest released version on PyPI:
 
 ```shell
 pip install synax

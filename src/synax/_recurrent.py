@@ -31,8 +31,8 @@ class RecurrentNetwork(BaseModule):
 
         return lax.scan(f, h, inputs)
 
-    def parameter_loss(self, params: dict[str, Any]) -> Array | float:
-        return self.unit.parameter_loss(params)
+    def param_loss(self, params: dict[str, Any]) -> Array | float:
+        return self.unit.param_loss(params)
 
 
 class SimpleRNN(BaseModule):
@@ -103,7 +103,7 @@ class SimpleRNN(BaseModule):
         """
         return self.state_initializer(key, (self.state_dim,))
 
-    def parameter_loss(self, params: dict[str, Array]) -> Array | float:
+    def param_loss(self, params: dict[str, Array]) -> Array | float:
         loss = self.linear_regularizer(params["linear"])
         loss += self.recurrent_regularizer(params["recurrent"])
         loss += self.bias_regularizer(params["recurrent"])

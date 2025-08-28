@@ -147,5 +147,5 @@ class Attention(BaseModule):
         )
         return lax.collapse(hidden, -2)
 
-    def parameter_loss(self, params: dict[str, Array]) -> float:
+    def param_loss(self, params: dict[str, Array]) -> float:
         return 0.0

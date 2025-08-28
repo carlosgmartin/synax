@@ -26,7 +26,7 @@ class BaseModule(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def parameter_loss(self, params: Any) -> Array | float:
+    def param_loss(self, params: Any) -> Array | float:
         """
         Parameter loss.
 
@@ -77,7 +77,7 @@ class Bias(BaseModule):
         """
         return input + params
 
-    def parameter_loss(self, params: Array) -> Array | float:
+    def param_loss(self, params: Array) -> Array | float:
         return self.regularizer(params)
 
 
@@ -121,7 +121,7 @@ class Scale(BaseModule):
         """
         return input * params
 
-    def parameter_loss(self, params: Array) -> Array | float:
+    def param_loss(self, params: Array) -> Array | float:
         return self.regularizer(params)
 
 
@@ -170,7 +170,7 @@ class Linear(BaseModule):
         """
         return input @ params
 
-    def parameter_loss(self, params: Array) -> Array | float:
+    def param_loss(self, params: Array) -> Array | float:
         return self.regularizer(params)
 
 
@@ -205,7 +205,7 @@ class Func(BaseModule):
         """
         return self.function(input)
 
-    def parameter_loss(self, params: None) -> float:
+    def param_loss(self, params: None) -> float:
         return 0.0
 
 
@@ -301,7 +301,7 @@ class Conv(BaseModule):
         x = jnp.moveaxis(x, -num_spatial_axes - 1, -1)
         return x
 
-    def parameter_loss(self, params: Array) -> float:
+    def param_loss(self, params: Array) -> float:
         return 0.0
 
 
@@ -341,5 +341,5 @@ class Embed(BaseModule):
         """
         return params[input]
 
-    def parameter_loss(self, params: Array) -> Array | float:
+    def param_loss(self, params: Array) -> Array | float:
         return self.regularizer(params)

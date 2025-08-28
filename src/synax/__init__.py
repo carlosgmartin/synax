@@ -26,16 +26,16 @@ from ._utils import layer_norm as layer_norm
 from ._utils import max_pool as max_pool
 from ._utils import mean_pool as mean_pool
 from ._utils import rms_norm as rms_norm
+from ._parameterizations import AntiSymmetricMatrix as AntiSymmetricMatrix
+from ._parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatrix
+from ._parameterizations import SymmetricMatrix as SymmetricMatrix
+from ._parameterizations import Constant as Constant
 
 # from ._compound import Repeat as Repeat
 # from ._compound import Switch as Switch
 # from ._misc import NeuralGPU as NeuralGPU
-# from ._parameterizations import AntisymmetricMatrix as AntisymmetricMatrix
 # from ._parameterizations import Ball as Ball
-# from ._parameterizations import Constant as Constant
 # from ._parameterizations import Simplex as Simplex
-# from ._parameterizations import SpecialOrthogonalMatrix as SpecialOrthogonalMatrix
-# from ._parameterizations import SymmetricMatrix as SymmetricMatrix
 # from ._recurrent import BistableRecurrentCell as BistableRecurrentCell
 # from ._recurrent import ConvolutionalGatedUnit as ConvolutionalGatedUnit
 # from ._recurrent import FastGRNN as FastGRNN

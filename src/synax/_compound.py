@@ -36,7 +36,7 @@ class Chain:
     def __init__(self, modules: Sequence[Module]):
         self.modules = modules
 
-    def init(self, key: Key) -> tuple[Any, ...]:
+    def init_params(self, key: Key) -> tuple[Any, ...]:
         """
         Sample initial parameters.
 
@@ -45,7 +45,7 @@ class Chain:
         :returns: Parameters.
         """
         keys = random.split(key, len(self.modules))
-        return tuple(module.init(key) for module, key in zip(self.modules, keys))
+        return tuple(module.init_params(key) for module, key in zip(self.modules, keys))
 
     def apply(self, params: tuple[Any, ...], input: Any) -> Any:
         for module, param in zip(self.modules, params, strict=True):
@@ -90,7 +90,7 @@ class Parallel:
     def __init__(self, modules: Sequence[Module]):
         self.modules = modules
 
-    def init(self, key: Key) -> tuple[Any, ...]:
+    def init_params(self, key: Key) -> tuple[Any, ...]:
         """
         Sample initial parameters.
 
@@ -99,7 +99,7 @@ class Parallel:
         :returns: Parameters.
         """
         keys = random.split(key, len(self.modules))
-        return tuple(module.init(key) for module, key in zip(self.modules, keys))
+        return tuple(module.init_params(key) for module, key in zip(self.modules, keys))
 
     def apply(self, params: tuple[Any, ...], input: Sequence[Any]) -> tuple[Any, ...]:
         return tuple(
@@ -125,7 +125,7 @@ class Repeat:
     def __init__(self, module: Module):
         self.module = module
 
-    def init(self, key: Key) -> Any:
+    def init_params(self, key: Key) -> Any:
         """
         Sample initial parameters.
 
@@ -133,7 +133,7 @@ class Repeat:
 
         :returns: Parameters.
         """
-        return self.module.init(key)
+        return self.module.init_params(key)
 
     def apply(self, params: Any, input: Any, steps: int, unroll: int = 1) -> Any:
         def f(x: Any, _: None) -> Any:
@@ -175,7 +175,7 @@ class Residual:
     def __init__(self, module: Module):
         self.module = module
 
-    def init(self, key: Key) -> Any:
+    def init_params(self, key: Key) -> Any:
         """
         Sample initial parameters.
 
@@ -183,7 +183,7 @@ class Residual:
 
         :returns: Parameters.
         """
-        return self.module.init(key)
+        return self.module.init_params(key)
 
     def apply(self, params: Any, input: Array) -> Array:
         output = self.module.apply(params, input)
@@ -205,7 +205,7 @@ class Switch:
         self.module = module
         self.branches = branches
 
-    def init(self, key: Key) -> Any:
+    def init_params(self, key: Key) -> Any:
         """
         Sample initial parameters.
 
@@ -214,7 +214,7 @@ class Switch:
         :returns: Parameters.
         """
         keys = random.split(key, self.branches)
-        return jax.vmap(self.module.init)(keys)
+        return jax.vmap(self.module.init_params)(keys)
 
     def apply(self, params: Any, branch: Array, input: Any) -> Any:
         def f(x: Array) -> Array:

@@ -15,9 +15,9 @@ class RecurrentNetwork(BaseModule):
     def __init__(self, unit: Module):
         self.unit = unit
 
-    def init(self, key: Key) -> dict[str, Any]:
+    def init_params(self, key: Key) -> dict[str, Any]:
         keys = random.split(key)
-        w = self.unit.init(keys[0])
+        w = self.unit.init_params(keys[0])
         h = self.unit.init_state(keys[1])
         return {"unit_param": w, "init_state": h}
 
@@ -69,7 +69,7 @@ class SimpleRNN(BaseModule):
         self.activation = activation
         self.state_initializer = state_initializer
 
-    def init(self, key: Key) -> dict[str, Array]:
+    def init_params(self, key: Key) -> dict[str, Array]:
         keys = random.split(key, 3)
         return {
             "linear": self.linear_initializer(
@@ -144,7 +144,7 @@ class GRU:
 
         self.state_initializer = state_initializer
 
-    def init(self, key: Key) -> dict[str, Array]:
+    def init_params(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -222,7 +222,7 @@ class MGU:
         self.state_initializer = state_initializer
         self.reset_gate = reset_gate
 
-    def init(self, key: Key) -> dict[str, Array]:
+    def init_params(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -285,7 +285,7 @@ class BistableRecurrentCell:
         self.input_dim = input_dim
         self.linear_initializer = linear_initializer
 
-    def init(self, key: Key) -> dict[str, Array]:
+    def init_params(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -337,7 +337,7 @@ class LSTM:
         self.forget_bias = forget_bias
         self.state_initializer = state_initializer
 
-    def init(self, key: Key) -> dict[str, Array]:
+    def init_params(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -412,7 +412,7 @@ class FastGRNN:
         self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
 
-    def init(self, key: Key) -> dict[str, Array]:
+    def init_params(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -464,7 +464,7 @@ class UpdateGateRNN:
         self.recurrent_initializer = recurrent_initializer
         self.bias_initializer = bias_initializer
 
-    def init(self, key: Key) -> dict[str, Array]:
+    def init_params(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -538,7 +538,7 @@ class ConvGatedUnit:
         self.new_activation = new_activation
         self.update_activation = update_activation
 
-    def init(self, key: Key) -> dict[str, Any]:
+    def init_params(self, key: Key) -> dict[str, Any]:
         """
         Sample initial parameters.
 
@@ -548,12 +548,12 @@ class ConvGatedUnit:
         """
         keys = random.split(key, 6)
         return {
-            "new_linear_state": self.new_linear_state.init(keys[0]),
-            "new_linear_input": self.new_linear_input.init(keys[1]),
-            "new_bias": self.new_bias.init(keys[2]),
-            "update_linear_state": self.update_linear_state.init(keys[3]),
-            "update_linear_input": self.update_linear_input.init(keys[4]),
-            "update_bias": self.update_bias.init(keys[5]),
+            "new_linear_state": self.new_linear_state.init_params(keys[0]),
+            "new_linear_input": self.new_linear_input.init_params(keys[1]),
+            "new_bias": self.new_bias.init_params(keys[2]),
+            "update_linear_state": self.update_linear_state.init_params(keys[3]),
+            "update_linear_input": self.update_linear_input.init_params(keys[4]),
+            "update_bias": self.update_bias.init_params(keys[5]),
         }
 
     def apply(self, params: dict[str, Any], state: Array, input: Array) -> Array:

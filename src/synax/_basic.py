@@ -15,7 +15,7 @@ Key = Array
 
 class BaseModule(abc.ABC):
     @abc.abstractmethod
-    def init(self, key: Key) -> Any:
+    def init_params(self, key: Key) -> Any:
         """
         Sample initial parameters.
 
@@ -63,7 +63,7 @@ class Bias(BaseModule):
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array, input: Array) -> Array:
@@ -107,7 +107,7 @@ class Scale(BaseModule):
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array, input: Array) -> Array:
@@ -156,7 +156,7 @@ class Linear(BaseModule):
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         return self.initializer(key, (self.input_dim, self.output_dim))
 
     def apply(self, params: Array, input: Array) -> Array:
@@ -191,7 +191,7 @@ class Func(BaseModule):
     def __init__(self, function: Callable[[Any], Any]):
         self.function = function
 
-    def init(self, key: Key) -> None:
+    def init_params(self, key: Key) -> None:
         return None
 
     def apply(self, params: None, input: Any) -> Any:
@@ -255,7 +255,7 @@ class Conv(BaseModule):
         self.initializer = initializer
         self.groups = groups
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         kernel = self.initializer(
             key, (self.output_dim, self.input_dim * math.prod(self.shape))
         )
@@ -327,7 +327,7 @@ class Embed(BaseModule):
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         return self.initializer(key, (self.number, self.dim))
 
     def apply(self, params: Array, input: Array) -> Array:

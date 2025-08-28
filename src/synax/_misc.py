@@ -84,11 +84,11 @@ class AutoEncoder(BaseModule):
         self.encoder = encoder
         self.decoder = decoder
 
-    def init(self, key: Key) -> dict[str, Any]:
+    def init_params(self, key: Key) -> dict[str, Any]:
         keys = random.split(key)
         return {
-            "encoder": self.encoder.init(keys[0]),
-            "decoder": self.decoder.init(keys[1]),
+            "encoder": self.encoder.init_params(keys[0]),
+            "decoder": self.decoder.init_params(keys[1]),
         }
 
     def encode(self, params: dict[str, Any], input: Any) -> Any:
@@ -153,8 +153,8 @@ class NeuralGPU(BaseModule):
         self.global_mean = global_mean
         self.global_max = global_max
 
-    def init(self, key: Key) -> Any:
-        return self.cell.init(key)
+    def init_params(self, key: Key) -> Any:
+        return self.cell.init_params(key)
 
     def apply(self, params: Any, state: Array) -> Array:
         inputs = []
@@ -218,7 +218,7 @@ class GLU(BaseModule):
         self.bias_initializer = bias_initializer
         self.sigmoid_fn = sigmoid_fn
 
-    def init(self, key: Key) -> dict[str, Array]:
+    def init_params(self, key: Key) -> dict[str, Array]:
         keys = random.split(key, 4)
         w = self.linear_initializer(keys[0], (self.input_dim, self.output_dim))
         v = self.linear_initializer(keys[1], (self.input_dim, self.output_dim))
@@ -266,7 +266,7 @@ class PReLU(BaseModule):
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         return self.initializer(key, ())
 
     def apply(self, params: Array, input: Array) -> Array:

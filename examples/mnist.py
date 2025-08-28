@@ -93,7 +93,7 @@ def train(ds, model, optimizer, key, epochs, batch_size, epoch_callback, loss_fn
 
     def run_trial(key):
         key, subkey = random.split(key)
-        params = model.init(subkey)
+        params = model.init_params(subkey)
 
         opt_state = optimizer.init(params)
 

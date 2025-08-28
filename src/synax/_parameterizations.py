@@ -22,7 +22,7 @@ class Constant(BaseModule):
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array) -> Array:
@@ -43,7 +43,7 @@ class Ball(BaseModule):
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array) -> Array:
@@ -64,7 +64,7 @@ class Simplex(BaseModule):
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         return self.initializer(key, (self.dim,))
 
     def apply(self, params: Array) -> Array:
@@ -101,7 +101,7 @@ class SymmetricMatrix(BaseModule):
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         n = self.dim * (self.dim + 1) // 2
         return self.initializer(key, (n,))
 
@@ -123,7 +123,7 @@ class AntisymmetricMatrix(BaseModule):
         self.initializer = initializer
         self.regularizer = regularizer
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         n = self.dim * (self.dim - 1) // 2
         return self.initializer(key, (n,))
 
@@ -139,7 +139,7 @@ class SpecialOrthogonalMatrix:
         self.antisymmetric = AntisymmetricMatrix(dim)
         self.transform = transform
 
-    def init(self, key: Key) -> Array:
+    def init_params(self, key: Key) -> Array:
         """
         Sample initial parameters.
 
@@ -147,7 +147,7 @@ class SpecialOrthogonalMatrix:
 
         :returns: Parameters.
         """
-        return self.antisymmetric.init(key)
+        return self.antisymmetric.init_params(key)
 
     def apply(self, params: Array) -> Array:
         m = self.antisymmetric.apply(params)

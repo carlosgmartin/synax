@@ -8,7 +8,7 @@ module = synax.MLP([2, 32, 3])
 key = random.key(0)
 
 # Sample initial parameters.
-w = module.init(key)
+w = module.init_params(key)
 
 # Define an input.
 x = jnp.ones(2)

@@ -60,7 +60,7 @@ class Attention(BaseModule):
         self.bias_initializer = bias_initializer
         self.normalize_qk = normalize_qk
 
-    def init(self, key: Array) -> dict[str, Array]:
+    def init_params(self, key: Array) -> dict[str, Array]:
         keys = random.split(key, 6)
         return {
             "query_kernel": self.linear_initializer(

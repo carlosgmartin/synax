@@ -15,7 +15,7 @@ Output:
 
 A module has the following methods:
 
-- ``init`` takes a [JAX PRNG key](https://docs.jax.dev/en/latest/_autosummary/jax.random.key.html) and returns initial parameters for the module.
+- ``init_params`` takes a [JAX PRNG key](https://docs.jax.dev/en/latest/_autosummary/jax.random.key.html) and returns initial parameters for the module.
 
 - ``apply`` takes the module's parameters, together with any inputs, and returns the output of the module.
 

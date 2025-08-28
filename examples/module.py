@@ -16,7 +16,7 @@ class Affine:
         self.weight_init = weight_init
         self.bias_init = bias_init
 
-    def init(self, key):
+    def init_params(self, key):
         keys = random.split(key)
         weight = self.weight_init(keys[0], (self.input_dim, self.output_dim))
         bias = self.bias_init(keys[1], (self.output_dim,))
@@ -28,5 +28,5 @@ class Affine:
 
 module = Affine(3, 2)
 key = random.key(0)
-params = module.init(key)
+params = module.init_params(key)
 print(params)

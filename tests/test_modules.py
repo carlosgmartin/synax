@@ -17,13 +17,13 @@ def test_bias(d: int = 10):
 
 
 def test_conv(
-    input_dimension: int = 3,
+    input_dim: int = 3,
     output_dim: int = 4,
     spatial_dims: tuple[int, ...] = (20, 18),
 ):
-    module = synax.Conv(input_dimension, output_dim, (3, 3))
+    module = synax.Conv(input_dim, output_dim, (3, 3))
     param = module.init(key)
-    x = jnp.zeros(spatial_dims + (input_dimension,))
+    x = jnp.zeros(spatial_dims + (input_dim,))
     y = module.apply(param, x)
     assert y.shape == spatial_dims[:-2] + (
         spatial_dims[-2] - 2,
@@ -56,25 +56,23 @@ def test_function(
     assert (y == f(x)).all()
 
 
-def test_dense(input_dimension: int = 10, output_dim: int = 20):
-    module = synax.Linear(input_dimension, output_dim)
+def test_dense(input_dim: int = 10, output_dim: int = 20):
+    module = synax.Linear(input_dim, output_dim)
     param = module.init(key)
-    x = jnp.zeros(input_dimension)
+    x = jnp.zeros(input_dim)
     y = module.apply(param, x)
     assert y.shape == (output_dim,)
 
 
-def test_parallel(
-    input_dimension: int = 3, output_dim_1: int = 5, output_dim_2: int = 7
-):
+def test_parallel(input_dim: int = 3, output_dim_1: int = 5, output_dim_2: int = 7):
     module = synax.Parallel(
         [
-            synax.Linear(input_dimension, output_dim_1),
-            synax.Linear(input_dimension, output_dim_2),
+            synax.Linear(input_dim, output_dim_1),
+            synax.Linear(input_dim, output_dim_2),
         ]
     )
     param = module.init(key)
-    x = jnp.zeros(input_dimension)
+    x = jnp.zeros(input_dim)
     y1, y2 = module.apply(param, [x, x])
     assert y1.shape == (output_dim_1,)
     assert y2.shape == (output_dim_2,)
@@ -88,15 +86,15 @@ def test_chain_identity(dim: int = 5):
     assert (y == x).all()
 
 
-def test_chain(input_dimension: int = 3, hidden_dim: int = 5, output_dim: int = 7):
+def test_chain(input_dim: int = 3, hidden_dim: int = 5, output_dim: int = 7):
     module = synax.Chain(
         [
-            synax.Linear(input_dimension, hidden_dim),
+            synax.Linear(input_dim, hidden_dim),
             synax.Linear(hidden_dim, output_dim),
         ]
     )
     param = module.init(key)
-    x = jnp.zeros(input_dimension)
+    x = jnp.zeros(input_dim)
     y = module.apply(param, x)
     assert y.shape == (output_dim,)
 

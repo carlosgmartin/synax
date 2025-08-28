@@ -47,9 +47,9 @@ def MLP(
       https://www.nature.com/articles/323533a0.
     """
     modules: list[Module] = []
-    for input_dimension, output_dimension in zip(dimensions[:-1], dimensions[1:]):
+    for input_dim, output_dimension in zip(dimensions[:-1], dimensions[1:]):
         linear = Linear(
-            input_dimension,
+            input_dim,
             output_dimension,
             initializer=linear_initializer,
             regularizer=linear_regularizer,
@@ -190,7 +190,7 @@ class GLU(BaseModule):
     where :math:`\sigma` is a sigmoid function, :math:`A_1` and :math:`A_2` are
     learned matrices, and :math:`b_1` and :math:`b_2` are learned vectors.
 
-    :param input_dimension: Input dimension.
+    :param input_dim: Input dimension.
     :param output_dimension: Output dimension.
     :param linear_initializer: Initializer for linear layers.
     :param bias_initializer: Initializer for bias layers.
@@ -204,13 +204,13 @@ class GLU(BaseModule):
 
     def __init__(
         self,
-        input_dimension: int,
+        input_dim: int,
         output_dimension: int,
         linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,
         sigmoid_fn: Callable[[Array], Array] = nn.sigmoid,
     ):
-        self.input_dimension = input_dimension
+        self.input_dim = input_dim
         self.output_dimension = output_dimension
         self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
@@ -218,12 +218,8 @@ class GLU(BaseModule):
 
     def init(self, key: Key) -> dict[str, Array]:
         keys = random.split(key, 4)
-        w = self.linear_initializer(
-            keys[0], (self.input_dimension, self.output_dimension)
-        )
-        v = self.linear_initializer(
-            keys[1], (self.input_dimension, self.output_dimension)
-        )
+        w = self.linear_initializer(keys[0], (self.input_dim, self.output_dimension))
+        v = self.linear_initializer(keys[1], (self.input_dim, self.output_dimension))
         b = self.bias_initializer(keys[2], (self.output_dimension,))
         c = self.bias_initializer(keys[3], (self.output_dimension,))
         return {

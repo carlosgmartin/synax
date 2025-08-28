@@ -43,9 +43,9 @@ def get_dataset_size(ds):
 
 
 def train(ds, model, optimizer, key, epochs, batch_size, epoch_callback, loss_fn):
-    def get_example_loss(params, instance):
-        image = instance["image"]
-        label = instance["label"]
+    def get_example_loss(params, example):
+        image = example["image"]
+        label = example["label"]
         image /= 255
         logits = model.apply(params, image)
         loss = loss_fn(logits, label)

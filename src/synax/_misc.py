@@ -232,12 +232,16 @@ class GLU:
         linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,
         sigmoid_fn: Callable[[Array], Array] = nn.sigmoid,
+        linear_regularizer: Regularizer = zero,
+        bias_regularizer: Regularizer = zero,
     ):
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
         self.sigmoid_fn = sigmoid_fn
+        self.linear_regularizer = linear_regularizer
+        self.bias_regularizer = bias_regularizer
 
     def init_params(self, key: Key) -> dict[str, Array]:
         """
@@ -261,6 +265,18 @@ class GLU:
         x = input @ params["linear"] + params["bias"]
         y, z = jnp.split(x, [self.output_dim])
         return y * self.sigmoid_fn(z)
+
+    def param_loss(self, params: dict[str, Any]) -> Array | float:
+        """
+        Parameter loss.
+
+        :param params: Parameters.
+
+        :returns: Scalar.
+        """
+        return self.linear_regularizer(params["linear"]) + self.bias_regularizer(
+            params["bias"]
+        )
 
 
 class PReLU:

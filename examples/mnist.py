@@ -137,13 +137,15 @@ def plot_metrics(metrics):
     for split in metrics.keys():
         for metric_name in metrics[split].keys():
             if metric_name not in axes:
-                fig, ax = plt.subplots()
+                fig, ax = plt.subplots(constrained_layout=True)
                 axes[metric_name] = ax
             ax = axes[metric_name]
             ax.plot(metrics[split][metric_name], label=split)
 
-    for ax in axes.values():
+    for metric_name, ax in axes.items():
         ax.legend()
+        ax.set(xlabel="epoch")
+        ax.set(ylabel=metric_name)
 
 
 def main(args):

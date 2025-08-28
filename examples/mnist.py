@@ -42,13 +42,13 @@ def get_dataset_size(ds):
     return size
 
 
-def train(ds, model, optimizer, key, epochs, batch_size, epoch_callback):
+def train(ds, model, optimizer, key, epochs, batch_size, epoch_callback, loss_fn):
     def get_example_loss(params, instance):
         image = instance["image"]
         label = instance["label"]
         image /= 255
         logits = model.apply(params, image)
-        loss = optax.softmax_cross_entropy_with_integer_labels(logits, label)
+        loss = loss_fn(logits, label)
         error = logits.argmax() != label
         return loss, {"loss": loss, "error": error}
 
@@ -158,6 +158,7 @@ def main(args):
         epochs=args.epochs,
         batch_size=args.batch_size,
         epoch_callback=epoch_callback,
+        loss_fn=optax.softmax_cross_entropy_with_integer_labels,
     )
 
     for metric_name in ["loss", "error"]:

@@ -479,7 +479,7 @@ class UpdateGateRNN:
         self.recurrent_initializer = recurrent_initializer
         self.bias_initializer = bias_initializer
 
-    def init(self, key: Key) -> tuple[Array, ...]:
+    def init(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -488,22 +488,18 @@ class UpdateGateRNN:
         :returns: Parameters.
         """
         keys = random.split(key, 6)
+        return {
+            "Uc": self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim)),
+            "Ug": self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim)),
+            "Wc": self.linear_initializer(keys[2], (self.input_dim, self.state_dim)),
+            "Wg": self.linear_initializer(keys[3], (self.input_dim, self.state_dim)),
+            "bc": self.bias_initializer(keys[4], (self.state_dim,)),
+            "bg": self.bias_initializer(keys[5], (self.state_dim,)),
+        }
 
-        Uc = self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim))
-        Ug = self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim))
-
-        Wc = self.linear_initializer(keys[2], (self.input_dim, self.state_dim))
-        Wg = self.linear_initializer(keys[3], (self.input_dim, self.state_dim))
-
-        bc = self.bias_initializer(keys[4], (self.state_dim,))
-        bg = self.bias_initializer(keys[5], (self.state_dim,))
-
-        return bc, bg, Wc, Wg, Uc, Ug
-
-    def apply(self, w: tuple[Array, ...], h: Array, x: Array) -> Array:
-        bc, bg, Wc, Wg, Uc, Ug = w
-        c = self.activation(bc + x @ Wc + h @ Uc)
-        g = nn.sigmoid(bg + x @ Wg + h @ Ug)
+    def apply(self, w: dict[str, Array], h: Array, x: Array) -> Array:
+        c = self.activation(w["bc"] + x @ w["Wc"] + h @ w["Uc"])
+        g = nn.sigmoid(w["bg"] + x @ w["Wg"] + h @ w["Ug"])
         return g * h + (1 - g) * c
 
 

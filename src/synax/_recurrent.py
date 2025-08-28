@@ -226,7 +226,7 @@ class MGU:
         self.state_initializer = state_initializer
         self.reset_gate = reset_gate
 
-    def init(self, key: Key) -> tuple[Array, ...]:
+    def init(self, key: Key) -> dict[str, Array]:
         """
         Sample initial parameters.
 
@@ -235,25 +235,29 @@ class MGU:
         :returns: Parameters.
         """
         keys = random.split(key, 6)
+        return {
+            "wz": self.linear_initializer(keys[0], (self.input_dim, self.state_dim)),
+            "wy": self.linear_initializer(keys[1], (self.input_dim, self.state_dim)),
+            "uz": self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim)),
+            "uy": self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim)),
+            "bz": self.bias_initializer(keys[4], (self.state_dim,)),
+            "by": self.bias_initializer(keys[5], (self.state_dim,)),
+        }
 
-        wz = self.linear_initializer(keys[0], (self.input_dim, self.state_dim))
-        wy = self.linear_initializer(keys[1], (self.input_dim, self.state_dim))
-
-        uz = self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim))
-        uy = self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim))
-
-        bz = self.bias_initializer(keys[4], (self.state_dim,))
-        by = self.bias_initializer(keys[5], (self.state_dim,))
-
-        return bz, by, wz, wy, uz, uy
-
-    def apply(self, parameters: tuple[Array, ...], state: Array, input: Array) -> Array:
-        bz, by, wz, wy, uz, uy = parameters
-        z = self.update_activation(input @ wz + state @ uz + bz)
+    def apply(self, parameters: dict[str, Array], state: Array, input: Array) -> Array:
+        z = self.update_activation(
+            input @ parameters["wz"] + state @ parameters["uz"] + parameters["bz"]
+        )
         if self.reset_gate:
-            y = self.candidate_activation(input @ wy + (state * z) @ uy + by)
+            y = self.candidate_activation(
+                input @ parameters["wy"]
+                + (state * z) @ parameters["uy"]
+                + parameters["by"]
+            )
         else:
-            y = self.candidate_activation(input @ wy + state @ uy + by)
+            y = self.candidate_activation(
+                input @ parameters["wy"] + state @ parameters["uy"] + parameters["by"]
+            )
         return (1 - z) * state + z * y
 
     def init_state(self, key: Key) -> Array:

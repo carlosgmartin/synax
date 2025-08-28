@@ -362,9 +362,9 @@ class LSTM:
         }
 
     def apply(
-        self, params: dict[str, Array], h_c: tuple[Array, Array], x: Array
+        self, params: dict[str, Array], state: tuple[Array, Array], x: Array
     ) -> tuple[Array, Array]:
-        h, c = h_c
+        h, c = state
 
         f = nn.sigmoid(params["bf"] + x @ params["Wf"] + h @ params["Uf"])
         i = nn.sigmoid(params["bi"] + x @ params["Wi"] + h @ params["Ui"])
@@ -430,12 +430,12 @@ class FastGRNN:
             "zeta": jnp.array(0.0),
         }
 
-    def apply(self, params: dict[str, Array], h: Array, x: Array) -> Array:
-        z = nn.sigmoid(params["bz"] + h @ params["U"] + x @ params["W"])
-        y = nn.tanh(params["by"] + h @ params["U"] + x @ params["W"])
+    def apply(self, params: dict[str, Array], state: Array, x: Array) -> Array:
+        z = nn.sigmoid(params["bz"] + state @ params["U"] + x @ params["W"])
+        y = nn.tanh(params["by"] + state @ params["U"] + x @ params["W"])
         zeta = nn.sigmoid(params["zeta"])
         nu = nn.sigmoid(params["nu"])
-        return (zeta * (1 - z) + nu) * y + z * h
+        return (zeta * (1 - z) + nu) * y + z * state
 
 
 class UpdateGateRNN:
@@ -482,10 +482,10 @@ class UpdateGateRNN:
             "bg": self.bias_initializer(keys[5], (self.state_dim,)),
         }
 
-    def apply(self, params: dict[str, Array], h: Array, x: Array) -> Array:
-        c = self.activation(params["bc"] + x @ params["Wc"] + h @ params["Uc"])
-        g = nn.sigmoid(params["bg"] + x @ params["Wg"] + h @ params["Ug"])
-        return g * h + (1 - g) * c
+    def apply(self, params: dict[str, Array], state: Array, x: Array) -> Array:
+        c = self.activation(params["bc"] + x @ params["Wc"] + state @ params["Uc"])
+        g = nn.sigmoid(params["bg"] + x @ params["Wg"] + state @ params["Ug"])
+        return g * state + (1 - g) * c
 
 
 class ConvGatedUnit:

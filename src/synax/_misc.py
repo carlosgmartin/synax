@@ -113,6 +113,13 @@ class AutoEncoder(BaseModule):
         return (diff * jnp.conj(diff)).sum()
 
     def param_loss(self, params: dict[str, Any]) -> Array:
+        """
+        Parameter loss.
+
+        :param params: Parameters.
+
+        :returns: Scalar.
+        """
         encoder_loss = self.encoder.param_loss(params["encoder"])
         decoder_loss = self.decoder.param_loss(params["decoder"])
         return encoder_loss + decoder_loss
@@ -294,6 +301,13 @@ class PReLU(BaseModule):
         return jnp.where(input > 0, input, input * params)
 
     def param_loss(self, params: Array) -> Array | float:
+        """
+        Parameter loss.
+
+        :param params: Parameters.
+
+        :returns: Scalar.
+        """
         return self.regularizer(params)
 
 

@@ -14,16 +14,7 @@ Key = Array
 
 
 class BaseModule(abc.ABC):
-    @abc.abstractmethod
-    def param_loss(self, params: Any) -> Array | float:
-        """
-        Parameter loss.
-
-        :param params: Parameters.
-
-        :returns: Scalar.
-        """
-        raise NotImplementedError
+    pass
 
 
 class Bias(BaseModule):
@@ -74,6 +65,13 @@ class Bias(BaseModule):
         return input + params
 
     def param_loss(self, params: Array) -> Array | float:
+        """
+        Parameter loss.
+
+        :param params: Parameters.
+
+        :returns: Scalar.
+        """
         return self.regularizer(params)
 
 
@@ -125,6 +123,13 @@ class Scale(BaseModule):
         return input * params
 
     def param_loss(self, params: Array) -> Array | float:
+        """
+        Parameter loss.
+
+        :param params: Parameters.
+
+        :returns: Scalar.
+        """
         return self.regularizer(params)
 
 
@@ -181,6 +186,13 @@ class Linear(BaseModule):
         return input @ params
 
     def param_loss(self, params: Array) -> Array | float:
+        """
+        Parameter loss.
+
+        :param params: Parameters.
+
+        :returns: Scalar.
+        """
         return self.regularizer(params)
 
 
@@ -223,6 +235,13 @@ class Func(BaseModule):
         return self.function(input)
 
     def param_loss(self, params: None) -> float:
+        """
+        Parameter loss.
+
+        :param params: Parameters.
+
+        :returns: Scalar.
+        """
         return 0.0
 
 
@@ -326,6 +345,13 @@ class Conv(BaseModule):
         return x
 
     def param_loss(self, params: Array) -> float:
+        """
+        Parameter loss.
+
+        :param params: Parameters.
+
+        :returns: Scalar.
+        """
         return 0.0
 
 
@@ -373,4 +399,11 @@ class Embed(BaseModule):
         return params[input]
 
     def param_loss(self, params: Array) -> Array | float:
+        """
+        Parameter loss.
+
+        :param params: Parameters.
+
+        :returns: Scalar.
+        """
         return self.regularizer(params)

@@ -153,4 +153,11 @@ class Attention:
         return lax.collapse(hidden, -2)
 
     def param_loss(self, params: dict[str, Array]) -> float:
+        """
+        Parameter loss.
+
+        :param params: Parameters.
+
+        :returns: Scalar.
+        """
         return 0.0

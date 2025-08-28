@@ -262,6 +262,7 @@ class Conv:
     :param base_dilation: Base dilation.
     :param initializer: Initializer for the convolution kernel.
     :param groups: Number of groups to split the input channels into.
+    :param regularizer: Regularizer for the convolution kernel.
     """
 
     def __init__(
@@ -275,6 +276,7 @@ class Conv:
         base_dilation: int | Sequence[int] = 1,
         initializer: Initializer = nn.initializers.he_normal(),
         groups: int = 1,
+        regularizer: Regularizer = zero,
     ):
         self.input_dim = input_dim
         self.output_dim = output_dim
@@ -285,6 +287,7 @@ class Conv:
         self.base_dilation = base_dilation
         self.initializer = initializer
         self.groups = groups
+        self.regularizer = regularizer
 
     def init_params(self, key: Key) -> Array:
         """
@@ -339,7 +342,7 @@ class Conv:
         x = jnp.moveaxis(x, -num_spatial_axes - 1, -1)
         return x
 
-    def param_loss(self, params: Array) -> float:
+    def param_loss(self, params: Array) -> Array | float:
         """
         Parameter loss.
 
@@ -347,7 +350,7 @@ class Conv:
 
         :returns: Scalar.
         """
-        return 0.0
+        return self.regularizer(params)
 
 
 class Embed:

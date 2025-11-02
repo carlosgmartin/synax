@@ -201,6 +201,21 @@ class Residual:
 
 
 class Switch:
+    r"""
+    Switch map.
+
+    Multiplex between :math:`n` copies of the same module, each with its own
+    independent parameters. Given :math:`i \in [n]`, computes
+
+    .. math::
+        y = f_i(x)
+
+    where :math:`\{f_i\}_{i \in [n]}` is the ensemble of modules.
+
+    :param module: Module to apply.
+    :param branches: Number of branches to have.
+    """
+
     def __init__(self, module: Module, branches: int):
         self.module = module
         self.branches = branches

@@ -12,6 +12,7 @@ from ._basic import Scale as Scale
 from ._compound import Chain as Chain
 from ._compound import Parallel as Parallel
 from ._compound import Residual as Residual
+from ._compound import Switch as Switch
 from ._misc import GLU as GLU
 from ._misc import MLP as MLP
 from ._misc import AlexNet as AlexNet

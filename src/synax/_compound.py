@@ -229,7 +229,7 @@ class Switch:
         :returns: Parameters.
         """
         keys = random.split(key, self.branches)
-        return jax.vmap(self.module.init_params)(keys)
+        return jax.vmap(self.module.init_params, axis_size=self.branches)(keys)
 
     def apply(self, params: Any, branch: Array, input: Any) -> Any:
         def f(x: Array) -> Array:
@@ -246,5 +246,5 @@ class Switch:
 
         :returns: Scalar.
         """
-        losses = jax.vmap(self.module.param_loss)(params)
+        losses = jax.vmap(self.module.param_loss, axis_size=self.branches)(params)
         return losses.mean(0)

@@ -204,7 +204,9 @@ def dropout(dropout_prob: float) -> Callable[[Array, Key], Array]:
 
     keep_prob = 1 - dropout_prob
 
-    def f(x: Array, key: Key) -> Array:
+    def f(x: Array, key: Key | None) -> Array:
+        if key is None:
+            return x
         mask = random.bernoulli(key, keep_prob, x.shape)
         return jnp.where(mask, x / keep_prob, 0)
 

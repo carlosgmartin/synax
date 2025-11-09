@@ -203,6 +203,12 @@ class DropConnect:
 
     where :math:`M` is a random mask, and :math:`\odot` is the Hadamard product.
 
+    :param drop_prob: Drop probability.
+    :param input_dim: Input dimension.
+    :param output_dim: Output dimension.
+    :param initializer: Initializer.
+    :param regularizer: Regularizer.
+
     References:
 
     - *Regularization of neural networks using DropConnect*. 2013.

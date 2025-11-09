@@ -188,7 +188,7 @@ def mean_pool(
     return f
 
 
-def dropout(dropout_prob: float) -> Callable[[Array, Key], Array]:
+def dropout(drop_prob: float) -> Callable[[Array, Key], Array]:
     """
     Dropout.
 
@@ -202,7 +202,7 @@ def dropout(dropout_prob: float) -> Callable[[Array, Key], Array]:
       detectors*. 2012. https://arxiv.org/abs/1207.0580.
     """
 
-    keep_prob = 1 - dropout_prob
+    keep_prob = 1 - drop_prob
 
     def f(x: Array, key: Key | None) -> Array:
         if key is None:

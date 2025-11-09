@@ -188,11 +188,11 @@ def mean_pool(
     return f
 
 
-def dropout(prob: float) -> Callable[[Array, Key], Array]:
+def dropout(dropout_prob: float) -> Callable[[Array, Key], Array]:
     """
     Dropout.
 
-    :param prob: Dropout probability.
+    :param dropout_prob: Dropout probability.
 
     :returns: Function that maps an array to an array.
 
@@ -202,8 +202,10 @@ def dropout(prob: float) -> Callable[[Array, Key], Array]:
       detectors*. 2012. https://arxiv.org/abs/1207.0580.
     """
 
+    keep_prob = 1 - dropout_prob
+
     def f(x: Array, key: Key) -> Array:
-        mask = random.bernoulli(key, prob, x.shape)
-        return jnp.where(mask, x / prob, 0)
+        mask = random.bernoulli(key, keep_prob, x.shape)
+        return jnp.where(mask, x / keep_prob, 0)
 
     return f

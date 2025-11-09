@@ -9,6 +9,7 @@ from ._basic import Embed as Embed
 from ._basic import Func as Func
 from ._basic import Linear as Linear
 from ._basic import Scale as Scale
+from ._basic import DropConnect as DropConnect
 from ._compound import Chain as Chain
 from ._compound import Parallel as Parallel
 from ._compound import Residual as Residual

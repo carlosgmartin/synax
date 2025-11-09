@@ -2,7 +2,7 @@ import math
 from typing import Any, Callable, Sequence
 
 from jax import Array, lax, nn
-from jax import numpy as jnp
+from jax import numpy as jnp, random
 from jax.nn.initializers import Initializer
 
 
@@ -178,6 +178,74 @@ class Linear:
 
         :returns: Array of shape ``(..., output_dim)``.
         """
+        return input @ params
+
+    def param_loss(self, params: Array) -> Array | float:
+        """
+        Parameter loss.
+
+        :param params: Parameters.
+
+        :returns: Scalar.
+        """
+        return self.regularizer(params)
+
+
+class DropConnect:
+    r"""
+    DropConnect.
+
+    Computes
+
+    .. math::
+        M_{ij} &\sim \text{Bernoulli}(p) \\
+        y &= (M \odot A) x
+
+    where :math:`M` is a random mask, and :math:`\odot` is the Hadamard product.
+
+    References:
+
+    - *Regularization of neural networks using DropConnect*. 2013.
+      https://dl.acm.org/doi/10.5555/3042817.3043055.
+    """
+
+    def __init__(
+        self,
+        drop_prob: float,
+        input_dim: int,
+        output_dim: int,
+        initializer: Initializer = nn.initializers.he_normal(),
+        regularizer: Regularizer = zero,
+    ):
+        self.drop_prob = drop_prob
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.initializer = initializer
+        self.regularizer = regularizer
+
+    def init_params(self, key: Key) -> Array:
+        """
+        Sample initial parameters.
+
+        :param key: PRNG key.
+
+        :returns: Parameters.
+        """
+        return self.initializer(key, (self.input_dim, self.output_dim))
+
+    def apply(self, params: Array, input: Array, key: Array | None) -> Array:
+        """
+        Apply module.
+
+        :param params: Parameters.
+        :param input: Array of shape ``(..., input_dim)``.
+        :param key: PRNG key.
+
+        :returns: Array of shape ``(..., output_dim)``.
+        """
+        if key is not None:
+            mask = random.bernoulli(key, 1 - self.drop_prob, params.shape)
+            params *= mask
         return input @ params
 
     def param_loss(self, params: Array) -> Array | float:

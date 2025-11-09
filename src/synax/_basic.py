@@ -252,6 +252,7 @@ class DropConnect:
         if key is not None:
             mask = random.bernoulli(key, 1 - self.drop_prob, params.shape)
             params *= mask
+            params /= 1 - self.drop_prob
         return input @ params
 
     def param_loss(self, params: Array) -> Array | float:

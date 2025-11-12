@@ -1,6 +1,7 @@
 from jax import Array, lax, nn, random
 from jax import numpy as jnp
 from jax.nn.initializers import Initializer
+import jax
 
 from ._utils import layer_norm
 from ._regularizers import Regularizer, zero
@@ -26,6 +27,7 @@ class Attention:
         dot products.
     :param linear_regularizer: Regularizer for linear layers.
     :param bias_regularizer: Regularizer for bias layers.
+    :param dtype: Data type of parameters.
 
     References:
 
@@ -46,6 +48,7 @@ class Attention:
         normalize_qk: bool = False,
         linear_regularizer: Regularizer = zero,
         bias_regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         if key_input_dim is None:
             key_input_dim = query_input_dim
@@ -64,6 +67,7 @@ class Attention:
         self.normalize_qk = normalize_qk
         self.linear_regularizer = linear_regularizer
         self.bias_regularizer = bias_regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Array) -> dict[str, Array]:
         """
@@ -76,17 +80,23 @@ class Attention:
         keys = random.split(key, 6)
         return {
             "query_kernel": self.linear_initializer(
-                keys[0], (self.heads, self.query_input_dim, self.hidden_dim)
+                keys[0], (self.heads, self.query_input_dim, self.hidden_dim), self.dtype
             ),
             "key_kernel": self.linear_initializer(
-                keys[1], (self.heads, self.key_input_dim, self.hidden_dim)
+                keys[1], (self.heads, self.key_input_dim, self.hidden_dim), self.dtype
             ),
             "value_kernel": self.linear_initializer(
-                keys[2], (self.heads, self.value_input_dim, self.hidden_dim)
+                keys[2], (self.heads, self.value_input_dim, self.hidden_dim), self.dtype
             ),
-            "query_bias": self.bias_initializer(keys[3], (self.heads, self.hidden_dim)),
-            "key_bias": self.bias_initializer(keys[4], (self.heads, self.hidden_dim)),
-            "value_bias": self.bias_initializer(keys[5], (self.heads, self.hidden_dim)),
+            "query_bias": self.bias_initializer(
+                keys[3], (self.heads, self.hidden_dim), self.dtype
+            ),
+            "key_bias": self.bias_initializer(
+                keys[4], (self.heads, self.hidden_dim), self.dtype
+            ),
+            "value_bias": self.bias_initializer(
+                keys[5], (self.heads, self.hidden_dim), self.dtype
+            ),
         }
 
     def apply(

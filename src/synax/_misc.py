@@ -225,6 +225,7 @@ class GLU:
     :param sigmoid_fn: Sigmoid function to use. Defaults to the logistic function.
     :param linear_regularizer: Regularizer for linear layers.
     :param bias_regularizer: Regularizer for bias layers.
+    :param dtype: Data type of parameters.
 
     References:
 
@@ -241,6 +242,7 @@ class GLU:
         sigmoid_fn: Callable[[Array], Array] = nn.sigmoid,
         linear_regularizer: Regularizer = zero,
         bias_regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.input_dim = input_dim
         self.output_dim = output_dim
@@ -249,6 +251,7 @@ class GLU:
         self.sigmoid_fn = sigmoid_fn
         self.linear_regularizer = linear_regularizer
         self.bias_regularizer = bias_regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> dict[str, Array]:
         """
@@ -259,10 +262,14 @@ class GLU:
         :returns: Parameters.
         """
         keys = random.split(key, 4)
-        w = self.linear_initializer(keys[0], (self.input_dim, self.output_dim))
-        v = self.linear_initializer(keys[1], (self.input_dim, self.output_dim))
-        b = self.bias_initializer(keys[2], (self.output_dim,))
-        c = self.bias_initializer(keys[3], (self.output_dim,))
+        w = self.linear_initializer(
+            keys[0], (self.input_dim, self.output_dim), self.dtype
+        )
+        v = self.linear_initializer(
+            keys[1], (self.input_dim, self.output_dim), self.dtype
+        )
+        b = self.bias_initializer(keys[2], (self.output_dim,), self.dtype)
+        c = self.bias_initializer(keys[3], (self.output_dim,), self.dtype)
         return {
             "linear": jnp.concatenate([w, v], 1),
             "bias": jnp.concatenate([b, c], 1),

@@ -1,6 +1,7 @@
 from functools import partial
 from typing import Any, Callable, Sequence
 
+import jax
 from jax import Array, nn, random
 from jax import numpy as jnp
 from jax.nn.initializers import Initializer
@@ -22,6 +23,7 @@ def MLP(
     bias_initializer: Initializer = nn.initializers.zeros,
     linear_regularizer: Regularizer = zero,
     bias_regularizer: Regularizer = zero,
+    dtype: jax.typing.DTypeLike | None = None,
 ) -> Module:
     """
     Multi-layer perceptron.
@@ -33,6 +35,7 @@ def MLP(
     :param bias_initializer: Initializer for bias layers.
     :param linear_regularizer: Regularizer for linear layers.
     :param bias_regularizer: Regularizer for bias layers.
+    :param dtype: Data type of parameters.
 
     :returns: Module.
 
@@ -55,11 +58,13 @@ def MLP(
             output_dim,
             initializer=linear_initializer,
             regularizer=linear_regularizer,
+            dtype=dtype,
         )
         bias = Bias(
             output_dim,
             initializer=bias_initializer,
             regularizer=bias_regularizer,
+            dtype=dtype,
         )
         modules += [linear, bias, activation]
     return Chain(modules[:-1])

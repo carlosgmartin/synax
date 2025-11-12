@@ -17,6 +17,7 @@ class Constant:
     :param dim: Dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
+    :param dtype: Data type of parameters.
     """
 
     def __init__(
@@ -24,10 +25,12 @@ class Constant:
         dim: int,
         initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> Array:
         """
@@ -37,7 +40,7 @@ class Constant:
 
         :returns: Parameters.
         """
-        return self.initializer(key, (self.dim,))
+        return self.initializer(key, (self.dim,), self.dtype)
 
     def apply(self, params: Array) -> Array:
         return params
@@ -54,15 +57,26 @@ class Constant:
 
 
 class Ball:
+    r"""
+    Ball.
+
+    :param dim: Dimension.
+    :param initializer: Initializer.
+    :param regularizer: Regularizer.
+    :param dtype: Data type of parameters.
+    """
+
     def __init__(
         self,
         dim: int,
         initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> Array:
         """
@@ -72,7 +86,7 @@ class Ball:
 
         :returns: Parameters.
         """
-        return self.initializer(key, (self.dim,))
+        return self.initializer(key, (self.dim,), self.dtype)
 
     def apply(self, params: Array) -> Array:
         return params / jnp.sqrt(1 + params * jnp.conj(params))
@@ -89,15 +103,26 @@ class Ball:
 
 
 class Simplex:
+    r"""
+    Simplex.
+
+    :param dim: Dimension.
+    :param initializer: Initializer.
+    :param regularizer: Regularizer.
+    :param dtype: Data type of parameters.
+    """
+
     def __init__(
         self,
         dim: int,
         initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> Array:
         """
@@ -107,7 +132,7 @@ class Simplex:
 
         :returns: Parameters.
         """
-        return self.initializer(key, (self.dim,))
+        return self.initializer(key, (self.dim,), self.dtype)
 
     def apply(self, params: Array) -> Array:
         return nn.softmax(params)
@@ -149,6 +174,7 @@ class SymmetricMatrix:
     :param dim: Dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
+    :param dtype: Data type of parameters.
     """
 
     def __init__(
@@ -156,10 +182,12 @@ class SymmetricMatrix:
         dim: int,
         initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> Array:
         """
@@ -170,7 +198,7 @@ class SymmetricMatrix:
         :returns: Parameters.
         """
         n = self.dim * (self.dim + 1) // 2
-        return self.initializer(key, (n,))
+        return self.initializer(key, (n,), self.dtype)
 
     def apply(self, params: Array) -> Array:
         return vector_to_symmetric_matrix(params, self.dim)
@@ -196,6 +224,7 @@ class AntiSymmetricMatrix:
     :param dim: Dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
+    :param dtype: Data type of parameters.
     """
 
     def __init__(
@@ -203,10 +232,12 @@ class AntiSymmetricMatrix:
         dim: int,
         initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> Array:
         """
@@ -217,7 +248,7 @@ class AntiSymmetricMatrix:
         :returns: Parameters.
         """
         n = self.dim * (self.dim - 1) // 2
-        return self.initializer(key, (n,))
+        return self.initializer(key, (n,), self.dtype)
 
     def apply(self, params: Array) -> Array:
         return vector_to_anti_symmetric_matrix(params, self.dim)
@@ -244,10 +275,16 @@ class SpecialOrthogonalMatrix:
     :param transform: Transform used for parameterization.
         ``"exp"`` uses the matrix exponential :math:`\exp A`.
         ``"cayley"`` uses the Cayley transform :math:`(I - A) (I + A)^{-1}`.
+    :param dtype: Data type of parameters.
     """
 
-    def __init__(self, dim: int, transform: Literal["exp", "cayley"] = "exp"):
-        self.anti_symmetric = AntiSymmetricMatrix(dim)
+    def __init__(
+        self,
+        dim: int,
+        transform: Literal["exp", "cayley"] = "exp",
+        dtype: jax.typing.DTypeLike | None = None,
+    ):
+        self.anti_symmetric = AntiSymmetricMatrix(dim, dtype=dtype)
         self.transform = transform
 
     def init_params(self, key: Key) -> Array:

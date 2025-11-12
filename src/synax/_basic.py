@@ -1,6 +1,7 @@
 import math
 from typing import Any, Callable, Sequence
 
+import jax
 from jax import Array, lax, nn
 from jax import numpy as jnp, random
 from jax.nn.initializers import Initializer
@@ -26,6 +27,7 @@ class Bias:
     :param dim: Input dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
+    :param dtype: Data type of parameters.
     """
 
     def __init__(
@@ -33,10 +35,12 @@ class Bias:
         dim: int,
         initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> Array:
         """
@@ -46,7 +50,7 @@ class Bias:
 
         :returns: Parameters.
         """
-        return self.initializer(key, (self.dim,))
+        return self.initializer(key, (self.dim,), self.dtype)
 
     def apply(self, params: Array, input: Array) -> Array:
         """
@@ -84,6 +88,7 @@ class Scale:
     :param dim: Input dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
+    :param dtype: Data type of parameters.
     """
 
     def __init__(
@@ -91,10 +96,12 @@ class Scale:
         dim: int,
         initializer: Initializer = nn.initializers.ones,
         regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> Array:
         """
@@ -104,7 +111,7 @@ class Scale:
 
         :returns: Parameters.
         """
-        return self.initializer(key, (self.dim,))
+        return self.initializer(key, (self.dim,), self.dtype)
 
     def apply(self, params: Array, input: Array) -> Array:
         """
@@ -145,6 +152,7 @@ class Linear:
     :param output_dim: Output dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
+    :param dtype: Data type of parameters.
     """
 
     def __init__(
@@ -153,11 +161,13 @@ class Linear:
         output_dim: int,
         initializer: Initializer = nn.initializers.he_normal(),
         regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.initializer = initializer
         self.regularizer = regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> Array:
         """
@@ -167,7 +177,7 @@ class Linear:
 
         :returns: Parameters.
         """
-        return self.initializer(key, (self.input_dim, self.output_dim))
+        return self.initializer(key, (self.input_dim, self.output_dim), self.dtype)
 
     def apply(self, params: Array, input: Array) -> Array:
         """
@@ -208,6 +218,7 @@ class DropConnect:
     :param output_dim: Output dimension.
     :param initializer: Initializer.
     :param regularizer: Regularizer.
+    :param dtype: Data type of parameters.
 
     References:
 
@@ -222,12 +233,14 @@ class DropConnect:
         output_dim: int,
         initializer: Initializer = nn.initializers.he_normal(),
         regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.drop_prob = drop_prob
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.initializer = initializer
         self.regularizer = regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> Array:
         """
@@ -237,7 +250,7 @@ class DropConnect:
 
         :returns: Parameters.
         """
-        return self.initializer(key, (self.input_dim, self.output_dim))
+        return self.initializer(key, (self.input_dim, self.output_dim), self.dtype)
 
     def apply(self, params: Array, input: Array, key: Array | None) -> Array:
         """
@@ -338,6 +351,7 @@ class Conv:
     :param initializer: Initializer for the convolution kernel.
     :param groups: Number of groups to split the input channels into.
     :param regularizer: Regularizer for the convolution kernel.
+    :param dtype: Data type of parameters.
     """
 
     def __init__(
@@ -352,6 +366,7 @@ class Conv:
         initializer: Initializer = nn.initializers.he_normal(),
         groups: int = 1,
         regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.input_dim = input_dim
         self.output_dim = output_dim
@@ -363,6 +378,7 @@ class Conv:
         self.initializer = initializer
         self.groups = groups
         self.regularizer = regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> Array:
         """
@@ -373,7 +389,7 @@ class Conv:
         :returns: Parameters.
         """
         kernel = self.initializer(
-            key, (self.output_dim, self.input_dim * math.prod(self.shape))
+            key, (self.output_dim, self.input_dim * math.prod(self.shape)), self.dtype
         )
         kernel = kernel.reshape((self.output_dim, self.input_dim, *self.shape))
         return kernel
@@ -436,6 +452,7 @@ class Embed:
     :param dim: Dimension of each embedding.
     :param initializer: Initializer for embeddings.
     :param regularizer: Regularizer.
+    :param dtype: Data type of parameters.
     """
 
     def __init__(
@@ -444,11 +461,13 @@ class Embed:
         dim: int,
         initializer: Initializer = nn.initializers.normal(),
         regularizer: Regularizer = zero,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.number = number
         self.dim = dim
         self.initializer = initializer
         self.regularizer = regularizer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> Array:
         """
@@ -458,7 +477,7 @@ class Embed:
 
         :returns: Parameters.
         """
-        return self.initializer(key, (self.number, self.dim))
+        return self.initializer(key, (self.number, self.dim), self.dtype)
 
     def apply(self, params: Array, input: Array) -> Array:
         """

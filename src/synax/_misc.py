@@ -347,7 +347,11 @@ class PReLU:
         return self.regularizer(params)
 
 
-def LeNet(input_channels: int = 1, outputs: int = 10) -> Module:
+def LeNet(
+    input_channels: int = 1,
+    outputs: int = 10,
+    dtype: jax.typing.DTypeLike | None = None,
+) -> Module:
     """
     LeNet convolutional network.
 
@@ -357,6 +361,7 @@ def LeNet(input_channels: int = 1, outputs: int = 10) -> Module:
 
     :param input_channels: Number of input channels.
     :param outputs: Number of outputs.
+    :param dtype: Data type of parameters.
 
     :returns: Module.
 
@@ -370,23 +375,23 @@ def LeNet(input_channels: int = 1, outputs: int = 10) -> Module:
     """
     return Chain(
         [
-            Conv(input_channels, 6, (5, 5), padding="SAME"),
-            Bias(6),
+            Conv(input_channels, 6, (5, 5), padding="SAME", dtype=dtype),
+            Bias(6, dtype=dtype),
             Func(nn.tanh),
             Func(mean_pool((2, 2), stride=2)),
-            Conv(6, 16, (5, 5)),
-            Bias(16),
+            Conv(6, 16, (5, 5), dtype=dtype),
+            Bias(16, dtype=dtype),
             Func(nn.tanh),
             Func(mean_pool((2, 2), stride=2)),
             Func(jnp.ravel),
-            Linear(400, 120),
-            Bias(120),
+            Linear(400, 120, dtype=dtype),
+            Bias(120, dtype=dtype),
             Func(nn.tanh),
-            Linear(120, 84),
-            Bias(84),
+            Linear(120, 84, dtype=dtype),
+            Bias(84, dtype=dtype),
             Func(nn.tanh),
-            Linear(84, 10),
-            Bias(outputs),
+            Linear(84, 10, dtype=dtype),
+            Bias(outputs, dtype=dtype),
         ]
     )
 

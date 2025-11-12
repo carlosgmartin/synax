@@ -1,5 +1,6 @@
 from typing import Any, Callable, Sequence
 
+import jax
 from jax import Array, lax, nn, random
 from jax import numpy as jnp
 from jax.nn.initializers import Initializer
@@ -71,6 +72,7 @@ class SimpleRNN:
         bias_regularizer: Regularizer = zero,
         activation: Callable[[Array], Array] = nn.tanh,
         state_initializer: Initializer = nn.initializers.zeros,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
@@ -82,17 +84,18 @@ class SimpleRNN:
         self.bias_regularizer = bias_regularizer
         self.activation = activation
         self.state_initializer = state_initializer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> dict[str, Array]:
         keys = random.split(key, 3)
         return {
             "linear": self.linear_initializer(
-                keys[0], (self.input_dim, self.state_dim)
+                keys[0], (self.input_dim, self.state_dim), self.dtype
             ),
             "recurrent": self.recurrent_initializer(
-                keys[1], (self.state_dim, self.state_dim)
+                keys[1], (self.state_dim, self.state_dim), self.dtype
             ),
-            "bias": self.bias_initializer(keys[2], (self.state_dim,)),
+            "bias": self.bias_initializer(keys[2], (self.state_dim,), self.dtype),
         }
 
     def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
@@ -115,7 +118,7 @@ class SimpleRNN:
 
         :returns: State.
         """
-        return self.state_initializer(key, (self.state_dim,))
+        return self.state_initializer(key, (self.state_dim,), self.dtype)
 
     def param_loss(self, params: dict[str, Array]) -> Array | float:
         """
@@ -152,6 +155,7 @@ class GRU:
         update_activation: Callable[[Array], Array] = nn.sigmoid,
         candidate_activation: Callable[[Array], Array] = nn.tanh,
         state_initializer: Initializer = nn.initializers.zeros,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
@@ -164,6 +168,7 @@ class GRU:
         self.candidate_activation = candidate_activation
 
         self.state_initializer = state_initializer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> dict[str, Array]:
         """
@@ -175,15 +180,27 @@ class GRU:
         """
         keys = random.split(key, 9)
         return {
-            "wz": self.linear_initializer(keys[0], (self.input_dim, self.state_dim)),
-            "wr": self.linear_initializer(keys[1], (self.input_dim, self.state_dim)),
-            "wy": self.linear_initializer(keys[2], (self.input_dim, self.state_dim)),
-            "uz": self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim)),
-            "ur": self.recurrent_initializer(keys[4], (self.state_dim, self.state_dim)),
-            "uy": self.recurrent_initializer(keys[5], (self.state_dim, self.state_dim)),
-            "bz": self.bias_initializer(keys[6], (self.state_dim,)),
-            "br": self.bias_initializer(keys[7], (self.state_dim,)),
-            "by": self.bias_initializer(keys[8], (self.state_dim,)),
+            "wz": self.linear_initializer(
+                keys[0], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "wr": self.linear_initializer(
+                keys[1], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "wy": self.linear_initializer(
+                keys[2], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "uz": self.recurrent_initializer(
+                keys[3], (self.state_dim, self.state_dim), self.dtype
+            ),
+            "ur": self.recurrent_initializer(
+                keys[4], (self.state_dim, self.state_dim), self.dtype
+            ),
+            "uy": self.recurrent_initializer(
+                keys[5], (self.state_dim, self.state_dim), self.dtype
+            ),
+            "bz": self.bias_initializer(keys[6], (self.state_dim,), self.dtype),
+            "br": self.bias_initializer(keys[7], (self.state_dim,), self.dtype),
+            "by": self.bias_initializer(keys[8], (self.state_dim,), self.dtype),
         }
 
     def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
@@ -206,7 +223,7 @@ class GRU:
 
         :returns: State.
         """
-        return self.state_initializer(key, (self.state_dim,))
+        return self.state_initializer(key, (self.state_dim,), self.dtype)
 
 
 class MGU:
@@ -230,6 +247,7 @@ class MGU:
         candidate_activation: Callable[[Array], Array] = nn.tanh,
         state_initializer: Initializer = nn.initializers.zeros,
         reset_gate: bool = True,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.input_dim = input_dim
         self.state_dim = state_dim
@@ -242,6 +260,7 @@ class MGU:
 
         self.state_initializer = state_initializer
         self.reset_gate = reset_gate
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> dict[str, Array]:
         """
@@ -253,12 +272,20 @@ class MGU:
         """
         keys = random.split(key, 6)
         return {
-            "wz": self.linear_initializer(keys[0], (self.input_dim, self.state_dim)),
-            "wy": self.linear_initializer(keys[1], (self.input_dim, self.state_dim)),
-            "uz": self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim)),
-            "uy": self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim)),
-            "bz": self.bias_initializer(keys[4], (self.state_dim,)),
-            "by": self.bias_initializer(keys[5], (self.state_dim,)),
+            "wz": self.linear_initializer(
+                keys[0], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "wy": self.linear_initializer(
+                keys[1], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "uz": self.recurrent_initializer(
+                keys[2], (self.state_dim, self.state_dim), self.dtype
+            ),
+            "uy": self.recurrent_initializer(
+                keys[3], (self.state_dim, self.state_dim), self.dtype
+            ),
+            "bz": self.bias_initializer(keys[4], (self.state_dim,), self.dtype),
+            "by": self.bias_initializer(keys[5], (self.state_dim,), self.dtype),
         }
 
     def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
@@ -283,7 +310,7 @@ class MGU:
 
         :returns: State.
         """
-        return self.state_initializer(key, (self.state_dim,))
+        return self.state_initializer(key, (self.state_dim,), self.dtype)
 
 
 class BistableRecurrentCell:
@@ -301,10 +328,12 @@ class BistableRecurrentCell:
         state_dim: int,
         input_dim: int,
         linear_initializer: Initializer = nn.initializers.he_normal(),
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
         self.linear_initializer = linear_initializer
+        self.dtype = self.dtype
 
     def init_params(self, key: Key) -> dict[str, Array]:
         """
@@ -318,9 +347,15 @@ class BistableRecurrentCell:
         return {
             "ua": jnp.eye(self.state_dim),
             "uc": jnp.eye(self.state_dim),
-            "wa": self.linear_initializer(keys[0], (self.input_dim, self.state_dim)),
-            "wc": self.linear_initializer(keys[1], (self.input_dim, self.state_dim)),
-            "wy": self.linear_initializer(keys[2], (self.input_dim, self.state_dim)),
+            "wa": self.linear_initializer(
+                keys[0], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "wc": self.linear_initializer(
+                keys[1], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "wy": self.linear_initializer(
+                keys[2], (self.input_dim, self.state_dim), self.dtype
+            ),
         }
 
     def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
@@ -349,6 +384,7 @@ class LSTM:
         bias_initializer: Initializer = nn.initializers.zeros,
         forget_bias: float = 1.0,
         state_initializer: Initializer = nn.initializers.zeros,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
@@ -357,6 +393,7 @@ class LSTM:
         self.bias_initializer = bias_initializer
         self.forget_bias = forget_bias
         self.state_initializer = state_initializer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> dict[str, Array]:
         """
@@ -368,18 +405,35 @@ class LSTM:
         """
         keys = random.split(key, 12)
         return {
-            "Uf": self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim)),
-            "Ui": self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim)),
-            "Ug": self.recurrent_initializer(keys[2], (self.state_dim, self.state_dim)),
-            "Uo": self.recurrent_initializer(keys[3], (self.state_dim, self.state_dim)),
-            "Wf": self.linear_initializer(keys[4], (self.input_dim, self.state_dim)),
-            "Wi": self.linear_initializer(keys[5], (self.input_dim, self.state_dim)),
-            "Wg": self.linear_initializer(keys[6], (self.input_dim, self.state_dim)),
-            "Wo": self.linear_initializer(keys[7], (self.input_dim, self.state_dim)),
-            "bf": self.bias_initializer(keys[8], (self.state_dim,)) + self.forget_bias,
-            "bi": self.bias_initializer(keys[9], (self.state_dim,)),
-            "bg": self.bias_initializer(keys[10], (self.state_dim,)),
-            "bo": self.bias_initializer(keys[11], (self.state_dim,)),
+            "Uf": self.recurrent_initializer(
+                keys[0], (self.state_dim, self.state_dim), self.dtype
+            ),
+            "Ui": self.recurrent_initializer(
+                keys[1], (self.state_dim, self.state_dim), self.dtype
+            ),
+            "Ug": self.recurrent_initializer(
+                keys[2], (self.state_dim, self.state_dim), self.dtype
+            ),
+            "Uo": self.recurrent_initializer(
+                keys[3], (self.state_dim, self.state_dim), self.dtype
+            ),
+            "Wf": self.linear_initializer(
+                keys[4], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "Wi": self.linear_initializer(
+                keys[5], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "Wg": self.linear_initializer(
+                keys[6], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "Wo": self.linear_initializer(
+                keys[7], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "bf": self.bias_initializer(keys[8], (self.state_dim,), self.dtype)
+            + self.forget_bias,
+            "bi": self.bias_initializer(keys[9], (self.state_dim,), self.dtype),
+            "bg": self.bias_initializer(keys[10], (self.state_dim,), self.dtype),
+            "bo": self.bias_initializer(keys[11], (self.state_dim,), self.dtype),
         }
 
     def apply(
@@ -406,8 +460,8 @@ class LSTM:
         :returns: State.
         """
         keys = random.split(key)
-        h = self.state_initializer(keys[0], (self.state_dim,))
-        c = self.state_initializer(keys[1], (self.state_dim,))
+        h = self.state_initializer(keys[0], (self.state_dim,), self.dtype)
+        c = self.state_initializer(keys[1], (self.state_dim,), self.dtype)
         return (h, c)
 
 
@@ -427,11 +481,13 @@ class FastGRNN:
         input_dim: int,
         linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
         self.linear_initializer = linear_initializer
         self.bias_initializer = bias_initializer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> dict[str, Array]:
         """
@@ -444,11 +500,13 @@ class FastGRNN:
         keys = random.split(key, 3)
         return {
             "U": jnp.eye(self.state_dim),
-            "W": self.linear_initializer(keys[0], (self.input_dim, self.state_dim)),
-            "bz": self.bias_initializer(keys[1], (self.state_dim,)),
-            "by": self.bias_initializer(keys[2], (self.state_dim,)),
-            "nu": jnp.array(0.0),
-            "zeta": jnp.array(0.0),
+            "W": self.linear_initializer(
+                keys[0], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "bz": self.bias_initializer(keys[1], (self.state_dim,), self.dtype),
+            "by": self.bias_initializer(keys[2], (self.state_dim,), self.dtype),
+            "nu": jnp.array(0.0, self.dtype),
+            "zeta": jnp.array(0.0, self.dtype),
         }
 
     def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
@@ -477,6 +535,7 @@ class UpdateGateRNN:
         linear_initializer: Initializer = nn.initializers.he_normal(),
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
         bias_initializer: Initializer = nn.initializers.zeros,
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
@@ -484,6 +543,7 @@ class UpdateGateRNN:
         self.linear_initializer = linear_initializer
         self.recurrent_initializer = recurrent_initializer
         self.bias_initializer = bias_initializer
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> dict[str, Array]:
         """
@@ -495,12 +555,20 @@ class UpdateGateRNN:
         """
         keys = random.split(key, 6)
         return {
-            "Uc": self.recurrent_initializer(keys[0], (self.state_dim, self.state_dim)),
-            "Ug": self.recurrent_initializer(keys[1], (self.state_dim, self.state_dim)),
-            "Wc": self.linear_initializer(keys[2], (self.input_dim, self.state_dim)),
-            "Wg": self.linear_initializer(keys[3], (self.input_dim, self.state_dim)),
-            "bc": self.bias_initializer(keys[4], (self.state_dim,)),
-            "bg": self.bias_initializer(keys[5], (self.state_dim,)),
+            "Uc": self.recurrent_initializer(
+                keys[0], (self.state_dim, self.state_dim), self.dtype
+            ),
+            "Ug": self.recurrent_initializer(
+                keys[1], (self.state_dim, self.state_dim), self.dtype
+            ),
+            "Wc": self.linear_initializer(
+                keys[2], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "Wg": self.linear_initializer(
+                keys[3], (self.input_dim, self.state_dim), self.dtype
+            ),
+            "bc": self.bias_initializer(keys[4], (self.state_dim,), self.dtype),
+            "bg": self.bias_initializer(keys[5], (self.state_dim,), self.dtype),
         }
 
     def apply(self, params: dict[str, Array], state: Array, input: Array) -> Array:
@@ -520,6 +588,7 @@ class ConvGatedUnit:
         linear_initializer: Initializer = nn.initializers.he_normal(),
         bias_initializer: Initializer = nn.initializers.zeros,
         recurrent_initializer: Initializer = nn.initializers.orthogonal(),
+        dtype: jax.typing.DTypeLike | None = None,
     ):
         self.state_dim = state_dim
         self.input_dim = input_dim
@@ -530,6 +599,7 @@ class ConvGatedUnit:
             shape=shape,
             initializer=recurrent_initializer,
             padding="SAME",
+            dtype=dtype,
         )
         self.new_linear_input = Conv(
             self.input_dim,
@@ -537,8 +607,9 @@ class ConvGatedUnit:
             shape=shape,
             initializer=linear_initializer,
             padding="SAME",
+            dtype=dtype,
         )
-        self.new_bias = Bias(self.state_dim, initializer=bias_initializer)
+        self.new_bias = Bias(self.state_dim, initializer=bias_initializer, dtype=dtype)
 
         self.update_linear_state = Conv(
             self.state_dim,
@@ -546,6 +617,7 @@ class ConvGatedUnit:
             shape=shape,
             initializer=recurrent_initializer,
             padding="SAME",
+            dtype=dtype,
         )
         self.update_linear_input = Conv(
             self.input_dim,
@@ -553,11 +625,15 @@ class ConvGatedUnit:
             shape=shape,
             initializer=linear_initializer,
             padding="SAME",
+            dtype=dtype,
         )
-        self.update_bias = Bias(self.state_dim, initializer=bias_initializer)
+        self.update_bias = Bias(
+            self.state_dim, initializer=bias_initializer, dtype=dtype
+        )
 
         self.new_activation = new_activation
         self.update_activation = update_activation
+        self.dtype = dtype
 
     def init_params(self, key: Key) -> dict[str, Any]:
         """

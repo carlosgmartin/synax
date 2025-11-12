@@ -1,0 +1,13 @@
+synax.DropConnect.apply
+=======================
+
+.. py:method:: synax.DropConnect.apply(params: jax.Array, input: jax.Array, key: jax.Array | None) -> jax.Array
+
+   Apply module.
+
+   :param params: Parameters.
+   :param input: Array of shape ``(..., input_dim)``.
+   :param key: PRNG key.
+
+   :returns: Array of shape ``(..., output_dim)``.
+

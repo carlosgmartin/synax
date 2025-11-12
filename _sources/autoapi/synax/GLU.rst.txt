@@ -1,0 +1,44 @@
+synax.GLU
+=========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/GLU.init_params
+   /autoapi/synax/GLU.param_loss
+
+.. py:class:: synax.GLU(input_dim: int, output_dim: int, linear_initializer: jax.nn.initializers.Initializer = nn.initializers.he_normal(), bias_initializer: jax.nn.initializers.Initializer = nn.initializers.zeros, sigmoid_fn: Callable[[jax.Array], jax.Array] = nn.sigmoid, linear_regularizer: synax._regularizers.Regularizer = zero, bias_regularizer: synax._regularizers.Regularizer = zero, dtype: jax.typing.DTypeLike | None = None)
+
+   Gated linear unit.
+
+   Computes
+
+   .. math::
+       y = \sigma(A_1 x + b_1) \odot (A_2 x + b_2)
+
+   where :math:`\sigma` is a sigmoid function, :math:`A_1` and :math:`A_2` are
+   learned matrices, and :math:`b_1` and :math:`b_2` are learned vectors.
+
+   :param input_dim: Input dimension.
+   :param output_dim: Output dimension.
+   :param linear_initializer: Initializer for linear layers.
+   :param bias_initializer: Initializer for bias layers.
+   :param sigmoid_fn: Sigmoid function to use. Defaults to the logistic function.
+   :param linear_regularizer: Regularizer for linear layers.
+   :param bias_regularizer: Regularizer for bias layers.
+   :param dtype: Data type of parameters.
+
+   References:
+
+   - *Language modeling with gated convolutional networks*. 2016.
+     https://arxiv.org/abs/1612.08083
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.GLU.init_params
+   synax.GLU.param_loss
+
+

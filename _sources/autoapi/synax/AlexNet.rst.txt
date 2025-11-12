@@ -1,0 +1,25 @@
+synax.AlexNet
+=============
+
+.. py:function:: synax.AlexNet(input_channels: int = 3, outputs: int = 1000, dtype: jax.typing.DTypeLike | None = None) -> Module
+
+   AlexNet convolutional network.
+
+   Handles images of size 224 × 224.
+
+   Originally designed for RGB ImageNet images and 1000 classes.
+
+   :param input_channels: Number of input channels.
+   :param outputs: Number of outputs.
+   :param dtype: Data type of parameters.
+
+   :returns: Module.
+
+   References:
+
+   - *ImageNet classification with deep convolutional neural networks*. 2017.
+     https://dl.acm.org/doi/10.1145/3065386.
+
+   - *ImageNet: A large-scale hierarchical image database*. 2009.
+     https://ieeexplore.ieee.org/document/5206848.
+

@@ -1,0 +1,30 @@
+synax.SymmetricMatrix
+=====================
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/SymmetricMatrix.init_params
+   /autoapi/synax/SymmetricMatrix.param_loss
+
+.. py:class:: synax.SymmetricMatrix(dim: int, initializer: jax.nn.initializers.Initializer = nn.initializers.zeros, regularizer: synax._regularizers.Regularizer = zero, dtype: jax.typing.DTypeLike | None = None)
+
+   Symmetric matrix.
+
+   .. math::
+       A^\top = A
+
+   :param dim: Dimension.
+   :param initializer: Initializer.
+   :param regularizer: Regularizer.
+   :param dtype: Data type of parameters.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.SymmetricMatrix.init_params
+   synax.SymmetricMatrix.param_loss
+
+

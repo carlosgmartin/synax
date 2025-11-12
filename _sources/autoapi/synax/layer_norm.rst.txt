@@ -1,0 +1,35 @@
+synax.layer_norm
+================
+
+.. py:function:: synax.layer_norm(axis: Axis = -1, epsilon: float = 1e-06) -> Callable[[jax.Array], jax.Array]
+
+   Layer normalization.
+
+   Computes
+
+   .. math::
+       y = \frac{x - \mu}{\sigma}
+
+   where
+
+   .. math::
+       \mu = \frac{1}{n} \sum_i x_i
+
+   is the mean of the elements of :math:`x` and
+
+   .. math::
+       \sigma = \sqrt{ \varepsilon + \frac{1}{n} \sum_i (x_i - \mu)^2 }
+
+   is the standard deviation of the elements of :math:`x`.
+   :math:`\varepsilon` is a small quantity used for numerical stability.
+
+   :param axis: Axis or axes along which to normalize.
+       ``None`` means all axes.
+   :param epsilon: Small quantity used for numerical stability.
+
+   :returns: Function that maps an array to an array.
+
+   References:
+
+   - *Layer normalization*. 2016. https://arxiv.org/abs/1607.06450.
+

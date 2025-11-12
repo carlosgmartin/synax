@@ -1,0 +1,11 @@
+synax.Linear.param_loss
+=======================
+
+.. py:method:: synax.Linear.param_loss(params: jax.Array) -> jax.Array | float
+
+   Parameter loss.
+
+   :param params: Parameters.
+
+   :returns: Scalar.
+

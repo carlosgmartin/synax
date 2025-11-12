@@ -1,0 +1,12 @@
+synax.Func.apply
+================
+
+.. py:method:: synax.Func.apply(params: None, input: Any) -> Any
+
+   Apply module.
+
+   :param params: Parameters.
+   :param input: Input.
+
+   :returns: The output.
+

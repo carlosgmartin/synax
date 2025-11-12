@@ -1,0 +1,46 @@
+synax.Attention
+===============
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Attention.init_params
+   /autoapi/synax/Attention.apply
+   /autoapi/synax/Attention.param_loss
+
+.. py:class:: synax.Attention(query_input_dim: int, key_input_dim: int | None = None, value_input_dim: int | None = None, hidden_dim: int | None = None, heads: int = 1, linear_initializer: jax.nn.initializers.Initializer = nn.initializers.he_normal(), bias_initializer: jax.nn.initializers.Initializer = nn.initializers.zeros, normalize_qk: bool = False, linear_regularizer: synax._regularizers.Regularizer = zero, bias_regularizer: synax._regularizers.Regularizer = zero, dtype: jax.typing.DTypeLike | None = None)
+
+   Attention.
+
+   :param query_input_dim: Dimension of the input used to compute queries.
+   :param key_input_dim: Dimension of the input used to compute keys.
+       Defaults to ``query_input_dim``.
+   :param value_input_dim: Dimension of the input used to compute values.
+       Defaults to ``key_input_dim``.
+   :param hidden_dim: Dimension of the embeddings used to compute dot products.
+       Defaults to ``query_input_dim``.
+   :param heads: Number of attention heads.
+   :param linear_initializer: Initializer for linear layers.
+   :param bias_initializer: Initializer for bias layers.
+   :param normalize_qk: Apply layer norm to queries and keys before computing
+       dot products.
+   :param linear_regularizer: Regularizer for linear layers.
+   :param bias_regularizer: Regularizer for bias layers.
+   :param dtype: Data type of parameters.
+
+   References:
+
+   - *Attention is all you need*. 2017. https://arxiv.org/abs/1706.03762.
+
+   - *Scaling vision transformers to 22 billion parameters*. 2023. https://arxiv.org/abs/2302.05442.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Attention.init_params
+   synax.Attention.apply
+   synax.Attention.param_loss
+
+

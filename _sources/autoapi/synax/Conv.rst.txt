@@ -1,0 +1,45 @@
+synax.Conv
+==========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Conv.init_params
+   /autoapi/synax/Conv.apply
+   /autoapi/synax/Conv.param_loss
+
+.. py:class:: synax.Conv(input_dim: int, output_dim: int, shape: Sequence[int], stride: int | Sequence[int] = 1, padding: synax._utils.Padding = 'VALID', dilation: int | Sequence[int] = 1, base_dilation: int | Sequence[int] = 1, initializer: jax.nn.initializers.Initializer = nn.initializers.he_normal(), groups: int = 1, regularizer: synax._regularizers.Regularizer = zero, dtype: jax.typing.DTypeLike | None = None)
+
+   Convolution.
+
+   Does not include bias.
+
+   :param input_dim: Input dimension.
+   :param output_dim: Output dimension.
+   :param shape: Window shape.
+   :param stride: Window stride.
+   :param padding: Padding. Can be "VALID", "SAME", "SAME_LOWER", or a sequence
+       of int pairs giving the padding before and after each spatial dimension.
+       "VALID" applies no padding.
+       "SAME" and "SAME_LOWER" preserve the spatial shape of the input,
+       splitting the padding equally or almost equally before and after each
+       spatial dimension.
+       When the padding is an odd number, "SAME" adds the extra padding at the
+       end, while "SAME_LOWER" adds the extra padding at the beginning.
+   :param dilation: Window dilation.
+   :param base_dilation: Base dilation.
+   :param initializer: Initializer for the convolution kernel.
+   :param groups: Number of groups to split the input channels into.
+   :param regularizer: Regularizer for the convolution kernel.
+   :param dtype: Data type of parameters.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Conv.init_params
+   synax.Conv.apply
+   synax.Conv.param_loss
+
+

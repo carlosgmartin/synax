@@ -1,0 +1,43 @@
+synax.Chain
+===========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Chain.init_params
+   /autoapi/synax/Chain.param_loss
+
+.. py:class:: synax.Chain(modules: Sequence[Module])
+
+   Sequential composition.
+
+   Compose a list of modules sequentially, using the output of one module as
+   the input for the next.
+
+   Computes
+
+   .. math::
+       y = h_n
+
+   where
+
+   .. math::
+       h_0 &= x \\
+       h_{i+1} &= f_i(h_i)
+
+   where :math:`f_i` is module :math:`i`. It therefore has type
+
+   .. math::
+       \prod_{i=0}^{n-1} (A_i \to A_{i+1}) \to A_0 \to A_n
+
+   :param modules: Sequence of modules.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Chain.init_params
+   synax.Chain.param_loss
+
+

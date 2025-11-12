@@ -1,0 +1,11 @@
+synax.Attention.param_loss
+==========================
+
+.. py:method:: synax.Attention.param_loss(params: dict[str, jax.Array]) -> jax.Array | float
+
+   Parameter loss.
+
+   :param params: Parameters.
+
+   :returns: Scalar.
+

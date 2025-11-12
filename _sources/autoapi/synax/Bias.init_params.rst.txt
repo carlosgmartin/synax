@@ -1,0 +1,11 @@
+synax.Bias.init_params
+======================
+
+.. py:method:: synax.Bias.init_params(key: Key) -> jax.Array
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

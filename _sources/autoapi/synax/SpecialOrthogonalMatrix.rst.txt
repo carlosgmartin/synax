@@ -1,0 +1,29 @@
+synax.SpecialOrthogonalMatrix
+=============================
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/SpecialOrthogonalMatrix.init_params
+
+.. py:class:: synax.SpecialOrthogonalMatrix(dim: int, transform: Literal['exp', 'cayley'] = 'exp', dtype: jax.typing.DTypeLike | None = None)
+
+   Special orthogonal matrix
+
+   .. math::
+       A^\top = A^{-1}
+
+   :param dim: Dimension.
+   :param transform: Transform used for parameterization.
+       ``"exp"`` uses the matrix exponential :math:`\exp A`.
+       ``"cayley"`` uses the Cayley transform :math:`(I - A) (I + A)^{-1}`.
+   :param dtype: Data type of parameters.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.SpecialOrthogonalMatrix.init_params
+
+

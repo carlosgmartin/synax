@@ -1,0 +1,32 @@
+synax.AutoEncoder
+=================
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/AutoEncoder.init_params
+   /autoapi/synax/AutoEncoder.param_loss
+
+.. py:class:: synax.AutoEncoder(encoder: Module, decoder: Module)
+
+   Auto-encoder.
+
+   Computes
+
+   .. math::
+       y = g(f(x))
+
+   where :math:`f` is a given encoder and :math:`g` is a given decoder.
+
+   :param encoder: Module to use as encoder.
+   :param decoder: Module to use as decoder.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.AutoEncoder.init_params
+   synax.AutoEncoder.param_loss
+
+

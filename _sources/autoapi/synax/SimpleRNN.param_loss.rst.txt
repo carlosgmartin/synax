@@ -1,0 +1,11 @@
+synax.SimpleRNN.param_loss
+==========================
+
+.. py:method:: synax.SimpleRNN.param_loss(params: dict[str, jax.Array]) -> jax.Array | float
+
+   Parameter loss.
+
+   :param params: Parameters.
+
+   :returns: Scalar.
+

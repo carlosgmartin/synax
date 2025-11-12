@@ -1,0 +1,30 @@
+synax.Embed
+===========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Embed.init_params
+   /autoapi/synax/Embed.apply
+   /autoapi/synax/Embed.param_loss
+
+.. py:class:: synax.Embed(number: int, dim: int, initializer: jax.nn.initializers.Initializer = nn.initializers.normal(), regularizer: synax._regularizers.Regularizer = zero, dtype: jax.typing.DTypeLike | None = None)
+
+   Embedding.
+
+   :param number: Number of embeddings.
+   :param dim: Dimension of each embedding.
+   :param initializer: Initializer for embeddings.
+   :param regularizer: Regularizer.
+   :param dtype: Data type of parameters.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Embed.init_params
+   synax.Embed.apply
+   synax.Embed.param_loss
+
+

@@ -1,0 +1,11 @@
+synax.SymmetricMatrix.param_loss
+================================
+
+.. py:method:: synax.SymmetricMatrix.param_loss(params: jax.Array) -> jax.Array | float
+
+   Parameter loss.
+
+   :param params: Parameters.
+
+   :returns: Scalar.
+

@@ -310,6 +310,7 @@ class PReLU:
     :param initializer: Initializer to use for the slope parameter.
     :param regularizer: Regularizer to use for the slope parameter.
     :param dtype: Data type of parameters.
+    :param shape: Shape of the slope parameter.
 
     References:
 
@@ -322,13 +323,15 @@ class PReLU:
         initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
         dtype: jax.typing.DTypeLike | None = None,
+        shape: tuple[int, ...] = (),
     ):
         self.initializer = initializer
         self.regularizer = regularizer
         self.dtype = dtype
+        self.shape = shape
 
     def init_params(self, key: Key) -> Array:
-        return self.initializer(key, (), self.dtype)
+        return self.initializer(key, self.shape, self.dtype)
 
     def apply(self, params: Array, input: Array) -> Array:
         return jnp.where(input > 0, input, input * params)

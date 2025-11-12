@@ -396,7 +396,11 @@ def LeNet(
     )
 
 
-def AlexNet(input_channels: int = 3, outputs: int = 1000) -> Module:
+def AlexNet(
+    input_channels: int = 3,
+    outputs: int = 1000,
+    dtype: jax.typing.DTypeLike | None = None,
+) -> Module:
     """
     AlexNet convolutional network.
 
@@ -406,6 +410,7 @@ def AlexNet(input_channels: int = 3, outputs: int = 1000) -> Module:
 
     :param input_channels: Number of input channels.
     :param outputs: Number of outputs.
+    :param dtype: Data type of parameters.
 
     :returns: Module.
 
@@ -419,34 +424,34 @@ def AlexNet(input_channels: int = 3, outputs: int = 1000) -> Module:
     """
     return Chain(
         [
-            Conv(input_channels, 96, (11, 11), (4, 4)),
-            Bias(96),
+            Conv(input_channels, 96, (11, 11), (4, 4), dtype=dtype),
+            Bias(96, dtype=dtype),
             Func(nn.relu),
             Func(max_pool((3, 3), stride=2)),
-            Conv(96, 256, (5, 5), padding="SAME"),
-            Bias(256),
+            Conv(96, 256, (5, 5), padding="SAME", dtype=dtype),
+            Bias(256, dtype=dtype),
             Func(nn.relu),
             Func(max_pool((3, 3), stride=2)),
-            Conv(256, 384, (3, 3), padding="SAME"),
-            Bias(384),
+            Conv(256, 384, (3, 3), padding="SAME", dtype=dtype),
+            Bias(384, dtype=dtype),
             Func(nn.relu),
-            Conv(384, 384, (3, 3), padding="SAME"),
-            Bias(384),
+            Conv(384, 384, (3, 3), padding="SAME", dtype=dtype),
+            Bias(384, dtype=dtype),
             Func(nn.relu),
-            Conv(384, 256, (3, 3), padding="SAME"),
-            Bias(256),
+            Conv(384, 256, (3, 3), padding="SAME", dtype=dtype),
+            Bias(256, dtype=dtype),
             Func(nn.relu),
             Func(max_pool((3, 3), stride=2)),
             Func(jnp.ravel),
-            Linear(6400, 4096),
-            Bias(4096),
+            Linear(6400, 4096, dtype=dtype),
+            Bias(4096, dtype=dtype),
             Func(nn.relu),
             # dropout 0.5
-            Linear(4096, 4096),
-            Bias(4096),
+            Linear(4096, 4096, dtype=dtype),
+            Bias(4096, dtype=dtype),
             Func(nn.relu),
             # dropout 0.5
-            Linear(4096, 1000),
-            Bias(outputs),
+            Linear(4096, 1000, dtype=dtype),
+            Bias(outputs, dtype=dtype),
         ]
     )

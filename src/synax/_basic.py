@@ -32,7 +32,7 @@ class Bias:
 
     def __init__(
         self,
-        dim: int,
+        dim: int | tuple[int, ...],
         initializer: Initializer = nn.initializers.zeros,
         regularizer: Regularizer = zero,
         dtype: jax.typing.DTypeLike | None = None,
@@ -50,7 +50,11 @@ class Bias:
 
         :returns: Parameters.
         """
-        return self.initializer(key, (self.dim,), self.dtype)
+        if isinstance(self.dim, int):
+            shape = (self.dim,)
+        else:
+            shape = self.dim
+        return self.initializer(key, shape, self.dtype)
 
     def apply(self, params: Array, input: Array) -> Array:
         """
@@ -93,7 +97,7 @@ class Scale:
 
     def __init__(
         self,
-        dim: int,
+        dim: int | tuple[int, ...],
         initializer: Initializer = nn.initializers.ones,
         regularizer: Regularizer = zero,
         dtype: jax.typing.DTypeLike | None = None,
@@ -111,7 +115,11 @@ class Scale:
 
         :returns: Parameters.
         """
-        return self.initializer(key, (self.dim,), self.dtype)
+        if isinstance(self.dim, int):
+            shape = (self.dim,)
+        else:
+            shape = self.dim
+        return self.initializer(key, shape, self.dtype)
 
     def apply(self, params: Array, input: Array) -> Array:
         """

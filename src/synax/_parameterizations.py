@@ -89,7 +89,7 @@ class Ball:
         return self.initializer(key, (self.dim,), self.dtype)
 
     def apply(self, params: Array) -> Array:
-        return params / jnp.sqrt(1 + params * jnp.conj(params))
+        return params / jnp.sqrt(1 + (params * jnp.conj(params)).sum())
 
     def param_loss(self, params: Array) -> Array | float:
         """

@@ -1,0 +1,36 @@
+synax.Residual
+==============
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Residual.init_params
+   /autoapi/synax/Residual.param_loss
+
+.. py:class:: synax.Residual(module: Module)
+
+   Residual map.
+
+   Computes
+
+   .. math::
+       y = x + f(x)
+
+   where :math:`f` is a given module.
+
+   References:
+
+   - *Deep residual learning for image recognition*. 2015.
+     https://arxiv.org/abs/1512.03385.
+
+   :param module: Module to apply.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Residual.init_params
+   synax.Residual.param_loss
+
+

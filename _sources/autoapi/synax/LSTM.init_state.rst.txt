@@ -1,0 +1,11 @@
+synax.LSTM.init_state
+=====================
+
+.. py:method:: synax.LSTM.init_state(key: Key) -> tuple[jax.Array, jax.Array]
+
+   Sample initial state.
+
+   :param key: PRNG key.
+
+   :returns: State.
+

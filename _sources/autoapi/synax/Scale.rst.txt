@@ -1,0 +1,36 @@
+synax.Scale
+===========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Scale.init_params
+   /autoapi/synax/Scale.apply
+   /autoapi/synax/Scale.param_loss
+
+.. py:class:: synax.Scale(dim: int | tuple[int, Ellipsis], initializer: jax.nn.initializers.Initializer = nn.initializers.ones, regularizer: synax._regularizers.Regularizer = zero, dtype: jax.typing.DTypeLike | None = None)
+
+   Elementwise scaling.
+
+   Computes
+
+   .. math::
+       y = x \odot a
+
+   where :math:`a` is a learned vector.
+
+   :param dim: Input dimension.
+   :param initializer: Initializer.
+   :param regularizer: Regularizer.
+   :param dtype: Data type of parameters.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Scale.init_params
+   synax.Scale.apply
+   synax.Scale.param_loss
+
+

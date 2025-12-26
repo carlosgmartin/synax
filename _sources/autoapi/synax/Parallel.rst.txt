@@ -1,0 +1,38 @@
+synax.Parallel
+==============
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Parallel.init_params
+   /autoapi/synax/Parallel.param_loss
+
+.. py:class:: synax.Parallel(modules: Sequence[Module])
+
+   Parallel composition.
+
+   Compose a list of modules in parallel, receiving a tuple as input, passing
+   each element to its corresponding module, and collecting their outputs as a
+   tuple.
+
+   Computes
+
+   .. math::
+       y = \{f_i(x_i)\}_{i \in [n]}
+
+   where :math:`f_i` is module :math:`i`. It therefore has type
+
+   .. math::
+       \prod_{i=0}^{n-1} (A_i \to B_i) \to \prod_{i=0}^{n-1} A_i \to \prod_{i=0}^{n-1} B_i
+
+   :param modules: Sequence of modules.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Parallel.init_params
+   synax.Parallel.param_loss
+
+

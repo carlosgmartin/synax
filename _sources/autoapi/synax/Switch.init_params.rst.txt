@@ -1,0 +1,11 @@
+synax.Switch.init_params
+========================
+
+.. py:method:: synax.Switch.init_params(key: Key) -> Any
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

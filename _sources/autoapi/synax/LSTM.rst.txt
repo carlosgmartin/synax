@@ -1,0 +1,27 @@
+synax.LSTM
+==========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/LSTM.init_params
+   /autoapi/synax/LSTM.init_state
+
+.. py:class:: synax.LSTM(state_dim: int, input_dim: int, linear_initializer: jax.nn.initializers.Initializer = nn.initializers.he_normal(), recurrent_initializer: jax.nn.initializers.Initializer = nn.initializers.orthogonal(), bias_initializer: jax.nn.initializers.Initializer = nn.initializers.zeros, forget_bias: float = 1.0, state_initializer: jax.nn.initializers.Initializer = nn.initializers.zeros, dtype: jax.typing.DTypeLike | None = None)
+
+   Long short term memory.
+
+   References:
+
+   - *LSTM can solve hard long time lag problems*. 1996.
+     https://dl.acm.org/doi/10.5555/2998981.2999048
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.LSTM.init_params
+   synax.LSTM.init_state
+
+

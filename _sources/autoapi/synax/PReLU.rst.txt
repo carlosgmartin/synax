@@ -1,0 +1,40 @@
+synax.PReLU
+===========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/PReLU.param_loss
+
+.. py:class:: synax.PReLU(initializer: jax.nn.initializers.Initializer = nn.initializers.zeros, regularizer: synax._regularizers.Regularizer = zero, dtype: jax.typing.DTypeLike | None = None, shape: tuple[int, Ellipsis] = ())
+
+   Parametric ReLU.
+
+   Computes
+
+   .. math::
+       y = \begin{cases}
+           x & x > 0 \\
+           a x & x \leq 0
+       \end{cases}
+
+   where :math:`a` is a learned slope parameter.
+
+   :param initializer: Initializer to use for the slope parameter.
+   :param regularizer: Regularizer to use for the slope parameter.
+   :param dtype: Data type of parameters.
+   :param shape: Shape of the slope parameter.
+
+   References:
+
+   - *Delving deep into rectifiers: surpassing human-level performance on ImageNet classification*.
+     2015. https://arxiv.org/abs/1502.01852.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.PReLU.param_loss
+
+

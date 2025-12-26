@@ -1,0 +1,33 @@
+synax.Func
+==========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Func.init_params
+   /autoapi/synax/Func.apply
+   /autoapi/synax/Func.param_loss
+
+.. py:class:: synax.Func(function: Callable[[Any], Any])
+
+   Function application.
+
+   Computes
+
+   .. math::
+       y = f(x)
+
+   where :math:`f` is a user-specified function.
+
+   :param function: Function to apply.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Func.init_params
+   synax.Func.apply
+   synax.Func.param_loss
+
+

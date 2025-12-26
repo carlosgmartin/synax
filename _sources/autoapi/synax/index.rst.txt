@@ -1,0 +1,93 @@
+synax
+=====
+
+.. py:module:: synax
+
+.. autoapi-nested-parse::
+
+   This is the public API.
+
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Attention
+   /autoapi/synax/Bias
+   /autoapi/synax/Conv
+   /autoapi/synax/Embed
+   /autoapi/synax/Func
+   /autoapi/synax/Linear
+   /autoapi/synax/Scale
+   /autoapi/synax/DropConnect
+   /autoapi/synax/Chain
+   /autoapi/synax/Parallel
+   /autoapi/synax/Residual
+   /autoapi/synax/Switch
+   /autoapi/synax/GLU
+   /autoapi/synax/AutoEncoder
+   /autoapi/synax/PReLU
+   /autoapi/synax/GRU
+   /autoapi/synax/LSTM
+   /autoapi/synax/MGU
+   /autoapi/synax/SimpleRNN
+   /autoapi/synax/AntiSymmetricMatrix
+   /autoapi/synax/SpecialOrthogonalMatrix
+   /autoapi/synax/SymmetricMatrix
+   /autoapi/synax/Constant
+
+.. autoapisummary::
+
+   synax.Attention
+   synax.Bias
+   synax.Conv
+   synax.Embed
+   synax.Func
+   synax.Linear
+   synax.Scale
+   synax.DropConnect
+   synax.Chain
+   synax.Parallel
+   synax.Residual
+   synax.Switch
+   synax.GLU
+   synax.AutoEncoder
+   synax.PReLU
+   synax.GRU
+   synax.LSTM
+   synax.MGU
+   synax.SimpleRNN
+   synax.AntiSymmetricMatrix
+   synax.SpecialOrthogonalMatrix
+   synax.SymmetricMatrix
+   synax.Constant
+
+
+Functions
+---------
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/MLP
+   /autoapi/synax/AlexNet
+   /autoapi/synax/LeNet
+   /autoapi/synax/layer_norm
+   /autoapi/synax/max_pool
+   /autoapi/synax/mean_pool
+   /autoapi/synax/rms_norm
+
+.. autoapisummary::
+
+   synax.MLP
+   synax.AlexNet
+   synax.LeNet
+   synax.layer_norm
+   synax.max_pool
+   synax.mean_pool
+   synax.rms_norm
+
+

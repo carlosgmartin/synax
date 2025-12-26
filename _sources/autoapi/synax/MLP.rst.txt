@@ -1,0 +1,30 @@
+synax.MLP
+=========
+
+.. py:function:: synax.MLP(dimensions: Sequence[int], activation: Module = Func(nn.relu), linear_initializer: jax.nn.initializers.Initializer = nn.initializers.he_normal(), bias_initializer: jax.nn.initializers.Initializer = nn.initializers.zeros, linear_regularizer: synax._regularizers.Regularizer = zero, bias_regularizer: synax._regularizers.Regularizer = zero, dtype: jax.typing.DTypeLike | None = None) -> Module
+
+   Multi-layer perceptron.
+
+   :param dimensions: Dimension of each layer.
+   :param activation: Module used as activation function.
+       Not applied to the output.
+   :param linear_initializer: Initializer for linear layers.
+   :param bias_initializer: Initializer for bias layers.
+   :param linear_regularizer: Regularizer for linear layers.
+   :param bias_regularizer: Regularizer for bias layers.
+   :param dtype: Data type of parameters.
+
+   :returns: Module.
+
+   References:
+
+   - *A logical calculus of the ideas immanent in nervous activity*. 1943.
+     https://link.springer.com/article/10.1007/BF02478259.
+
+   - *The perceptron: A probabilistic model for information storage and
+     organization in the brain*. 1958.
+     https://psycnet.apa.org/record/1959-09865-001.
+
+   - *Learning representations by back-propagating errors*. 1986.
+     https://www.nature.com/articles/323533a0.
+

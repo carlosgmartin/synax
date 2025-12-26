@@ -1,0 +1,16 @@
+synax.max_pool
+==============
+
+.. py:function:: synax.max_pool(shape: Sequence[int], *, stride: int | Sequence[int] = 1, padding: Padding = 'VALID', dilation: int | Sequence[int] = 1, base_dilation: int | Sequence[int] = 1) -> Callable[[jax.Array], jax.Array]
+
+   Max pooling.
+
+   :param shape: Window shape.
+   :param stride: Window stride.
+   :param padding: Padding. Can be "SAME", "SAME_LOWER", "VALID", or a sequence
+       of int pairs giving the padding before and after each spatial dimension.
+   :param dilation: Window dilation.
+   :param base_dilation: Base dilation.
+
+   :returns: Function that maps an array to an array.
+

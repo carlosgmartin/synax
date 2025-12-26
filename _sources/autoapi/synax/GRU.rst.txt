@@ -1,0 +1,27 @@
+synax.GRU
+=========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/GRU.init_params
+   /autoapi/synax/GRU.init_state
+
+.. py:class:: synax.GRU(state_dim: int, input_dim: int, linear_initializer: jax.nn.initializers.Initializer = nn.initializers.glorot_uniform(), bias_initializer: jax.nn.initializers.Initializer = nn.initializers.zeros, recurrent_initializer: jax.nn.initializers.Initializer = nn.initializers.orthogonal(), reset_activation: Callable[[jax.Array], jax.Array] = nn.sigmoid, update_activation: Callable[[jax.Array], jax.Array] = nn.sigmoid, candidate_activation: Callable[[jax.Array], jax.Array] = nn.tanh, state_initializer: jax.nn.initializers.Initializer = nn.initializers.zeros, dtype: jax.typing.DTypeLike | None = None)
+
+   Gated recurrent unit.
+
+   References:
+
+   - *Learning phrase representations using RNN encoder-decoder for statistical
+     machine*. 2014. https://arxiv.org/abs/1406.1078.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.GRU.init_params
+   synax.GRU.init_state
+
+

@@ -1,0 +1,11 @@
+synax.Switch.param_loss
+=======================
+
+.. py:method:: synax.Switch.param_loss(params: Any) -> jax.Array
+
+   Parameter loss.
+
+   :param parameters: Parameters.
+
+   :returns: Scalar.
+

@@ -1,0 +1,11 @@
+synax.Chain.init_params
+=======================
+
+.. py:method:: synax.Chain.init_params(key: Key) -> tuple[Any, Ellipsis]
+
+   Sample initial parameters.
+
+   :param key: PRNG key.
+
+   :returns: Parameters.
+

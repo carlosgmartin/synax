@@ -1,0 +1,36 @@
+synax.Bias
+==========
+
+.. toctree::
+   :hidden:
+
+   /autoapi/synax/Bias.init_params
+   /autoapi/synax/Bias.apply
+   /autoapi/synax/Bias.param_loss
+
+.. py:class:: synax.Bias(dim: int | tuple[int, Ellipsis], initializer: jax.nn.initializers.Initializer = nn.initializers.zeros, regularizer: synax._regularizers.Regularizer = zero, dtype: jax.typing.DTypeLike | None = None)
+
+   Bias (translation).
+
+   Computes
+
+   .. math::
+       y = x + b
+
+   where :math:`b` is a learned vector.
+
+   :param dim: Input dimension.
+   :param initializer: Initializer.
+   :param regularizer: Regularizer.
+   :param dtype: Data type of parameters.
+
+Methods
+-------
+
+.. autoapisummary::
+
+   synax.Bias.init_params
+   synax.Bias.apply
+   synax.Bias.param_loss
+
+
